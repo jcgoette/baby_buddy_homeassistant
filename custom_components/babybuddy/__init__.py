@@ -1,0 +1,1 @@
+"""The babybuddy sensor integration."""
