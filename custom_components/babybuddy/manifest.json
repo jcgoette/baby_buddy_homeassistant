@@ -1,0 +1,6 @@
+{
+    "domain": "babybuddy",
+    "name": "Baby Buddy",
+    "documentation": "https://github.com/jcgoette/baby_buddy_homeassistant",
+    "codeowners": ["@jcgoette"]
+  }
