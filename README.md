@@ -1,7 +1,6 @@
 # baby_buddy_homeassistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
-<a href="https://www.buymeacoffee.com/jcgoette" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 20px !important;width: 94px !important;" ></a>
 
 This custom integration provides sensors for Baby Buddy API endpoints.
 
