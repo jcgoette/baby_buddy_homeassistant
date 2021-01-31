@@ -127,9 +127,15 @@ class BabyBuddySensor(Entity):
         """Fetch new data for the sensor."""
         if not self._baby_buddy_data.form_address():
             return
-        self._data = self._state = self._baby_buddy_data.entities_update(
-            self._name
-        )[0][1]
+        try:
+            self._data = self._state = self._baby_buddy_data.entities_update(
+                self._name
+            )[0][1]
+        except IndexError:
+            _LOGGER.error(
+                "Baby Buddy database entry %s has been removed since last Home Assistant start",
+                self.name,
+            )
 
 
 class BabyBuddyData:
@@ -146,6 +152,10 @@ class BabyBuddyData:
         try:
             requests.get(address)
         except:
+            _LOGGER.error(
+                "Cannot reach %s, check address and/or SSL configuration entry",
+                address[:-5],
+            )
             return False
         return address
 
