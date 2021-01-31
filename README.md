@@ -20,8 +20,9 @@ This custom integration provides sensors for [Baby Buddy](https://github.com/bab
 ### Parameters
 | Name | Type | Description |
 |------|:----:|-------------|
-| address ***(required)*** | string |   Web address that hosts your instance of BabyBuddy. *Must* be https enabled.
+| address ***(required)*** | string |   Web address that hosts your instance of BabyBuddy.
 | api_key ***(required)*** | string |  The API key from the user settings page on your instance of BabyBuddy.
+| ssl ***(optional)*** | boolean |  Whether address is HTTPS enabled or not. Defaults to True.
 
 ### Example
 ```yaml
