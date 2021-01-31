@@ -5,15 +5,21 @@ import homeassistant.helpers.config_validation as cv
 import requests
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_ADDRESS, CONF_API_KEY
+from homeassistant.const import CONF_ADDRESS, CONF_API_KEY, CONF_SSL
 from homeassistant.helpers.entity import Entity
 from requests_toolbelt import sessions
 
 _LOGGER = logging.getLogger(__name__)
 
+DEFAULT_SSL = True
+
 """Validation of the user's configuration"""
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_ADDRESS): cv.string, vol.Required(CONF_API_KEY): cv.string}
+    {
+        vol.Required(CONF_ADDRESS): cv.string,
+        vol.Required(CONF_API_KEY): cv.string,
+        vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
+    }
 )
 
 """Babybuddy API endpoints"""
@@ -33,8 +39,14 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the sensor platform."""
     address = config[CONF_ADDRESS]
     api_key = config[CONF_API_KEY]
+    ssl = config[CONF_SSL]
 
-    baby_buddy_data = BabyBuddyData(address, api_key)
+    if not ssl:
+        _LOGGER.warning("Use of HTTPS in production environment is highly recommended")
+
+    baby_buddy_data = BabyBuddyData(address, api_key, ssl)
+    if not baby_buddy_data.form_address():
+        return
 
     sensors = []
 
@@ -113,18 +125,32 @@ class BabyBuddySensor(Entity):
 
     def update(self):
         """Fetch new data for the sensor."""
-        self._data = self._state = self._baby_buddy_data.entities_update(self._name)[0][
-            1
-        ]
+        if not self._baby_buddy_data.form_address():
+            return
+        self._data = self._state = self._baby_buddy_data.entities_update(
+            self._name
+        )[0][1]
 
 
 class BabyBuddyData:
-    def __init__(self, address, api_key):
+    def __init__(self, address, api_key, ssl):
         self._address = address
         self._api_key = api_key
+        self._ssl = ssl
+
+    def form_address(self):
+        if self._ssl:
+            address = f"https://{self._address}/api/"
+        else:
+            address = f"http://{self._address}/api/"
+        try:
+            requests.get(address)
+        except:
+            return False
+        return address
 
     def entities_get(self):
-        session = sessions.BaseUrlSession(base_url=f"https://{self._address}/api/")
+        session = sessions.BaseUrlSession(base_url=self.form_address())
         session.headers = {"Authorization": f"Token {self._api_key}"}
 
         sensors = []
