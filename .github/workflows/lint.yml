@@ -1,0 +1,27 @@
+name: Lint
+
+on:
+ push:
+  paths:
+  - "**.py"
+ pull_request:
+  paths:
+   - "**.py"
+
+jobs:
+ lint-isort:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/checkout@v2
+   - uses: actions/setup-python@v2
+     with:
+      python-version: 3.8
+   - uses: jamescurtin/isort-action@master
+ lint-black:
+  runs-on: ubuntu-latest
+  steps:
+   - uses: actions/checkout@v2
+   - uses: actions/setup-python@v2
+   - uses: psf/black@stable
+     with:
+      black_args: ". --check"
