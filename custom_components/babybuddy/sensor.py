@@ -119,6 +119,8 @@ class BabyBuddySensor(Entity):
             return "mdi:thermometer"
         elif self._endpoint == "timers":
             return "mdi:timer-sand"
+        elif self._endpoint == "tummy-times":
+            return "mdi:baby"
         elif self._endpoint == "weight":
             return "mdi:scale-bathroom"
         return "mdi:baby-face-outline"
