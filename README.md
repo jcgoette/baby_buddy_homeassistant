@@ -1,6 +1,6 @@
 # baby_buddy_homeassistant
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 This custom integration provides sensors for [Baby Buddy](https://github.com/babybuddy/babybuddy) API endpoints within [Home Assistant](https://github.com/home-assistant/core).
@@ -9,12 +9,11 @@ This custom integration provides sensors for [Baby Buddy](https://github.com/bab
 
 ### HACS
 
-1. Go to any of the sections (integrations, frontend, automation).
-1. Click on the 3 dots in the top right corner.
-1. Select "Custom repositories"
-1. Add the URL (i.e., https://github.com/jcgoette/baby_buddy_homeassistant) to the repository.
-1. Select the Integration category.
-1. Click the "ADD" button.
+1. Navigate to integrations section.
+1. Click "Explore & Add Repositories" in the bottom right corner.
+1. Search for "Baby Buddy".
+1. Click "INSTALL THIS REPOSITORY IN HACS".
+1. Click "Install".
 
 ## Configuration
 
