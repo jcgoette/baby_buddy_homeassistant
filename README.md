@@ -20,9 +20,10 @@ This custom integration provides sensors for [Baby Buddy](https://github.com/bab
 ### Parameters
 | Name | Type | Description |
 |------|:----:|-------------|
-| address ***(required)*** | string |   Web address that hosts your instance of BabyBuddy.
-| api_key ***(required)*** | string |  The API key from the user settings page on your instance of BabyBuddy.
+| address ***(required)*** | string |   Web address that hosts your instance of Baby Buddy.
+| api_key ***(required)*** | string |  The API key from the user settings page on your instance of Baby Buddy.
 | ssl ***(optional)*** | boolean |  Whether address is HTTPS enabled or not. Defaults to True.
+| sensor_type ***(optional)*** | list |  List of Baby Buddy API endpoints to create sensors for. Defaults to all currently available [Baby Buddy API endpoints](https://github.com/babybuddy/babybuddy#api).
 
 ### Example
 ```yaml
@@ -30,4 +31,7 @@ sensor:
  - platform: babybuddy
    address: baby.example.com
    api_key: !secret babybuddy_api_key
+   sensor_type:
+    - changes
+    - feedings
 ```

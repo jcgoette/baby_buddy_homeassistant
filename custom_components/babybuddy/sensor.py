@@ -5,25 +5,14 @@ import homeassistant.helpers.config_validation as cv
 import requests
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_ADDRESS, CONF_API_KEY, CONF_SSL
+from homeassistant.const import CONF_ADDRESS, CONF_API_KEY, CONF_SENSOR_TYPE, CONF_SSL
 from homeassistant.helpers.entity import Entity
 from requests_toolbelt import sessions
 
 _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_SSL = True
-
-"""Validation of the user's configuration"""
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_ADDRESS): cv.string,
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
-    }
-)
-
-"""Babybuddy API endpoints"""
-ENDPOINTS = {
+DEFAULT_SENSOR_TYPE = [
     "changes",
     "feedings",
     "notes",
@@ -32,7 +21,19 @@ ENDPOINTS = {
     "timers",
     "tummy-times",
     "weight",
-}
+]
+
+"""Validation of the user's configuration"""
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
+    {
+        vol.Required(CONF_ADDRESS): cv.string,
+        vol.Required(CONF_API_KEY): cv.string,
+        vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
+        vol.Optional(CONF_SENSOR_TYPE, default=DEFAULT_SENSOR_TYPE): vol.All(
+            cv.ensure_list, [vol.In(DEFAULT_SENSOR_TYPE)]
+        ),
+    }
+)
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -40,11 +41,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     address = config[CONF_ADDRESS]
     api_key = config[CONF_API_KEY]
     ssl = config[CONF_SSL]
+    sensor_type = config[CONF_SENSOR_TYPE]
 
     if not ssl:
         _LOGGER.warning("Use of HTTPS in production environment is highly recommended")
 
-    baby_buddy_data = BabyBuddyData(address, api_key, ssl)
+    baby_buddy_data = BabyBuddyData(address, api_key, ssl, sensor_type)
     if not baby_buddy_data.form_address():
         return
 
@@ -119,6 +121,8 @@ class BabyBuddySensor(Entity):
             return "mdi:thermometer"
         elif self._endpoint == "timers":
             return "mdi:timer-sand"
+        elif self._endpoint == "tummy-times":
+            return "mdi:baby"
         elif self._endpoint == "weight":
             return "mdi:scale-bathroom"
         return "mdi:baby-face-outline"
@@ -139,10 +143,11 @@ class BabyBuddySensor(Entity):
 
 
 class BabyBuddyData:
-    def __init__(self, address, api_key, ssl):
+    def __init__(self, address, api_key, ssl, sensor_type):
         self._address = address
         self._api_key = api_key
         self._ssl = ssl
+        self._sensor_type = sensor_type
 
     def form_address(self):
         if self._ssl:
@@ -170,7 +175,7 @@ class BabyBuddyData:
         for child in children:
             child_name = f'{child["first_name"]}_{child["last_name"]}'
             sensors.append((child_name, child, None))
-            for endpoint in ENDPOINTS:
+            for endpoint in self._sensor_type:
                 r = session.get(f"{endpoint}").json()
                 data = next(
                     (i for i in r["results"] if i["child"] == child["id"]), None
