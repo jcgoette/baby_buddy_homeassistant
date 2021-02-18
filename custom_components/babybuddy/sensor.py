@@ -102,7 +102,7 @@ class BabyBuddySensor(Entity):
     def name(self):
         """Return the name of the sensor."""
         name = self._name.replace("_", " ").title()
-        if name[-1] == "s":
+        if name[-1] == "s" and self._endpoint:
             return name[:-1]
         return name
 
