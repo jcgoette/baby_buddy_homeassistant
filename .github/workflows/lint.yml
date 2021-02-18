@@ -17,6 +17,8 @@ jobs:
      with:
       python-version: 3.8
    - uses: jamescurtin/isort-action@master
+     with:
+      configuration: "--check-only --diff --profile black"
  lint-black:
   runs-on: ubuntu-latest
   steps:
