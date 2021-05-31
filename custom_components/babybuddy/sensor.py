@@ -9,19 +9,9 @@ from homeassistant.const import CONF_ADDRESS, CONF_API_KEY, CONF_SENSOR_TYPE, CO
 from homeassistant.helpers.entity import Entity
 from requests_toolbelt import sessions
 
-_LOGGER = logging.getLogger(__name__)
+from .const import DEFAULT_SENSOR_TYPE, DEFAULT_SSL
 
-DEFAULT_SSL = True
-DEFAULT_SENSOR_TYPE = [
-    "changes",
-    "feedings",
-    "notes",
-    "sleep",
-    "temperature",
-    "timers",
-    "tummy-times",
-    "weight",
-]
+_LOGGER = logging.getLogger(__name__)
 
 """Validation of the user's configuration"""
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
