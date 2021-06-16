@@ -1,4 +1,4 @@
-name: Lint
+name: CI
 
 on:
  push:
@@ -26,4 +26,11 @@ jobs:
    - uses: actions/setup-python@v2
    - uses: psf/black@stable
      with:
-      black_args: ". --check"
+      options: ". --check"
+ TODO:
+  runs-on: "ubuntu-latest"
+  steps:
+   - uses: "actions/checkout@master"
+   - uses: "alstr/todo-to-issue-action@v4.0-alpha"
+     with:
+      TOKEN: ${{ secrets.GITHUB_TOKEN }}
