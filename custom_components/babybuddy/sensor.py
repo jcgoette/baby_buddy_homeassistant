@@ -1,4 +1,4 @@
-"""Platform for babybuddy sensor integration."""
+"""Platform for Baby Buddy sensor integration."""
 import logging
 
 import homeassistant.helpers.config_validation as cv
@@ -38,7 +38,6 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-"""Validation of the user's configuration"""
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Required(CONF_ADDRESS): cv.string,
@@ -52,7 +51,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
-    """Set up the sensor platform."""
+    """Setup Baby Buddy sensors."""
     address = config[CONF_ADDRESS]
     api_key = config[CONF_API_KEY]
     ssl = config[CONF_SSL]
@@ -67,7 +66,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
     sensors = []
 
-    """There must be a better way to do this vs. deconstructing BabyBuddyData.entities_get()..."""
+    # TODO: refactor entity creation
     for entity in baby_buddy_data.entities_get():
         entity_list = [baby_buddy_data]
         for part in entity:
@@ -83,18 +82,26 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
 
 class BabyBuddySensor(Entity):
-    """Representation of a Sensor."""
+    """Representation of a Baby Buddy Sensor."""
 
     def __init__(self, baby_buddy_data, name, data, endpoint):
-        """Initialize the sensor."""
+        """Initialize the Baby Buddy sensor."""
         self._baby_buddy_data = baby_buddy_data
         self._name = name
         self._data = self._state = data
         self._endpoint = endpoint
 
     @property
+    def name(self):
+        """Return the name of the Baby Buddy sensor."""
+        name = self._name.replace("_", " ").title()
+        if name[-1] == "s" and self._endpoint:
+            return name[:-1]
+        return name
+
+    @property
     def state(self):
-        """Return the state of the sensor."""
+        """Return the state of the Baby Buddy sensor."""
         for key, value in self._state.items():
             if key == ATTR_TIME:
                 return value
@@ -106,24 +113,16 @@ class BabyBuddySensor(Entity):
                 return value
 
     @property
-    def state_attributes(self):
-        """Return the state attributes of the sensor."""
+    def extra_state_attributes(self):
+        """Return entity specific state attributes for Baby Buddy."""
         attributes = []
         for attribute in self._data.items():
             attributes.append(attribute)
         return attributes
 
     @property
-    def name(self):
-        """Return the name of the sensor."""
-        name = self._name.replace("_", " ").title()
-        if name[-1] == "s" and self._endpoint:
-            return name[:-1]
-        return name
-
-    @property
     def icon(self):
-        """Return the icon to use in the frontend"""
+        """Return the icon to use in Baby Buddy frontend."""
         if self._endpoint == ATTR_CHANGES:
             return "mdi:paper-roll-outline"
         elif self._endpoint == ATTR_FEEDINGS:
@@ -143,7 +142,7 @@ class BabyBuddySensor(Entity):
         return "mdi:baby-face-outline"
 
     def update(self):
-        """Fetch new data for the sensor."""
+        """Update data from Baby Buddy for the sensor."""
         if not self._baby_buddy_data.form_address():
             return
         try:
@@ -158,7 +157,10 @@ class BabyBuddySensor(Entity):
 
 
 class BabyBuddyData:
+    """Coordinate retrieving and updating data from Baby Buddy."""
+
     def __init__(self, address, api_key, ssl, sensor_type):
+        """Initialize the BabyBuddyData object."""
         self._address = address
         self._api_key = api_key
         self._ssl = ssl
