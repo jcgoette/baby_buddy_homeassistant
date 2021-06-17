@@ -1,6 +1,6 @@
 {
-  "name": "Baby Buddy",
-  "render_readme": true,
   "domains": "sensor",
-  "iot_class": "Cloud Polling"
+  "iot_class": "Cloud Polling",
+  "name": "Baby Buddy",
+  "render_readme": true
 }

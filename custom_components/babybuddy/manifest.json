@@ -1,8 +1,8 @@
 {
-    "domain": "babybuddy",
-    "name": "Baby Buddy",
-    "version": "v1.2.1",
-    "documentation": "https://github.com/jcgoette/baby_buddy_homeassistant",
-    "issue_tracker": "https://github.com/jcgoette/baby_buddy_homeassistant/issues",
-    "codeowners": ["@jcgoette"]
-  }
+  "codeowners": ["@jcgoette"],
+  "documentation": "https://github.com/jcgoette/baby_buddy_homeassistant",
+  "domain": "babybuddy",
+  "issue_tracker": "https://github.com/jcgoette/baby_buddy_homeassistant/issues",
+  "name": "Baby Buddy",
+  "version": "v1.2.1"
+}
