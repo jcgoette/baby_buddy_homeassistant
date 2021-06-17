@@ -5,11 +5,36 @@ import homeassistant.helpers.config_validation as cv
 import requests
 import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_ADDRESS, CONF_API_KEY, CONF_SENSOR_TYPE, CONF_SSL
+from homeassistant.const import (
+    ATTR_DATE,
+    ATTR_ID,
+    ATTR_TEMPERATURE,
+    ATTR_TIME,
+    CONF_ADDRESS,
+    CONF_API_KEY,
+    CONF_SENSOR_TYPE,
+    CONF_SSL,
+)
 from homeassistant.helpers.entity import Entity
 from requests_toolbelt import sessions
 
-from .const import DEFAULT_SENSOR_TYPE, DEFAULT_SSL
+from .const import (
+    ATTR_BIRTH_DATE,
+    ATTR_CHANGES,
+    ATTR_CHILD,
+    ATTR_FEEDINGS,
+    ATTR_FIRST_NAME,
+    ATTR_LAST_NAME,
+    ATTR_NOTES,
+    ATTR_RESULTS,
+    ATTR_SLEEP,
+    ATTR_START,
+    ATTR_TIMERS,
+    ATTR_TUMMY_TIMES,
+    ATTR_WEIGHT,
+    DEFAULT_SENSOR_TYPE,
+    DEFAULT_SSL,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -71,13 +96,13 @@ class BabyBuddySensor(Entity):
     def state(self):
         """Return the state of the sensor."""
         for key, value in self._state.items():
-            if key == "time":
+            if key == ATTR_TIME:
                 return value
-            elif key == "birth_date":
+            elif key == ATTR_BIRTH_DATE:
                 return value
-            elif key == "start":
+            elif key == ATTR_START:
                 return value
-            elif key == "date":
+            elif key == ATTR_DATE:
                 return value
 
     @property
@@ -99,21 +124,21 @@ class BabyBuddySensor(Entity):
     @property
     def icon(self):
         """Return the icon to use in the frontend"""
-        if self._endpoint == "changes":
+        if self._endpoint == ATTR_CHANGES:
             return "mdi:paper-roll-outline"
-        elif self._endpoint == "feedings":
+        elif self._endpoint == ATTR_FEEDINGS:
             return "mdi:baby-bottle-outline"
-        elif self._endpoint == "notes":
+        elif self._endpoint == ATTR_NOTES:
             return "mdi:note-multiple-outline"
-        elif self._endpoint == "sleep":
+        elif self._endpoint == ATTR_SLEEP:
             return "mdi:sleep"
-        elif self._endpoint == "temperature":
+        elif self._endpoint == ATTR_TEMPERATURE:
             return "mdi:thermometer"
-        elif self._endpoint == "timers":
+        elif self._endpoint == ATTR_TIMERS:
             return "mdi:timer-sand"
-        elif self._endpoint == "tummy-times":
+        elif self._endpoint == ATTR_TUMMY_TIMES:
             return "mdi:baby"
-        elif self._endpoint == "weight":
+        elif self._endpoint == ATTR_WEIGHT:
             return "mdi:scale-bathroom"
         return "mdi:baby-face-outline"
 
@@ -161,14 +186,15 @@ class BabyBuddyData:
         sensors = []
 
         children = session.get("children/").json()
-        children = children["results"]
+        children = children[ATTR_RESULTS]
         for child in children:
-            child_name = f'{child["first_name"]}_{child["last_name"]}'
+            child_name = f"{child[ATTR_FIRST_NAME]}_{child[ATTR_LAST_NAME]}"
             sensors.append((child_name, child, None))
             for endpoint in self._sensor_type:
                 r = session.get(f"{endpoint}").json()
                 data = next(
-                    (i for i in r["results"] if i["child"] == child["id"]), None
+                    (i for i in r[ATTR_RESULTS] if i[ATTR_CHILD] == child[ATTR_ID]),
+                    None,
                 )
                 if data:
                     endpoint_name = f"{child_name}_last_{endpoint}"
