@@ -15,25 +15,39 @@ from homeassistant.const import (
     CONF_SENSOR_TYPE,
     CONF_SSL,
 )
+from homeassistant.core import Service
 from homeassistant.helpers.entity import Entity
 from requests_toolbelt import sessions
 
 from .const import (
+    ATTR_AMOUNT,
     ATTR_BIRTH_DATE,
     ATTR_CHANGES,
     ATTR_CHILD,
+    ATTR_CHILDREN,
+    ATTR_COLOR,
+    ATTR_END,
+    ATTR_ENDPOINT,
+    ATTR_ENTRY,
     ATTR_FEEDINGS,
     ATTR_FIRST_NAME,
     ATTR_LAST_NAME,
+    ATTR_METHOD,
+    ATTR_MILESTONE,
+    ATTR_NOTE,
     ATTR_NOTES,
     ATTR_RESULTS,
     ATTR_SLEEP,
+    ATTR_SOLID,
     ATTR_START,
     ATTR_TIMERS,
     ATTR_TUMMY_TIMES,
+    ATTR_TYPE,
     ATTR_WEIGHT,
+    ATTR_WET,
     DEFAULT_SENSOR_TYPE,
     DEFAULT_SSL,
+    DOMAIN,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -79,6 +93,126 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         )
 
     add_entities(sensors, True)
+
+    # TODO: handle loading of children
+    def services_children_add(call):
+        endpoint = ATTR_CHILDREN
+        data = {
+            ATTR_FIRST_NAME: call.data.get(ATTR_FIRST_NAME),
+            ATTR_LAST_NAME: call.data.get(ATTR_LAST_NAME),
+            ATTR_BIRTH_DATE: call.data.get(ATTR_BIRTH_DATE),
+        }
+
+        baby_buddy_data.entities_add(endpoint, data)
+
+    def services_changes_add(call):
+        endpoint = ATTR_CHANGES
+        data = {
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_TIME: call.data.get(ATTR_TIME),
+            ATTR_WET: call.data.get(ATTR_WET),
+            ATTR_SOLID: call.data.get(ATTR_SOLID),
+            ATTR_COLOR: call.data.get(ATTR_COLOR).lower(),
+            ATTR_AMOUNT: call.data.get(ATTR_AMOUNT),
+            ATTR_NOTES: call.data.get(ATTR_NOTES),
+        }
+
+        baby_buddy_data.entities_add(endpoint, data)
+
+    def services_feedings_add(call):
+        endpoint = ATTR_FEEDINGS
+        data = {
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_START: call.data.get(ATTR_START),
+            ATTR_END: call.data.get(ATTR_END),
+            ATTR_TYPE: call.data.get(ATTR_TYPE).lower(),
+            ATTR_METHOD: call.data.get(ATTR_METHOD).lower(),
+            ATTR_AMOUNT: call.data.get(ATTR_AMOUNT),
+            ATTR_NOTES: call.data.get(ATTR_NOTES),
+        }
+
+        baby_buddy_data.entities_add(endpoint, data)
+
+    def services_notes_add(call):
+        endpoint = ATTR_NOTES
+        data = {
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_NOTE: call.data.get(ATTR_NOTE),
+            ATTR_TIME: call.data.get(ATTR_TIME),
+        }
+
+        baby_buddy_data.entities_add(endpoint, data)
+
+    def services_sleep_add(call):
+        endpoint = ATTR_SLEEP
+        data = {
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_START: call.data.get(ATTR_START),
+            ATTR_END: call.data.get(ATTR_END),
+            ATTR_NOTES: call.data.get(ATTR_NOTES),
+        }
+
+        baby_buddy_data.entities_add(endpoint, data)
+
+    def services_temperature_add(call):
+        endpoint = ATTR_TEMPERATURE
+        data = {
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_TEMPERATURE: call.data.get(ATTR_TEMPERATURE),
+            ATTR_TIME: call.data.get(ATTR_TIME),
+            ATTR_NOTES: call.data.get(ATTR_NOTES),
+        }
+
+        baby_buddy_data.entities_add(endpoint, data)
+
+    """
+    def services_timers_add(call):
+        endpoint = ATTR_TIMERS
+        data = {}
+
+        baby_buddy_data.entities_add(endpoint, data)
+    """
+
+    def services_tummy_times_add(call):
+        endpoint = ATTR_TUMMY_TIMES
+        data = {
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_START: call.data.get(ATTR_START),
+            ATTR_END: call.data.get(ATTR_END),
+            ATTR_MILESTONE: call.data.get(ATTR_MILESTONE),
+        }
+
+        baby_buddy_data.entities_add(endpoint, data)
+
+    def services_weight_add(call):
+        endpoint = ATTR_WEIGHT
+        data = {
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_WEIGHT: call.data.get(ATTR_WEIGHT),
+            ATTR_DATE: call.data.get(ATTR_DATE),
+            ATTR_NOTES: call.data.get(ATTR_NOTES),
+        }
+
+        baby_buddy_data.entities_add(endpoint, data)
+
+    # TODO: handle unloading of children
+    def services_delete(call):
+        endpoint = call.data.get(ATTR_ENDPOINT).lower().replace(" ", "-")
+        data = call.data.get(ATTR_ENTRY)
+
+        baby_buddy_data.entities_delete(endpoint, data)
+
+    hass.services.register(DOMAIN, "services_children_add", services_children_add)
+    hass.services.register(DOMAIN, "services_changes_add", services_changes_add)
+    hass.services.register(DOMAIN, "services_feedings_add", services_feedings_add)
+    hass.services.register(DOMAIN, "services_notes_add", services_notes_add)
+    hass.services.register(DOMAIN, "services_sleep_add", services_sleep_add)
+    hass.services.register(DOMAIN, "services_temperature_add", services_temperature_add)
+    # TODO: add timers service
+    """hass.services.register(DOMAIN, "services_timers_add", services_timers_add)"""
+    hass.services.register(DOMAIN, "services_tummy_times_add", services_tummy_times_add)
+    hass.services.register(DOMAIN, "services_weight_add", services_weight_add)
+    hass.services.register(DOMAIN, "services_delete", services_delete)
 
 
 class BabyBuddySensor(Entity):
@@ -181,6 +315,18 @@ class BabyBuddyData:
             return False
         return address
 
+    def entities_add(self, endpoint, data):
+        session = sessions.BaseUrlSession(base_url=self.form_address())
+        session.headers = {"Authorization": f"Token {self._api_key}"}
+
+        add = session.post(f"{endpoint}/", data=data)
+
+        if not add.ok:
+            _LOGGER.error(
+                "Cannot create %s, check service fields",
+                endpoint,
+            )
+
     def entities_get(self):
         session = sessions.BaseUrlSession(base_url=self.form_address())
         session.headers = {"Authorization": f"Token {self._api_key}"}
@@ -208,3 +354,16 @@ class BabyBuddyData:
         sensor = [sensors for sensors in self.entities_get() if sensors[0] == sensor]
 
         return sensor
+
+    def entities_delete(self, endpoint, data):
+        # TODO: DRY
+        session = sessions.BaseUrlSession(base_url=self.form_address())
+        session.headers = {"Authorization": f"Token {self._api_key}"}
+
+        delete = session.delete(f"{endpoint}/{data}/")
+
+        if not delete.ok:
+            _LOGGER.error(
+                "Cannot delete %s, check service fields",
+                endpoint,
+            )
