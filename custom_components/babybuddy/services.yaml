@@ -1,0 +1,259 @@
+services_children_add:
+  name: Add Child
+  fields:
+    first_name:
+      name: First Name
+      required: true
+      selector:
+        text:
+    last_name:
+      name: Last Name
+      required: true
+      selector:
+        text:
+    birth_date:
+      name: Birth Date
+      description: Child's birth date in YYYY-MM-DD format
+      required: true
+      selector:
+        text:
+
+services_delete:
+  name: Delete Entry
+  fields:
+    endpoint:
+      name: Endpoint
+      required: true
+      selector:
+        select:
+          options:
+            - Children
+            - Changes
+            - Feedings
+            - Notes
+            - Sleep
+            - Temperature
+            - Timers
+            - Tummy Times
+            - Weight
+    entry:
+      name: Entry
+      description: If entry is Child, enter slug. Otherwise, enter ID.
+      required: true
+      selector:
+        text:
+
+services_changes_add:
+  name: Add Change
+  fields:
+    child:
+      name: Child
+      required: true
+      selector:
+        entity:
+    time:
+      name: Change time
+      description: Change time in YYYY-MM-DD HH:MM format
+      required: true
+      selector:
+        text:
+    wet:
+      name: Change wet
+      required: true
+      selector:
+        boolean:
+    solid:
+      name: Change solid
+      required: true
+      selector:
+        boolean:
+    color:
+      name: Change color
+      required: true
+      selector:
+        select:
+          options:
+            - Black
+            - Brown
+            - Green
+            - Yellow
+    amount:
+      name: Change amount
+      description: Change amount in number format
+      selector:
+        text:
+    notes:
+      name: Change notes
+      selector:
+        text:
+
+services_feedings_add:
+  name: Add Feeding
+  fields:
+    child:
+      name: Child
+      required: true
+      selector:
+        entity:
+    start:
+      name: Feeding start time
+      description: Feeding start time in YYYY-MM-DD HH:MM format
+      required: true
+      selector:
+        text:
+    end:
+      name: Feeding end time
+      description: Feeding end time in YYYY-MM-DD HH:MM format
+      required: true
+      selector:
+        text:
+    type:
+      name: Feeding type
+      required: true
+      selector:
+        select:
+          options:
+            - Breast milk
+            - Formula
+            - Fortified breast milk
+            - Solid food
+    method:
+      name: Feeding method
+      required: true
+      selector:
+        select:
+          options:
+            - Bottle
+            - Left breast
+            - Right breast
+            - Both breasts
+            - Parent fed
+            - Self fed
+    amount:
+      name: Feeding amount
+      description: Feeding amount in number format
+      selector:
+        text:
+    notes:
+      name: Feeding notes
+      selector:
+        text:
+
+services_notes_add:
+  name: Add Note
+  fields:
+    child:
+      name: Child
+      required: true
+      selector:
+        entity:
+    note:
+      name: Note
+      required: true
+      selector:
+        text:
+    time:
+      name: Note time
+      description: Note time in YYYY-MM-DD HH:MM format
+      selector:
+        text:
+
+services_sleep_add:
+  name: Add Sleep
+  fields:
+    child:
+      name: Child
+      required: true
+      selector:
+        entity:
+    start:
+      name: Sleep start time
+      description: Sleep start time in YYYY-MM-DD HH:MM format
+      required: true
+      selector:
+        text:
+    end:
+      name: Sleep end time
+      description: Sleep end time in YYYY-MM-DD HH:MM format
+      required: true
+      selector:
+        text:
+    notes:
+      name: Sleep notes
+      selector:
+        text:
+
+services_temperature_add:
+  name: Add Temperature
+  fields:
+    child:
+      name: Child
+      required: true
+      selector:
+        entity:
+    temperature:
+      name: Temperature
+      description: Temperature in number format
+      required: true
+      selector:
+        text:
+    time:
+      name: Temperature time
+      description: Temperature time in YYYY-MM-DD HH:MM format
+      required: true
+      selector:
+        text:
+    notes:
+      name: Temperature notes
+      selector:
+        text:
+
+services_tummy_times_add:
+  name: Add Tummy Time
+  fields:
+    child:
+      name: Child
+      required: true
+      selector:
+        entity:
+    start:
+      name: Tummy Time start time
+      description: Tummy Time start time in YYYY-MM-DD HH:MM format
+      required: true
+      selector:
+        text:
+    end:
+      name: Tummy Time end time
+      description: Tummy Time end time in YYYY-MM-DD HH:MM format
+      required: true
+      selector:
+        text:
+    milestone:
+      name: Tummy Time milestone
+      selector:
+        text:
+
+services_weight_add:
+  name: Add Weight
+  fields:
+    child:
+      name: Child
+      required: true
+      selector:
+        entity:
+    weight:
+      name: Weight
+      required: true
+      description: Weight in number format
+      selector:
+        text:
+    date:
+      name: Weight date
+      description: Weight date in YYYY-MM-DD format
+      required: true
+      selector:
+        text:
+    notes:
+      name: Weight notes
+      selector:
+        text:
