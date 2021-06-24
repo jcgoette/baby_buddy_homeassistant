@@ -1,0 +1,12 @@
+name: TODO
+
+on: [push, pull_request]
+
+jobs:
+  TODO:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@master"
+      - uses: "alstr/todo-to-issue-action@v4.0-alpha"
+        with:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
