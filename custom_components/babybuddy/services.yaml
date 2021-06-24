@@ -1,13 +1,16 @@
 services_children_add:
   name: Add Child
+  description: Adds a child
   fields:
     first_name:
       name: First Name
+      description: Child's first name
       required: true
       selector:
         text:
     last_name:
       name: Last Name
+      description: Child's last name
       required: true
       selector:
         text:
@@ -20,9 +23,11 @@ services_children_add:
 
 services_delete:
   name: Delete Entry
+  description: Deletes a Baby Buddy entry
   fields:
     endpoint:
       name: Endpoint
+      description: The Baby Buddy endpoint to delete
       required: true
       selector:
         select:
@@ -45,9 +50,11 @@ services_delete:
 
 services_changes_add:
   name: Add Change
+  description: Adds a change
   fields:
     child:
       name: Child
+      description: Child to add a change to
       required: true
       selector:
         entity:
@@ -59,16 +66,19 @@ services_changes_add:
         text:
     wet:
       name: Change wet
+      description: Was change wet
       required: true
       selector:
         boolean:
     solid:
       name: Change solid
+      description: Was change solid
       required: true
       selector:
         boolean:
     color:
       name: Change color
+      description: Change color
       required: true
       selector:
         select:
@@ -84,14 +94,17 @@ services_changes_add:
         text:
     notes:
       name: Change notes
+      description: Change notes
       selector:
         text:
 
 services_feedings_add:
   name: Add Feeding
+  description: Adds a feeding
   fields:
     child:
       name: Child
+      description: Child to add a feeding to
       required: true
       selector:
         entity:
@@ -109,6 +122,7 @@ services_feedings_add:
         text:
     type:
       name: Feeding type
+      description: Feeding type
       required: true
       selector:
         select:
@@ -119,6 +133,7 @@ services_feedings_add:
             - Solid food
     method:
       name: Feeding method
+      description: Feeding method
       required: true
       selector:
         select:
@@ -136,19 +151,23 @@ services_feedings_add:
         text:
     notes:
       name: Feeding notes
+      description: Feeding notes
       selector:
         text:
 
 services_notes_add:
   name: Add Note
+  description: Adds a note
   fields:
     child:
       name: Child
+      description: Child to add a note to
       required: true
       selector:
         entity:
     note:
       name: Note
+      description: Note
       required: true
       selector:
         text:
@@ -160,9 +179,11 @@ services_notes_add:
 
 services_sleep_add:
   name: Add Sleep
+  description: Adds sleep
   fields:
     child:
       name: Child
+      description: Child to add sleep to
       required: true
       selector:
         entity:
@@ -180,14 +201,17 @@ services_sleep_add:
         text:
     notes:
       name: Sleep notes
+      description: Sleep notes
       selector:
         text:
 
 services_temperature_add:
   name: Add Temperature
+  description: Adds a temperature
   fields:
     child:
       name: Child
+      description: Child to add a temperature to
       required: true
       selector:
         entity:
@@ -205,14 +229,17 @@ services_temperature_add:
         text:
     notes:
       name: Temperature notes
+      description: Temperature notes
       selector:
         text:
 
 services_tummy_times_add:
   name: Add Tummy Time
+  description: Adds Tummy Time
   fields:
     child:
       name: Child
+      description: Child to add Tummy Time to
       required: true
       selector:
         entity:
@@ -230,19 +257,23 @@ services_tummy_times_add:
         text:
     milestone:
       name: Tummy Time milestone
+      description: Tummy Time milestone
       selector:
         text:
 
 services_weight_add:
   name: Add Weight
+  description: Adds a weight
   fields:
     child:
       name: Child
+      description: Child to add a weight to
       required: true
       selector:
         entity:
     weight:
       name: Weight
+      description: Weight
       required: true
       description: Weight in number format
       selector:
@@ -255,5 +286,6 @@ services_weight_add:
         text:
     notes:
       name: Weight notes
+      description: Weight notes
       selector:
         text:
