@@ -1,8 +1,12 @@
 name: Lint
 
-on: [push, pull_request]
-paths:
-  - "**.py"
+on:
+  pull_request:
+    paths:
+      - "**.py"
+  push:
+    paths:
+      - "**.py"
 
 jobs:
   lint-isort:
