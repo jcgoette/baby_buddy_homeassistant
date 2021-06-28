@@ -273,9 +273,8 @@ services_weight_add:
         entity:
     weight:
       name: Weight
-      description: Weight
-      required: true
       description: Weight in number format
+      required: true
       selector:
         text:
     date:
