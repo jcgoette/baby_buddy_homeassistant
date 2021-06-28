@@ -315,11 +315,14 @@ class BabyBuddyData:
             return False
         return address
 
-    def entities_add(self, endpoint, data):
+    def session(self):
         session = sessions.BaseUrlSession(base_url=self.form_address())
         session.headers = {"Authorization": f"Token {self._api_key}"}
 
-        add = session.post(f"{endpoint}/", data=data)
+        return session
+
+    def entities_add(self, endpoint, data):
+        add = self.session().post(f"{endpoint}/", data=data)
 
         if not add.ok:
             _LOGGER.error(
@@ -328,18 +331,15 @@ class BabyBuddyData:
             )
 
     def entities_get(self):
-        session = sessions.BaseUrlSession(base_url=self.form_address())
-        session.headers = {"Authorization": f"Token {self._api_key}"}
-
         sensors = []
 
-        children = session.get("children/").json()
+        children = self.session().get("children/").json()
         children = children[ATTR_RESULTS]
         for child in children:
             child_name = f"{child[ATTR_FIRST_NAME]}_{child[ATTR_LAST_NAME]}"
             sensors.append((child_name, child, None))
             for endpoint in self._sensor_type:
-                r = session.get(f"{endpoint}").json()
+                r = self.session().get(f"{endpoint}").json()
                 data = next(
                     (i for i in r[ATTR_RESULTS] if i[ATTR_CHILD] == child[ATTR_ID]),
                     None,
@@ -356,11 +356,7 @@ class BabyBuddyData:
         return sensor
 
     def entities_delete(self, endpoint, data):
-        # TODO: DRY
-        session = sessions.BaseUrlSession(base_url=self.form_address())
-        session.headers = {"Authorization": f"Token {self._api_key}"}
-
-        delete = session.delete(f"{endpoint}/{data}/")
+        delete = self.session().delete(f"{endpoint}/{data}/")
 
         if not delete.ok:
             _LOGGER.error(
