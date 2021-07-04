@@ -331,6 +331,7 @@ class BabyBuddyData:
             )
 
     def entities_get(self):
+        # TODO: change to dictionary in order to fix "refactor entity creation"
         sensors = []
 
         children = self.session().get("children/").json()
@@ -339,11 +340,8 @@ class BabyBuddyData:
             child_name = f"{child[ATTR_FIRST_NAME]}_{child[ATTR_LAST_NAME]}"
             sensors.append((child_name, child, None))
             for endpoint in self._sensor_type:
-                r = self.session().get(f"{endpoint}").json()
-                data = next(
-                    (i for i in r[ATTR_RESULTS] if i[ATTR_CHILD] == child[ATTR_ID]),
-                    None,
-                )
+                data = self.session().get(f"{endpoint}/?child={child[ATTR_ID]}&limit=1")
+                data = data.json()
                 if data:
                     endpoint_name = f"{child_name}_last_{endpoint}"
                     sensors.append((endpoint_name, data, endpoint))
