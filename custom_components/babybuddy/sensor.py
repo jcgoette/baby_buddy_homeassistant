@@ -323,7 +323,7 @@ class BabyBuddyData:
 
         if not add.ok:
             _LOGGER.error(
-                "Cannot create %s, check service fields",
+                "Cannot create %s, check service fields and timezones of Home Assistant vs. Baby Buddy",
                 endpoint,
             )
 
