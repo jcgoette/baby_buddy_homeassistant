@@ -107,7 +107,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             ATTR_TIME: call.data.get(ATTR_TIME),
             ATTR_WET: call.data.get(ATTR_WET),
             ATTR_SOLID: call.data.get(ATTR_SOLID),
-            ATTR_COLOR: call.data[ATTR_COLOR].lower() if ATTR_COLOR in call.data else None,
+            ATTR_COLOR: call.data[ATTR_COLOR].lower()
+            if ATTR_COLOR in call.data
+            else None,
             ATTR_AMOUNT: call.data.get(ATTR_AMOUNT),
             ATTR_NOTES: call.data.get(ATTR_NOTES),
         }
