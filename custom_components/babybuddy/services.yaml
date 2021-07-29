@@ -79,7 +79,6 @@ services_changes_add:
     color:
       name: Change color
       description: Change color
-      required: true
       selector:
         select:
           options:
