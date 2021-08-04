@@ -314,7 +314,7 @@ class BabyBuddyData:
         return address
 
     def session(self):
-        session = sessions.BaseUrlSession(base_url=self.form_address())
+        # TODO: do we need BaseUrlSession?
         session.headers = {"Authorization": f"Token {self._api_key}"}
 
         return session
