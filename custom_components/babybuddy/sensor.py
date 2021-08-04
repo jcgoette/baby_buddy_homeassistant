@@ -15,7 +15,6 @@ from homeassistant.const import (
     CONF_SENSOR_TYPE,
     CONF_SSL,
 )
-from homeassistant.core import Service
 from homeassistant.helpers.entity import Entity
 from requests_toolbelt import sessions
 
