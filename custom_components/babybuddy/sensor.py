@@ -16,7 +16,6 @@ from homeassistant.const import (
     CONF_SSL,
 )
 from homeassistant.helpers.entity import Entity
-from requests_toolbelt import sessions
 
 from .const import (
     ATTR_AMOUNT,
@@ -316,14 +315,13 @@ class BabyBuddyData:
         return address
 
     def session(self):
-        # TODO: do we need BaseUrlSession?
-        session = sessions.BaseUrlSession(base_url=self._formed_address)
-        session.headers = {"Authorization": f"Token {self._api_key}"}
+        headers = {"Authorization": f"Token {self._api_key}"}
+        session = requests.Session(headers=headers)
 
         return session
 
     def entities_add(self, endpoint, data):
-        add = self._session.post(f"{endpoint}/", data=data)
+        add = self._session.post(f"{self._formed_address}{endpoint}/", data=data)
 
         if not add.ok:
             _LOGGER.error(
@@ -334,7 +332,7 @@ class BabyBuddyData:
     def entities_get(self):
         data = []
 
-        children = self._session.get(f"{ATTR_CHILDREN}/")
+        children = self._session.get(f"{self._formed_address}{ATTR_CHILDREN}/")
         children = children.json()
         children = children[ATTR_RESULTS]
         for child in children:
@@ -344,7 +342,7 @@ class BabyBuddyData:
             data.append(child)
             for endpoint in self._sensor_type:
                 endpoint_data = self._session.get(
-                    f"{endpoint}/?child={child[ATTR_ID]}&limit=1"
+                    f"{self._formed_address}{endpoint}/?child={child[ATTR_ID]}&limit=1"
                 )
                 endpoint_data = endpoint_data.json()
                 endpoint_data = endpoint_data[ATTR_RESULTS]
@@ -360,7 +358,7 @@ class BabyBuddyData:
         return self.entities_get()
 
     def entities_delete(self, endpoint, data):
-        delete = self._session.delete(f"{endpoint}/{data}/")
+        delete = self._session.delete(f"{self._formed_address}{endpoint}/{data}/")
 
         if not delete.ok:
             _LOGGER.error(
