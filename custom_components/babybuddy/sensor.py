@@ -334,7 +334,7 @@ class BabyBuddyData:
     def entities_get(self):
         data = []
 
-        children = self._session.get(ATTR_CHILDREN)
+        children = self._session.get(f"{ATTR_CHILDREN}/")
         children = children.json()
         children = children[ATTR_RESULTS]
         for child in children:
