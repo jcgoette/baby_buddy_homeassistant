@@ -231,6 +231,8 @@ class BabyBuddySensor(Entity):
         """Initialize the Baby Buddy sensor."""
         self._baby_buddy = baby_buddy
         self._data = data
+        self._child = self.extra_state_attributes[1][1]
+        self._endpoint = self.extra_state_attributes[-1][1]
 
     @property
     def name(self):
@@ -279,19 +281,16 @@ class BabyBuddySensor(Entity):
             return "mdi:scale-bathroom"
         return "mdi:baby-face-outline"
 
-    # TODO: can reduce api outbound data transfer further by only querying necessary endpoints
     def update(self):
         """Update data from Baby Buddy for the sensor."""
+        if self._endpoint == ATTR_CHILDREN:
+            return
         if not self._baby_buddy.form_address():
             return
         try:
-            self._baby_buddy.entities_update()
-            self._data = [
-                data
-                for data in self._baby_buddy.data
-                if data.get(ATTR_ENDPOINT) == self._data.get(ATTR_ENDPOINT)
-                and data.get(ATTR_CHILD_NAME) == self._data.get(ATTR_CHILD_NAME)
-            ][0]
+            self._data = self._baby_buddy.entities_update(self._child, self._endpoint)[
+                0
+            ]
 
         except IndexError:
             _LOGGER.error(
@@ -311,8 +310,9 @@ class BabyBuddyData:
         self._sensor_type = sensor_type
         self._formed_address = self.form_address()
         self._session = self.session()
-        self.data = None
+        self.data = self.entities_get()
 
+    # TODO: less expensive connection test
     def form_address(self):
         if self._ssl:
             address = f"https://{self._address}/api/"
@@ -329,8 +329,8 @@ class BabyBuddyData:
         return address
 
     def session(self):
-        headers = {"Authorization": f"Token {self._api_key}"}
-        session = requests.Session(headers=headers)
+        session = requests.Session()
+        session.headers.update({"Authorization": f"Token {self._api_key}"})
 
         return session
 
@@ -343,7 +343,8 @@ class BabyBuddyData:
                 endpoint,
             )
 
-    def entities_get(self):
+    def entities_get(self) -> list:
+        """Populate data via Baby Buddy API."""
         data = []
 
         children = self._session.get(f"{self._formed_address}{ATTR_CHILDREN}/")
@@ -366,10 +367,25 @@ class BabyBuddyData:
                     endpoint_data[ATTR_ENDPOINT] = endpoint
                     data.append(endpoint_data)
 
-        self.data = data
+        return data
 
-    def entities_update(self):
-        return self.entities_get()
+    def entities_update(self, child: int = None, endpoint: str = None) -> list:
+        if not child and not endpoint:
+            return self.entities_get()
+
+        data = []
+
+        endpoint_data = self._session.get(
+            f"{self._formed_address}{endpoint}/?child={child}&limit=1"
+        )
+        endpoint_data = endpoint_data.json()
+        endpoint_data = endpoint_data[ATTR_RESULTS]
+        if endpoint_data:
+            endpoint_data = endpoint_data[0]
+            endpoint_data[ATTR_ENDPOINT] = endpoint
+            data.append(endpoint_data)
+
+        return data
 
     def entities_delete(self, endpoint, data):
         delete = self._session.delete(f"{self._formed_address}{endpoint}/{data}/")
