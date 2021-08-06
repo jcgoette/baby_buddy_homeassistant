@@ -101,7 +101,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     def services_changes_add(call):
         endpoint = ATTR_CHANGES
         data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get(
+                ATTR_ID
+            ),
             ATTR_TIME: call.data.get(ATTR_TIME),
             ATTR_WET: call.data.get(ATTR_WET),
             ATTR_SOLID: call.data.get(ATTR_SOLID),
@@ -117,7 +119,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     def services_feedings_add(call):
         endpoint = ATTR_FEEDINGS
         data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get(
+                ATTR_ID
+            ),
             ATTR_START: call.data.get(ATTR_START),
             ATTR_END: call.data.get(ATTR_END),
             ATTR_TYPE: call.data.get(ATTR_TYPE).lower(),
@@ -131,7 +135,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     def services_notes_add(call):
         endpoint = ATTR_NOTES
         data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get(
+                ATTR_ID
+            ),
             ATTR_NOTE: call.data.get(ATTR_NOTE),
             ATTR_TIME: call.data.get(ATTR_TIME),
         }
@@ -141,7 +147,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     def services_sleep_add(call):
         endpoint = ATTR_SLEEP
         data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get(
+                ATTR_ID
+            ),
             ATTR_START: call.data.get(ATTR_START),
             ATTR_END: call.data.get(ATTR_END),
             ATTR_NOTES: call.data.get(ATTR_NOTES),
@@ -152,7 +160,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     def services_temperature_add(call):
         endpoint = ATTR_TEMPERATURE
         data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get(
+                ATTR_ID
+            ),
             ATTR_TEMPERATURE: call.data.get(ATTR_TEMPERATURE),
             ATTR_TIME: call.data.get(ATTR_TIME),
             ATTR_NOTES: call.data.get(ATTR_NOTES),
@@ -171,7 +181,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     def services_tummy_times_add(call):
         endpoint = ATTR_TUMMY_TIMES
         data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get(
+                ATTR_ID
+            ),
             ATTR_START: call.data.get(ATTR_START),
             ATTR_END: call.data.get(ATTR_END),
             ATTR_MILESTONE: call.data.get(ATTR_MILESTONE),
@@ -182,7 +194,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     def services_weight_add(call):
         endpoint = ATTR_WEIGHT
         data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
+            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get(
+                ATTR_ID
+            ),
             ATTR_WEIGHT: call.data.get(ATTR_WEIGHT),
             ATTR_DATE: call.data.get(ATTR_DATE),
             ATTR_NOTES: call.data.get(ATTR_NOTES),
