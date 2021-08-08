@@ -35,6 +35,7 @@ from .const import (
     ATTR_MILESTONE,
     ATTR_NOTE,
     ATTR_NOTES,
+    ATTR_PICTURE,
     ATTR_RESULTS,
     ATTR_SLEEP,
     ATTR_SOLID,
@@ -248,6 +249,13 @@ class BabyBuddySensor(Entity):
                 name = name[:-1]
         name = name.replace("_", " ").title()
         return name
+
+    @property
+    def entity_picture(self) -> str:
+        """Return Baby Buddy picture."""
+        if self._endpoint == ATTR_CHILDREN:
+            return self._data.get(ATTR_PICTURE)
+        return
 
     @property
     def state(self):
