@@ -6,5 +6,5 @@
   "issue_tracker": "https://github.com/jcgoette/baby_buddy_homeassistant/issues",
   "name": "Baby Buddy",
   "requirements": ["requests==2.26.0"],
-  "version": "v1.3.5"
+  "version": "v1.4.0"
 }
