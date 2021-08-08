@@ -231,8 +231,12 @@ class BabyBuddySensor(Entity):
         """Initialize the Baby Buddy sensor."""
         self._baby_buddy = baby_buddy
         self._data = data
-        self._child = self.extra_state_attributes[1][1]
-        self._endpoint = self.extra_state_attributes[-1][1]
+        self._child = (
+            self._data.get("slug")
+            if self._data.get("slug")
+            else self._data.get(ATTR_CHILD)
+        )
+        self._endpoint = self._data.get(ATTR_ENDPOINT)
 
     @property
     def name(self):
