@@ -242,8 +242,8 @@ class BabyBuddySensor(Entity):
     def name(self):
         """Return the name of the Baby Buddy sensor."""
         name = self._data.get(ATTR_CHILD_NAME)
-        if self._data.get(ATTR_ENDPOINT) != ATTR_CHILDREN:
-            name = f"{name}_last_{self._data.get('endpoint')}"
+        if self._endpoint != ATTR_CHILDREN:
+            name = f"{name}_last_{self._endpoint}"
             if name[-1] == "s":
                 name = name[:-1]
         name = name.replace("_", " ").title()
@@ -267,21 +267,21 @@ class BabyBuddySensor(Entity):
     @property
     def icon(self):
         """Return the icon to use in Baby Buddy frontend."""
-        if self._data.get(ATTR_ENDPOINT) == ATTR_CHANGES:
+        if self._endpoint == ATTR_CHANGES:
             return "mdi:paper-roll-outline"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_FEEDINGS:
+        elif self._endpoint == ATTR_FEEDINGS:
             return "mdi:baby-bottle-outline"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_NOTES:
+        elif self._endpoint == ATTR_NOTES:
             return "mdi:note-multiple-outline"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_SLEEP:
+        elif self._endpoint == ATTR_SLEEP:
             return "mdi:sleep"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_TEMPERATURE:
+        elif self._endpoint == ATTR_TEMPERATURE:
             return "mdi:thermometer"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_TIMERS:
+        elif self._endpoint == ATTR_TIMERS:
             return "mdi:timer-sand"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_TUMMY_TIMES:
+        elif self._endpoint == ATTR_TUMMY_TIMES:
             return "mdi:baby"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_WEIGHT:
+        elif self._endpoint == ATTR_WEIGHT:
             return "mdi:scale-bathroom"
         return "mdi:baby-face-outline"
 
