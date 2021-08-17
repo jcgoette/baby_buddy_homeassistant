@@ -8,5 +8,3 @@ jobs:
     steps:
       - uses: "actions/checkout@master"
       - uses: "alstr/todo-to-issue-action@master"
-        with:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
