@@ -1,365 +1,313 @@
 """Platform for Baby Buddy sensor integration."""
-import logging
+from __future__ import annotations
 
-import homeassistant.helpers.config_validation as cv
-import requests
+from datetime import date, datetime, time
+import logging
+from typing import Any
+
 import voluptuous as vol
-from homeassistant.components.sensor import PLATFORM_SCHEMA
+
+from homeassistant.components.input_datetime import ATTR_TIMESTAMP
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_DATE,
     ATTR_ID,
     ATTR_TEMPERATURE,
     ATTR_TIME,
-    CONF_ADDRESS,
-    CONF_API_KEY,
-    CONF_SENSOR_TYPE,
-    CONF_SSL,
+    CONF_HOST,
 )
-from homeassistant.core import Service
-from homeassistant.helpers.entity import Entity
-from requests_toolbelt import sessions
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers import config_validation as cv, entity_platform
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.typing import StateType
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+import homeassistant.util.dt as dt_util
 
+from . import BabyBuddyCoordinator
+from .client import get_datetime_from_time
 from .const import (
     ATTR_AMOUNT,
     ATTR_BIRTH_DATE,
     ATTR_CHANGES,
     ATTR_CHILD,
-    ATTR_CHILD_NAME,
-    ATTR_CHILDREN,
     ATTR_COLOR,
-    ATTR_END,
-    ATTR_ENDPOINT,
-    ATTR_ENTRY,
-    ATTR_FEEDINGS,
     ATTR_FIRST_NAME,
     ATTR_LAST_NAME,
-    ATTR_METHOD,
-    ATTR_MILESTONE,
-    ATTR_NOTE,
     ATTR_NOTES,
-    ATTR_RESULTS,
-    ATTR_SLEEP,
+    ATTR_PICTURE,
     ATTR_SOLID,
-    ATTR_START,
     ATTR_TIMERS,
-    ATTR_TUMMY_TIMES,
     ATTR_TYPE,
     ATTR_WEIGHT,
     ATTR_WET,
-    DEFAULT_SENSOR_TYPE,
-    DEFAULT_SSL,
+    DEFAULT_DIAPER_TYPE,
+    DIAPER_COLORS,
+    DIAPER_TYPES,
     DOMAIN,
+    SENSOR_TYPES,
+    BabyBuddyEntityDescription,
 )
+from .errors import ValidationError
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_ADDRESS): cv.string,
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
-        vol.Optional(CONF_SENSOR_TYPE, default=DEFAULT_SENSOR_TYPE): vol.All(
-            cv.ensure_list, [vol.In(DEFAULT_SENSOR_TYPE)]
-        ),
-    }
-)
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up the Babybuddy sensors."""
+    babybuddy_coordinator: BabyBuddyCoordinator = hass.data[DOMAIN][
+        config_entry.entry_id
+    ]
+    tracked: dict = {}
+
+    @callback
+    def update_entities() -> None:
+        """Update entities."""
+        update_items(babybuddy_coordinator, tracked, async_add_entities)
+
+    config_entry.async_on_unload(
+        babybuddy_coordinator.async_add_listener(update_entities)
+    )
+
+    update_entities()
+
+    platform = entity_platform.async_get_current_platform()
+    platform.async_register_entity_service(
+        "add_diaper_change",
+        {
+            vol.Optional(ATTR_TIME, default=dt_util.now()): vol.Any(
+                cv.datetime, cv.time
+            ),
+            vol.Required(ATTR_TYPE, default=DEFAULT_DIAPER_TYPE): vol.In(DIAPER_TYPES),
+            vol.Optional(ATTR_COLOR): vol.In(DIAPER_COLORS),
+            vol.Optional(ATTR_AMOUNT): cv.positive_int,
+            vol.Optional(ATTR_NOTES): cv.string,
+        },
+        "async_add_diaper_change",
+    )
+
+    platform.async_register_entity_service(
+        "add_temperature",
+        {
+            vol.Required(ATTR_TEMPERATURE): cv.positive_float,
+            vol.Optional(ATTR_TIME, default=dt_util.now()): vol.Any(
+                cv.datetime, cv.time
+            ),
+            vol.Optional(ATTR_NOTES): cv.string,
+        },
+        "async_add_temperature",
+    )
+    platform.async_register_entity_service(
+        "add_weight",
+        {
+            vol.Required(ATTR_WEIGHT): cv.positive_float,
+            vol.Optional(ATTR_DATE, default=dt_util.now().date()): cv.date,
+            vol.Optional(ATTR_NOTES): cv.string,
+        },
+        "async_add_weight",
+    )
 
 
-def setup_platform(hass, config, add_entities, discovery_info=None):
-    """Setup Baby Buddy sensors."""
-    address = config[CONF_ADDRESS]
-    api_key = config[CONF_API_KEY]
-    ssl = config[CONF_SSL]
-    sensor_type = config[CONF_SENSOR_TYPE]
+@callback
+def update_items(
+    coordinator: BabyBuddyCoordinator,
+    tracked: dict,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Add new sensors for new endpoint entries."""
+    if coordinator.data is not None:
+        new_entities = []
+        for child in coordinator.data[0]:
+            if child[ATTR_ID] not in tracked:
+                tracked[child[ATTR_ID]] = BabyBuddyChildSensor(coordinator, child)
+                new_entities.append(tracked[child[ATTR_ID]])
+            for description in SENSOR_TYPES:
+                if description.key == ATTR_TIMERS:
+                    continue
+                if (
+                    coordinator.data[1][child[ATTR_ID]].get(description.key)
+                    and f"{child[ATTR_ID]}_{description.key}" not in tracked
+                ):
+                    tracked[
+                        f"{child[ATTR_ID]}_{description.key}"
+                    ] = BabyBuddyChildDataSensor(coordinator, child, description)
+                    new_entities.append(tracked[f"{child[ATTR_ID]}_{description.key}"])
+        if new_entities:
+            async_add_entities(new_entities)
 
-    if not ssl:
-        _LOGGER.warning("Use of HTTPS in production environment is highly recommended")
 
-    baby_buddy = BabyBuddyData(address, api_key, ssl, sensor_type)
+class BabyBuddySensor(CoordinatorEntity, SensorEntity):
+    """Base class for Babybuddy sensors."""
 
-    if not baby_buddy.form_address():
-        return
+    coordinator: BabyBuddyCoordinator
 
-    # TODO: Do not call update() in constructor, use add_entities(devices, True) instead
-    baby_buddy.entities_update()
-
-    sensors = []
-    for data in baby_buddy.data:
-        sensors.append(BabyBuddySensor(data, baby_buddy))
-
-    add_entities(sensors, False)
-
-    # TODO: handle loading of children
-    def services_children_add(call):
-        endpoint = ATTR_CHILDREN
-        data = {
-            ATTR_FIRST_NAME: call.data.get(ATTR_FIRST_NAME),
-            ATTR_LAST_NAME: call.data.get(ATTR_LAST_NAME),
-            ATTR_BIRTH_DATE: call.data.get(ATTR_BIRTH_DATE),
+    def __init__(self, coordinator: BabyBuddyCoordinator, child: dict) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator)
+        self.child = child
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, child[ATTR_ID])},
+            "default_name": f"Baby {child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]}",
         }
 
-        baby_buddy.entities_add(endpoint, data)
-
-    def services_changes_add(call):
-        endpoint = ATTR_CHANGES
-        data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
-            ATTR_TIME: call.data.get(ATTR_TIME),
-            ATTR_WET: call.data.get(ATTR_WET),
-            ATTR_SOLID: call.data.get(ATTR_SOLID),
-            ATTR_COLOR: call.data.get(ATTR_COLOR).lower(),
-            ATTR_AMOUNT: call.data.get(ATTR_AMOUNT),
-            ATTR_NOTES: call.data.get(ATTR_NOTES),
-        }
-
-        baby_buddy.entities_add(endpoint, data)
-
-    def services_feedings_add(call):
-        endpoint = ATTR_FEEDINGS
-        data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
-            ATTR_START: call.data.get(ATTR_START),
-            ATTR_END: call.data.get(ATTR_END),
-            ATTR_TYPE: call.data.get(ATTR_TYPE).lower(),
-            ATTR_METHOD: call.data.get(ATTR_METHOD).lower(),
-            ATTR_AMOUNT: call.data.get(ATTR_AMOUNT),
-            ATTR_NOTES: call.data.get(ATTR_NOTES),
-        }
-
-        baby_buddy.entities_add(endpoint, data)
-
-    def services_notes_add(call):
-        endpoint = ATTR_NOTES
-        data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
-            ATTR_NOTE: call.data.get(ATTR_NOTE),
-            ATTR_TIME: call.data.get(ATTR_TIME),
-        }
-
-        baby_buddy.entities_add(endpoint, data)
-
-    def services_sleep_add(call):
-        endpoint = ATTR_SLEEP
-        data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
-            ATTR_START: call.data.get(ATTR_START),
-            ATTR_END: call.data.get(ATTR_END),
-            ATTR_NOTES: call.data.get(ATTR_NOTES),
-        }
-
-        baby_buddy.entities_add(endpoint, data)
-
-    def services_temperature_add(call):
-        endpoint = ATTR_TEMPERATURE
-        data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
-            ATTR_TEMPERATURE: call.data.get(ATTR_TEMPERATURE),
-            ATTR_TIME: call.data.get(ATTR_TIME),
-            ATTR_NOTES: call.data.get(ATTR_NOTES),
-        }
-
-        baby_buddy.entities_add(endpoint, data)
-
-    """
-    def services_timers_add(call):
-        endpoint = ATTR_TIMERS
-        data = {}
-
-        baby_buddy.entities_add(endpoint, data)
-    """
-
-    def services_tummy_times_add(call):
-        endpoint = ATTR_TUMMY_TIMES
-        data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
-            ATTR_START: call.data.get(ATTR_START),
-            ATTR_END: call.data.get(ATTR_END),
-            ATTR_MILESTONE: call.data.get(ATTR_MILESTONE),
-        }
-
-        baby_buddy.entities_add(endpoint, data)
-
-    def services_weight_add(call):
-        endpoint = ATTR_WEIGHT
-        data = {
-            ATTR_CHILD: hass.states.get(call.data.get(ATTR_CHILD)).attributes.get("id"),
-            ATTR_WEIGHT: call.data.get(ATTR_WEIGHT),
-            ATTR_DATE: call.data.get(ATTR_DATE),
-            ATTR_NOTES: call.data.get(ATTR_NOTES),
-        }
-
-        baby_buddy.entities_add(endpoint, data)
-
-    # TODO: handle unloading of children
-    def services_delete(call):
-        endpoint = call.data.get(ATTR_ENDPOINT).lower().replace(" ", "-")
-        data = call.data.get(ATTR_ENTRY)
-
-        baby_buddy.entities_delete(endpoint, data)
-
-    hass.services.register(DOMAIN, "services_children_add", services_children_add)
-    hass.services.register(DOMAIN, "services_changes_add", services_changes_add)
-    hass.services.register(DOMAIN, "services_feedings_add", services_feedings_add)
-    hass.services.register(DOMAIN, "services_notes_add", services_notes_add)
-    hass.services.register(DOMAIN, "services_sleep_add", services_sleep_add)
-    hass.services.register(DOMAIN, "services_temperature_add", services_temperature_add)
-    # TODO: add timers service
-    """hass.services.register(DOMAIN, "services_timers_add", services_timers_add)"""
-    hass.services.register(DOMAIN, "services_tummy_times_add", services_tummy_times_add)
-    hass.services.register(DOMAIN, "services_weight_add", services_weight_add)
-    hass.services.register(DOMAIN, "services_delete", services_delete)
-
-
-class BabyBuddySensor(Entity):
-    """Representation of a Baby Buddy Sensor."""
-
-    def __init__(self, data, baby_buddy):
-        """Initialize the Baby Buddy sensor."""
-        self._baby_buddy = baby_buddy
-        self._data = data
-
-    @property
-    def name(self):
-        """Return the name of the Baby Buddy sensor."""
-        name = self._data.get(ATTR_CHILD_NAME)
-        if self._data.get(ATTR_ENDPOINT) != ATTR_CHILDREN:
-            name = f"{name}_last_{self._data.get('endpoint')}"
-            if name[-1] == "s":
-                name = name[:-1]
-        name = name.replace("_", " ").title()
-        return name
-
-    @property
-    def state(self):
-        """Return the state of the Baby Buddy sensor."""
-        keys = [ATTR_BIRTH_DATE, ATTR_DATE, ATTR_START, ATTR_TIME]
-        state = [value for key, value in self._data.items() if key in keys][0]
-        return state
-
-    @property
-    def extra_state_attributes(self):
-        """Return entity specific state attributes for Baby Buddy."""
-        attributes = []
-        for attribute in self._data.items():
-            attributes.append(attribute)
-        return attributes
-
-    @property
-    def icon(self):
-        """Return the icon to use in Baby Buddy frontend."""
-        if self._data.get(ATTR_ENDPOINT) == ATTR_CHANGES:
-            return "mdi:paper-roll-outline"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_FEEDINGS:
-            return "mdi:baby-bottle-outline"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_NOTES:
-            return "mdi:note-multiple-outline"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_SLEEP:
-            return "mdi:sleep"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_TEMPERATURE:
-            return "mdi:thermometer"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_TIMERS:
-            return "mdi:timer-sand"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_TUMMY_TIMES:
-            return "mdi:baby"
-        elif self._data.get(ATTR_ENDPOINT) == ATTR_WEIGHT:
-            return "mdi:scale-bathroom"
-        return "mdi:baby-face-outline"
-
-    # TODO: can reduce api outbound data transfer further by only querying necessary endpoints
-    def update(self):
-        """Update data from Baby Buddy for the sensor."""
-        if not self._baby_buddy.form_address():
+    async def async_add_diaper_change(
+        self,
+        time: datetime | time,
+        type: str,
+        color: str | None = None,
+        amount: int | None = None,
+        notes: str | None = None,
+    ) -> None:
+        """Add diaper change entry."""
+        if not isinstance(self, BabyBuddyChildSensor):
+            _LOGGER.warning("Babybuddy child sensor should be selected")
             return
         try:
-            self._baby_buddy.entities_update()
-            self._data = [
-                data
-                for data in self._baby_buddy.data
-                if data.get(ATTR_ENDPOINT) == self._data.get(ATTR_ENDPOINT)
-                and data.get(ATTR_CHILD_NAME) == self._data.get(ATTR_CHILD_NAME)
-            ][0]
+            date_time = get_datetime_from_time(time)
+        except ValidationError as err:
+            _LOGGER.error(err)
+            return
+        data = {
+            ATTR_CHILD: self.child[ATTR_ID],
+            ATTR_TIME: date_time,
+            ATTR_WET: type.lower() == ATTR_WET,
+            ATTR_SOLID: type.lower() == ATTR_SOLID,
+        }
+        if color:
+            data[ATTR_COLOR] = color.lower()
+        if amount:
+            data[ATTR_AMOUNT] = amount
+        if notes:
+            data[ATTR_NOTES] = notes
 
-        except IndexError:
-            _LOGGER.error(
-                "Baby Buddy database entry %s has been removed since last Home Assistant start",
-                self.name,
-            )
+        await self.coordinator.client.async_post(ATTR_CHANGES, data)
+        await self.coordinator.async_request_refresh()
 
-
-class BabyBuddyData:
-    """Coordinate retrieving and updating data from Baby Buddy."""
-
-    def __init__(self, address, api_key, ssl, sensor_type):
-        """Initialize the BabyBuddyData object."""
-        self._address = address
-        self._api_key = api_key
-        self._ssl = ssl
-        self._sensor_type = sensor_type
-        self.data = None
-
-    def form_address(self):
-        if self._ssl:
-            address = f"https://{self._address}/api/"
-        else:
-            address = f"http://{self._address}/api/"
+    async def async_add_temperature(
+        self, temperature: float, time: datetime | time, notes: str | None = None
+    ) -> None:
+        """Add a temperature entry."""
+        if not isinstance(self, BabyBuddyChildSensor):
+            _LOGGER.warning("Babybuddy child sensor should be selected")
+            return
         try:
-            requests.get(address)
-        except:
-            _LOGGER.error(
-                "Cannot reach %s, check address and/or SSL configuration entry",
-                address[:-5],
-            )
-            return False
-        return address
+            date_time = get_datetime_from_time(time)
+        except ValidationError as err:
+            _LOGGER.error(err)
+            return
+        data = {
+            ATTR_CHILD: self.child[ATTR_ID],
+            ATTR_TEMPERATURE: temperature,
+            ATTR_TIME: date_time,
+        }
+        if notes:
+            data[ATTR_NOTES] = notes
 
-    def session(self):
-        session = sessions.BaseUrlSession(base_url=self.form_address())
-        session.headers = {"Authorization": f"Token {self._api_key}"}
+        await self.coordinator.client.async_post(ATTR_TEMPERATURE, data)
+        await self.coordinator.async_request_refresh()
 
-        return session
+    async def async_add_weight(
+        self, weight: float, date: date, notes: str | None = None
+    ) -> None:
+        """Add weight entry."""
+        if not isinstance(self, BabyBuddyChildSensor):
+            _LOGGER.warning("Babybuddy child sensor should be selected")
+            return
+        data = {
+            ATTR_CHILD: self.child[ATTR_ID],
+            ATTR_WEIGHT: weight,
+            ATTR_DATE: date,
+        }
+        if notes:
+            data[ATTR_NOTES] = notes
 
-    def entities_add(self, endpoint, data):
-        add = self.session().post(f"{endpoint}/", data=data)
+        await self.coordinator.client.async_post(ATTR_WEIGHT, data)
+        await self.coordinator.async_request_refresh()
 
-        if not add.ok:
-            _LOGGER.error(
-                "Cannot create %s, check service fields and timezones of Home Assistant vs. Baby Buddy",
-                endpoint,
-            )
 
-    def entities_get(self):
-        data = []
+class BabyBuddyChildSensor(BabyBuddySensor):
+    """Representation of a Babybuddy child sensor."""
 
-        children = self.session().get(ATTR_CHILDREN)
-        children = children.json()
-        children = children[ATTR_RESULTS]
-        for child in children:
-            child_name = f"{child[ATTR_FIRST_NAME]}_{child[ATTR_LAST_NAME]}"
-            child[ATTR_CHILD_NAME] = child_name
-            child[ATTR_ENDPOINT] = ATTR_CHILDREN
-            data.append(child)
-            for endpoint in self._sensor_type:
-                endpoint_data = self.session().get(
-                    f"{endpoint}/?child={child[ATTR_ID]}&limit=1"
-                )
-                endpoint_data = endpoint_data.json()
-                endpoint_data = endpoint_data[ATTR_RESULTS]
-                if endpoint_data:
-                    endpoint_data = endpoint_data[0]
-                    endpoint_data[ATTR_CHILD_NAME] = child_name
-                    endpoint_data[ATTR_ENDPOINT] = endpoint
-                    data.append(endpoint_data)
+    def __init__(self, coordinator: BabyBuddyCoordinator, child: dict) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, child)
 
-        self.data = data
+        self._attr_name = f"Baby {child['first_name']} {child['last_name']}"
+        self._attr_unique_id = (
+            f"{coordinator.config_entry.data[CONF_HOST]}-{child[ATTR_ID]}"
+        )
+        self._attr_state = child[ATTR_BIRTH_DATE]
+        self._attr_icon = "mdi:baby-face-outline"
+        self._attr_device_class = ATTR_TIMESTAMP
+        self._attr_device_class = "babybuddy__child"
 
-    def entities_update(self):
-        return self.entities_get()
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return entity specific state attributes for Babybuddy."""
+        return self.child
 
-    def entities_delete(self, endpoint, data):
-        delete = self.session().delete(f"{endpoint}/{data}/")
+    @property
+    def entity_picture(self) -> str | None:
+        """Return Baby Buddy picture."""
+        image: str | None = self.child[ATTR_PICTURE]
+        return image
 
-        if not delete.ok:
-            _LOGGER.error(
-                "Cannot delete %s, check service fields",
-                endpoint,
-            )
+
+class BabyBuddyChildDataSensor(BabyBuddySensor):
+    """Representation of a child data sensor."""
+
+    entity_description: BabyBuddyEntityDescription
+
+    def __init__(
+        self,
+        coordinator: BabyBuddyCoordinator,
+        child: dict,
+        description: BabyBuddyEntityDescription,
+    ) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, child)
+
+        self.entity_description = description
+        self._attr_unique_id = f"{self.coordinator.config_entry.data[CONF_HOST]}-{child[ATTR_ID]}-{description.key}"
+
+    @property
+    def name(self) -> str:
+        """Return the name of the Babybuddy sensor."""
+        type = self.entity_description.key
+        if type[-1] == "s":
+            type = type[:-1]
+        return f"{self.child[ATTR_FIRST_NAME]} last {type}"
+
+    @property
+    def state(self) -> StateType:
+        """Return entity state."""
+        if self.child[ATTR_ID] not in self.coordinator.data[1]:
+            return None
+        data: dict[str, str] = self.coordinator.data[1][self.child[ATTR_ID]][
+            self.entity_description.key
+        ]
+        if callable(self.entity_description.state_key):
+            return self.entity_description.state_key(data)
+        return data[self.entity_description.state_key]
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return entity specific state attributes for Baby Buddy."""
+        attrs: dict[str, Any] = {}
+        if self.child[ATTR_ID] in self.coordinator.data[1]:
+            attrs = self.coordinator.data[1][self.child[ATTR_ID]][
+                self.entity_description.key
+            ]
+        return attrs
+
+    @property
+    def unit_of_measurement(self) -> str:
+        """Return the unit of measurement for the Babybuddy sensor."""
+        return self.coordinator.config_entry.options.get(
+            self.entity_description.key,
+            self.entity_description.unit_of_measurement,
+        )

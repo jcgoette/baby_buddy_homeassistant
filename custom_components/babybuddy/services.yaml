@@ -1,6 +1,6 @@
-services_children_add:
+add_child:
   name: Add Child
-  description: Adds a child
+  description: Add a child to Baby Buddy
   fields:
     first_name:
       name: First Name
@@ -21,109 +21,53 @@ services_children_add:
       selector:
         text:
 
-services_delete:
-  name: Delete Entry
-  description: Deletes a Baby Buddy entry
+start_timer:
+  name: Start Timer
+  description: Start a new timer
+  target:
+    entity:
+      integration: babybuddy
+      domain: switch
   fields:
-    endpoint:
-      name: Endpoint
-      description: The Baby Buddy endpoint to delete
-      required: true
+    start:
+      name: Timer start time
+      description: Leave blank for a quick start
       selector:
-        select:
-          options:
-            - Children
-            - Changes
-            - Feedings
-            - Notes
-            - Sleep
-            - Temperature
-            - Timers
-            - Tummy Times
-            - Weight
-    entry:
-      name: Entry
-      description: If entry is Child, enter slug. Otherwise, enter ID.
-      required: true
+        time:
+    name:
+      name: Timer name
+      description: Specify optional timer name
       selector:
         text:
 
-services_changes_add:
-  name: Add Change
-  description: Adds a change
-  fields:
-    child:
-      name: Child
-      description: Child to add a change to
-      required: true
-      selector:
-        entity:
-    time:
-      name: Change time
-      description: Change time in YYYY-MM-DD HH:MM format
-      required: true
-      selector:
-        text:
-    wet:
-      name: Change wet
-      description: Was change wet
-      required: true
-      selector:
-        boolean:
-    solid:
-      name: Change solid
-      description: Was change solid
-      required: true
-      selector:
-        boolean:
-    color:
-      name: Change color
-      description: Change color
-      required: true
-      selector:
-        select:
-          options:
-            - Black
-            - Brown
-            - Green
-            - Yellow
-    amount:
-      name: Change amount
-      description: Change amount in number format
-      selector:
-        text:
-    notes:
-      name: Change notes
-      description: Change notes
-      selector:
-        text:
-
-services_feedings_add:
+add_feeding:
   name: Add Feeding
-  description: Adds a feeding
+  description: Adds a feeding entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: switch
   fields:
-    child:
-      name: Child
-      description: Child to add a feeding to
-      required: true
+    timer:
+      name: Use timer
+      description: Use active timer to assign child/start/end
       selector:
-        entity:
+        boolean:
     start:
       name: Feeding start time
-      description: Feeding start time in YYYY-MM-DD HH:MM format
-      required: true
+      description: Feeding start time
       selector:
-        text:
+        time:
     end:
       name: Feeding end time
-      description: Feeding end time in YYYY-MM-DD HH:MM format
-      required: true
+      description: Feeding end time
       selector:
-        text:
+        time:
     type:
       name: Feeding type
       description: Feeding type
       required: true
+      default: Breast milk
       selector:
         select:
           options:
@@ -135,6 +79,7 @@ services_feedings_add:
       name: Feeding method
       description: Feeding method
       required: true
+      default: Both breasts
       selector:
         select:
           options:
@@ -148,139 +93,179 @@ services_feedings_add:
       name: Feeding amount
       description: Feeding amount in number format
       selector:
-        text:
+        number:
+          min: 1
+          max: 300
+          mode: box
     notes:
       name: Feeding notes
       description: Feeding notes
       selector:
         text:
+          multiline: true
 
-services_notes_add:
-  name: Add Note
-  description: Adds a note
-  fields:
-    child:
-      name: Child
-      description: Child to add a note to
-      required: true
-      selector:
-        entity:
-    note:
-      name: Note
-      description: Note
-      required: true
-      selector:
-        text:
-    time:
-      name: Note time
-      description: Note time in YYYY-MM-DD HH:MM format
-      selector:
-        text:
-
-services_sleep_add:
+add_sleep:
   name: Add Sleep
-  description: Adds sleep
+  description: Adds sleep entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: switch
   fields:
-    child:
-      name: Child
-      description: Child to add sleep to
-      required: true
+    timer:
+      name: Use timer
+      description: Use active timer to assign child/start/end
       selector:
-        entity:
+        boolean:
     start:
       name: Sleep start time
-      description: Sleep start time in YYYY-MM-DD HH:MM format
-      required: true
+      description: Sleep start time
       selector:
-        text:
+        time:
     end:
       name: Sleep end time
-      description: Sleep end time in YYYY-MM-DD HH:MM format
-      required: true
+      description: Sleep end time
       selector:
-        text:
+        time:
     notes:
       name: Sleep notes
       description: Sleep notes
       selector:
         text:
+          multiline: true
 
-services_temperature_add:
-  name: Add Temperature
-  description: Adds a temperature
-  fields:
-    child:
-      name: Child
-      description: Child to add a temperature to
-      required: true
-      selector:
-        entity:
-    temperature:
-      name: Temperature
-      description: Temperature in number format
-      required: true
-      selector:
-        text:
-    time:
-      name: Temperature time
-      description: Temperature time in YYYY-MM-DD HH:MM format
-      required: true
-      selector:
-        text:
-    notes:
-      name: Temperature notes
-      description: Temperature notes
-      selector:
-        text:
-
-services_tummy_times_add:
+add_tummy_time:
   name: Add Tummy Time
-  description: Adds Tummy Time
+  description: Adds Tummy Time entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: switch
   fields:
-    child:
-      name: Child
-      description: Child to add Tummy Time to
-      required: true
+    timer:
+      name: Use timer
+      description: Use active timer to assign child/start/end
       selector:
-        entity:
+        boolean:
     start:
-      name: Tummy Time start time
-      description: Tummy Time start time in YYYY-MM-DD HH:MM format
-      required: true
+      name: Sleep start time
+      description: Sleep start time
       selector:
-        text:
+        time:
     end:
-      name: Tummy Time end time
-      description: Tummy Time end time in YYYY-MM-DD HH:MM format
-      required: true
+      name: Sleep end time
+      description: Sleep end time
       selector:
-        text:
+        time:
     milestone:
       name: Tummy Time milestone
       description: Tummy Time milestone
       selector:
         text:
+          multiline: true
 
-services_weight_add:
-  name: Add Weight
-  description: Adds a weight
+add_diaper_change:
+  name: Add dipaer change
+  description: Adds a diaper change entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy__child
   fields:
-    child:
-      name: Child
-      description: Child to add a weight to
-      required: true
+    time:
+      name: Change time
+      description: Change time
       selector:
-        entity:
-    weight:
-      name: Weight
-      description: Weight in number format
+        time:
+    type:
+      name: Diaper type
+      description: Type of diaper change
       required: true
+      default: wet
+      selector:
+        select:
+          options:
+            - Wet
+            - Solid
+    color:
+      name: Diaper color
+      description: Daiper color
+      selector:
+        select:
+          options:
+            - Black
+            - Brown
+            - Green
+            - Yellow
+    amount:
+      name: Diape change amount
+      description: Diaper change amount
+      selector:
+        number:
+          min: 1
+          max: 10
+          mode: box
+    notes:
+      name: Change notes
+      description: Change notes
       selector:
         text:
+          multiline: true
+
+add_temperature:
+  name: Add Temperature
+  description: Adds a temperature entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy__child
+  fields:
+    temperature:
+      name: Temperature
+      description: Temperature
+      required: true
+      selector:
+        number:
+          min: 35.0
+          max: 150.0
+          step: 0.1
+          mode: box
+    time:
+      name: Temperature time
+      description: Temperature time
+      selector:
+        time:
+    notes:
+      name: Temperature notes
+      description: Temperature notes
+      selector:
+        text:
+          multiline: true
+
+add_weight:
+  name: Add Weight
+  description: Adds a weight entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy__child
+  fields:
+    weight:
+      name: Weight
+      description: Weight value
+      required: true
+      selector:
+        number:
+          min: 0.0
+          max: 100.0
+          step: 0.1
+          mode: box
     date:
       name: Weight date
       description: Weight date in YYYY-MM-DD format
-      required: true
       selector:
         text:
     notes:
@@ -288,3 +273,4 @@ services_weight_add:
       description: Weight notes
       selector:
         text:
+          multiline: true
