@@ -1,17 +1,16 @@
 """Baby buddy client class"""
 from __future__ import annotations
 
+import logging
 from asyncio import TimeoutError
 from datetime import datetime, time
-import logging
 from typing import Any
 
+import async_timeout
+import homeassistant.util.dt as dt_util
 from aiohttp.client import ClientSession
 from aiohttp.client_exceptions import ClientError, ClientResponseError
-import async_timeout
-
 from homeassistant.const import HTTP_CREATED, HTTP_OK
-import homeassistant.util.dt as dt_util
 
 from .errors import AuthorizationError, ConnectError, ValidationError
 
