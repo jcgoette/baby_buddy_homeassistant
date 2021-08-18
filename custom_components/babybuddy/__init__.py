@@ -16,7 +16,6 @@ from homeassistant.const import (
     CONF_HOST,
     CONF_PORT,
     CONF_SCAN_INTERVAL,
-    CONF_SSL,
     HTTP_FORBIDDEN,
 )
 from homeassistant.core import HomeAssistant, ServiceCall
@@ -26,7 +25,6 @@ from homeassistant.helpers.device_registry import (
     DeviceRegistry,
     async_entries_for_config_entry,
 )
-from homeassistant.helpers.entity_registry import EntityRegistry
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .client import BabyBuddyClient

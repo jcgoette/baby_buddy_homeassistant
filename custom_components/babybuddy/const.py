@@ -5,14 +5,21 @@ from dataclasses import dataclass, field
 from typing import Callable, Final
 
 from homeassistant.components.select import SelectEntityDescription
-from homeassistant.components.sensor import (STATE_CLASS_MEASUREMENT,
-                                             SensorEntityDescription)
+from homeassistant.components.sensor import (
+    STATE_CLASS_MEASUREMENT,
+    SensorEntityDescription,
+)
 from homeassistant.components.switch import SwitchEntityDescription
-from homeassistant.const import (ATTR_TEMPERATURE, ATTR_TIME,
-                                 DEVICE_CLASS_TEMPERATURE,
-                                 DEVICE_CLASS_TIMESTAMP, MASS_KILOGRAMS,
-                                 TEMP_CELSIUS, TIME_MINUTES,
-                                 VOLUME_MILLILITERS)
+from homeassistant.const import (
+    ATTR_TEMPERATURE,
+    ATTR_TIME,
+    DEVICE_CLASS_TEMPERATURE,
+    DEVICE_CLASS_TIMESTAMP,
+    MASS_KILOGRAMS,
+    TEMP_CELSIUS,
+    TIME_MINUTES,
+    VOLUME_MILLILITERS,
+)
 from homeassistant.helpers.config_validation import time_period_str
 
 DOMAIN: Final = "babybuddy"
@@ -128,7 +135,7 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         state_key=ATTR_WEIGHT,
         state_class=STATE_CLASS_MEASUREMENT,
         unit_of_measurement=MASS_KILOGRAMS,
-        icon="mdi:baby-face-outline",
+        icon="mdi:scale-bathroom",
     ),
     BabyBuddyEntityDescription(
         key=ATTR_TIMERS,

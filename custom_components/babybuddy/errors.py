@@ -3,17 +3,17 @@
 from homeassistant.exceptions import HomeAssistantError
 
 
-class BabbyBuddyError(HomeAssistantError):
+class BabyBuddyError(HomeAssistantError):
     """Base Exception for Babybuddy error."""
 
 
-class ConnectError(BabbyBuddyError):
+class ConnectError(BabyBuddyError):
     """Raise connection error..."""
 
 
-class AuthorizationError(BabbyBuddyError):
-    """Raise authroization exception."""
+class AuthorizationError(BabyBuddyError):
+    """Raise authorization exception."""
 
 
-class ValidationError(BabbyBuddyError):
+class ValidationError(BabyBuddyError):
     """Raise an exception if required field value is not valid."""
