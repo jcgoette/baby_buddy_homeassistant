@@ -54,7 +54,7 @@ SERVICE_ADD_CHILD_SCHEMA = vol.Schema(
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
-    """Set up the Speedtest.net component."""
+    """Set up the Babybuddy component."""
 
     coordinator = BabyBuddyCoordinator(hass, config_entry)
     await coordinator.async_setup()
@@ -68,7 +68,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
 
 async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
-    """Unload SpeedTest Entry from config_entry."""
+    """Unload Babybuddy Entry from config_entry."""
 
     unload_ok = await hass.config_entries.async_unload_platforms(
         config_entry, PLATFORMS

@@ -1,4 +1,4 @@
-"""Support for LED selects."""
+"""Support for Babybuddy selects."""
 from __future__ import annotations
 
 from homeassistant.components.select import SelectEntity
@@ -26,7 +26,7 @@ class BabyBuddySelect(SelectEntity, RestoreEntity):
     entity_description: BabyBuddySelectDescription
 
     def __init__(self, entity_description: BabyBuddySelectDescription) -> None:
-        """Initialize the Demo select entity."""
+        """Initialize the Babybuddy select entity."""
         self._attr_unique_id = entity_description.key
         self._attr_options = entity_description.options
         self.entity_description = entity_description

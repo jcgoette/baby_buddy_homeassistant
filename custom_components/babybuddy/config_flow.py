@@ -1,4 +1,4 @@
-"""Config flow for Transmission Bittorent Client."""
+"""Config flow for Babybuddy integration."""
 from __future__ import annotations
 
 from typing import Any
