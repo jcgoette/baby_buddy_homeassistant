@@ -1,0 +1,23 @@
+{
+  "ignorePaths": [
+    ".cspell.json",
+    ".github",
+    ".gitignore",
+    ".pyc",
+    "LICENSE",
+    "manifest.json"
+  ],
+  "ignoreWords": [
+    "aiohttp",
+    "asyncio",
+    "babybuddy",
+    "hacs",
+    "hass",
+    "homeassistant",
+    "isort",
+    "multiline",
+    "reauth",
+    "reauthenticate"
+  ],
+  "language": "en"
+}
