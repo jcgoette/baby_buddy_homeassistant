@@ -34,6 +34,7 @@ from .const import (
     ATTR_COLOR,
     ATTR_FIRST_NAME,
     ATTR_LAST_NAME,
+    ATTR_NOTE,
     ATTR_NOTES,
     ATTR_PICTURE,
     ATTR_SOLID,
@@ -105,6 +106,14 @@ async def async_setup_entry(
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_weight",
+    )
+    platform.async_register_entity_service(
+        "add_note",
+        {
+            vol.Required(ATTR_NOTE): cv.string,
+            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
+        },
+        "async_add_note",
     )
     platform.async_register_entity_service(
         "delete_last_entry",
@@ -230,6 +239,23 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             data[ATTR_NOTES] = notes
 
         await self.coordinator.client.async_post(ATTR_WEIGHT, data)
+        await self.coordinator.async_request_refresh()
+
+    async def async_add_note(
+        self, note: str, time: datetime | time | None = None
+    ) -> None:
+        """Add note entry."""
+        if not isinstance(self, BabyBuddyChildSensor):
+            _LOGGER.debug("Babybuddy child sensor should be selected")
+            return
+        try:
+            date_time = get_datetime_from_time(time or dt_util.now())
+        except ValidationError as err:
+            _LOGGER.error(err)
+            return
+        data = {ATTR_CHILD: self.child[ATTR_ID], ATTR_NOTE: note, ATTR_TIME: date_time}
+
+        await self.coordinator.client.async_post(ATTR_NOTES, data)
         await self.coordinator.async_request_refresh()
 
     async def async_delete_last_entry(self) -> None:

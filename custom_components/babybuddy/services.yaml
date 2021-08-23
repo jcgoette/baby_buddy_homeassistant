@@ -186,6 +186,7 @@ add_diaper_change:
           options:
             - Wet
             - Solid
+            - Wet and Solid
     color:
       name: Diaper color
       description: Diaper color
@@ -272,6 +273,28 @@ add_weight:
       selector:
         text:
           multiline: true
+
+add_note:
+  name: Add Note
+  description: Adds a note entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy__child
+  fields:
+    note:
+      name: Note
+      description: Note text
+      required: true
+      selector:
+        text:
+          multiline: true
+    time:
+      name: Note time
+      description: Note time
+      selector:
+        time:
 
 delete_last_entry:
   name: Delete last Babybuddy entry
