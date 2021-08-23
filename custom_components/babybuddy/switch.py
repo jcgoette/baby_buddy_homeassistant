@@ -87,12 +87,8 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         "add_feeding",
         {
-            vol.Required(ATTR_TYPE, default=DEFAULT_FEEDING_TYPE): vol.In(
-                FEEDING_TYPES
-            ),
-            vol.Required(ATTR_METHOD, default=DEFAULT_FEEDING_METHOD): vol.In(
-                FEEDING_METHODS
-            ),
+            vol.Required(ATTR_TYPE): vol.In(FEEDING_TYPES),
+            vol.Required(ATTR_METHOD): vol.In(FEEDING_METHODS),
             **COMMON_FIELDS,
             vol.Optional(ATTR_AMOUNT): cv.positive_int,
             vol.Optional(ATTR_NOTES): cv.string,
@@ -119,16 +115,16 @@ async def async_setup_entry(
 
 @callback
 def update_items(
-    cooridnator: BabyBuddyCoordinator,
+    coordinator: BabyBuddyCoordinator,
     tracked: dict,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Add timer switches to new childs."""
+    """Add timer switches to new child."""
     new_entities = []
-    if cooridnator.data is not None:
-        for child in cooridnator.data[0]:
+    if coordinator.data is not None:
+        for child in coordinator.data[0]:
             if child[ATTR_ID] not in tracked:
-                tracked[child[ATTR_ID]] = BabyBuddyChildTimerSwitch(cooridnator, child)
+                tracked[child[ATTR_ID]] = BabyBuddyChildTimerSwitch(coordinator, child)
                 new_entities.append(tracked[child[ATTR_ID]])
         if new_entities:
             async_add_entities(new_entities)

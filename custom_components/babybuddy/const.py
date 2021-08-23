@@ -73,7 +73,7 @@ FEEDING_METHODS: Final = [
     "Self fed",
 ]
 DIAPER_TYPE: Final = "change_type"
-DIAPER_TYPES: Final = ["Wet", "Solid"]
+DIAPER_TYPES: Final = ["Wet", "Solid", "Wet and Solid"]
 DIAPER_COLOR: Final = "diaper_color"
 DIAPER_COLORS: Final = ["Black", "Brown", "Green", "Yellow"]
 DEFAULT_FEEDING_TYPE: Final = "Breast milk"

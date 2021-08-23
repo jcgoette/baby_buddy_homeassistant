@@ -79,9 +79,7 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         "add_diaper_change",
         {
-            vol.Optional(ATTR_TIME, default=dt_util.now()): vol.Any(
-                cv.datetime, cv.time
-            ),
+            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
             vol.Required(ATTR_TYPE, default=DEFAULT_DIAPER_TYPE): vol.In(DIAPER_TYPES),
             vol.Optional(ATTR_COLOR): vol.In(DIAPER_COLORS),
             vol.Optional(ATTR_AMOUNT): cv.positive_int,
@@ -94,9 +92,7 @@ async def async_setup_entry(
         "add_temperature",
         {
             vol.Required(ATTR_TEMPERATURE): cv.positive_float,
-            vol.Optional(ATTR_TIME, default=dt_util.now()): vol.Any(
-                cv.datetime, cv.time
-            ),
+            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_temperature",
@@ -105,10 +101,15 @@ async def async_setup_entry(
         "add_weight",
         {
             vol.Required(ATTR_WEIGHT): cv.positive_float,
-            vol.Optional(ATTR_DATE, default=dt_util.now().date()): cv.date,
+            vol.Optional(ATTR_DATE): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_weight",
+    )
+    platform.async_register_entity_service(
+        "delete_last_entry",
+        {},
+        "async_delete_last_entry",
     )
 
 
@@ -156,26 +157,26 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
 
     async def async_add_diaper_change(
         self,
-        time: datetime | time,
         type: str,
+        time: datetime | time | None = None,
         color: str | None = None,
         amount: int | None = None,
         notes: str | None = None,
     ) -> None:
         """Add diaper change entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.warning("Babybuddy child sensor should be selected")
+            _LOGGER.debug("Babybuddy child sensor should be selected")
             return
         try:
-            date_time = get_datetime_from_time(time)
+            date_time = get_datetime_from_time(time or dt_util.now())
         except ValidationError as err:
             _LOGGER.error(err)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_TIME: date_time,
-            ATTR_WET: type.lower() == ATTR_WET,
-            ATTR_SOLID: type.lower() == ATTR_SOLID,
+            ATTR_WET: type == "Wet and Solid" or type.lower() == ATTR_WET,
+            ATTR_SOLID: type == "Wet and Solid" or type.lower() == ATTR_SOLID,
         }
         if color:
             data[ATTR_COLOR] = color.lower()
@@ -188,14 +189,17 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_add_temperature(
-        self, temperature: float, time: datetime | time, notes: str | None = None
+        self,
+        temperature: float,
+        time: datetime | time | None = None,
+        notes: str | None = None,
     ) -> None:
         """Add a temperature entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.warning("Babybuddy child sensor should be selected")
+            _LOGGER.debug("Babybuddy child sensor should be selected")
             return
         try:
-            date_time = get_datetime_from_time(time)
+            date_time = get_datetime_from_time(time or dt_util.now())
         except ValidationError as err:
             _LOGGER.error(err)
             return
@@ -211,21 +215,31 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_add_weight(
-        self, weight: float, date: date, notes: str | None = None
+        self, weight: float, date: date | None = None, notes: str | None = None
     ) -> None:
         """Add weight entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.warning("Babybuddy child sensor should be selected")
+            _LOGGER.debug("Babybuddy child sensor should be selected")
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_WEIGHT: weight,
-            ATTR_DATE: date,
+            ATTR_DATE: date or dt_util.now().date(),
         }
         if notes:
             data[ATTR_NOTES] = notes
 
         await self.coordinator.client.async_post(ATTR_WEIGHT, data)
+        await self.coordinator.async_request_refresh()
+
+    async def async_delete_last_entry(self) -> None:
+        """Delete last data entry."""
+        if not isinstance(self, BabyBuddyChildDataSensor):
+            _LOGGER.debug("Babybuddy child data sensor should be selected")
+            return
+        await self.coordinator.client.async_delete(
+            self.entity_description.key, self.extra_state_attributes[ATTR_ID]
+        )
         await self.coordinator.async_request_refresh()
 
 
@@ -280,7 +294,7 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
         type = self.entity_description.key
         if type[-1] == "s":
             type = type[:-1]
-        return f"{self.child[ATTR_FIRST_NAME]} last {type}"
+        return f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} last {type}"
 
     @property
     def state(self) -> StateType:
@@ -290,13 +304,15 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
         data: dict[str, str] = self.coordinator.data[1][self.child[ATTR_ID]][
             self.entity_description.key
         ]
+        if not data:
+            return None
         if callable(self.entity_description.state_key):
             return self.entity_description.state_key(data)
         return data[self.entity_description.state_key]
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
-        """Return entity specific state attributes for Baby Buddy."""
+        """Return entity specific state attributes."""
         attrs: dict[str, Any] = {}
         if self.child[ATTR_ID] in self.coordinator.data[1]:
             attrs = self.coordinator.data[1][self.child[ATTR_ID]][
@@ -305,8 +321,8 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
         return attrs
 
     @property
-    def unit_of_measurement(self) -> str:
-        """Return the unit of measurement for the Babybuddy sensor."""
+    def unit_of_measurement(self) -> str | None:
+        """Return entity unit of measurement."""
         return self.coordinator.config_entry.options.get(
             self.entity_description.key,
             self.entity_description.unit_of_measurement,

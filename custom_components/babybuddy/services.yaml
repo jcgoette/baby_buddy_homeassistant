@@ -67,7 +67,6 @@ add_feeding:
       name: Feeding type
       description: Feeding type
       required: true
-      default: Breast milk
       selector:
         select:
           options:
@@ -79,7 +78,6 @@ add_feeding:
       name: Feeding method
       description: Feeding method
       required: true
-      default: Both breasts
       selector:
         select:
           options:
@@ -165,7 +163,7 @@ add_tummy_time:
           multiline: true
 
 add_diaper_change:
-  name: Add dipaer change
+  name: Add diaper change
   description: Adds a diaper change entry
   target:
     entity:
@@ -190,7 +188,7 @@ add_diaper_change:
             - Solid
     color:
       name: Diaper color
-      description: Daiper color
+      description: Diaper color
       selector:
         select:
           options:
@@ -199,7 +197,7 @@ add_diaper_change:
             - Green
             - Yellow
     amount:
-      name: Diape change amount
+      name: Diaper change amount
       description: Diaper change amount
       selector:
         number:
@@ -274,3 +272,11 @@ add_weight:
       selector:
         text:
           multiline: true
+
+delete_last_entry:
+  name: Delete last Babybuddy entry
+  description: Delete the last babybuddy sensor entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
