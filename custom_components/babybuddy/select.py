@@ -15,7 +15,7 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Babybuddy select entites for feeding and diaper change."""
+    """Set up Babybuddy select entities for feeding and diaper change."""
     async_add_entities([BabyBuddySelect(entity) for entity in SELECTOR_TYPES])
 
 

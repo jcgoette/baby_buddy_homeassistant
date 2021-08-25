@@ -174,7 +174,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add diaper change entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected")
+            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
             return
         try:
             date_time = get_datetime_from_time(time or dt_util.now())
@@ -205,7 +205,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add a temperature entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected")
+            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
             return
         try:
             date_time = get_datetime_from_time(time or dt_util.now())
@@ -228,7 +228,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add weight entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected")
+            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -246,7 +246,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add note entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected")
+            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
             return
         try:
             date_time = get_datetime_from_time(time or dt_util.now())
@@ -261,7 +261,11 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_delete_last_entry(self) -> None:
         """Delete last data entry."""
         if not isinstance(self, BabyBuddyChildDataSensor):
-            _LOGGER.debug("Babybuddy child data sensor should be selected")
+            _LOGGER.debug("Babybuddy child data sensor should be selected. Ignoring.")
+            return
+
+        if self.state == None:
+            _LOGGER.error(f"{self.entity_description.key} entry is not available.")
             return
         await self.coordinator.client.async_delete(
             self.entity_description.key, self.extra_state_attributes[ATTR_ID]

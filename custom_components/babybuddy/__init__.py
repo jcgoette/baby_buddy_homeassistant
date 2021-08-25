@@ -107,7 +107,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         )
         self.child_ids: list[str] = []
 
-    async def async_remove_deleted_childs(self) -> None:
+    async def async_remove_deleted_children(self) -> None:
         """Remove child device if child is removed from Babybuddy."""
         dr: DeviceRegistry = (
             await self.hass.helpers.device_registry.async_get_registry()
@@ -155,7 +155,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
                 data: list[dict[str, str]] = endpoint_data[ATTR_RESULTS]
                 child_data[child[ATTR_ID]][endpoint.key] = data[0] if data else {}
 
-        await self.async_remove_deleted_childs()
+        await self.async_remove_deleted_children()
         return (children_list[ATTR_RESULTS], child_data)
 
     async def async_setup(self) -> None:

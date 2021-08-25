@@ -15,10 +15,7 @@ from homeassistant.const import (
     ATTR_TIME,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_TIMESTAMP,
-    MASS_KILOGRAMS,
-    TEMP_CELSIUS,
     TIME_MINUTES,
-    VOLUME_MILLILITERS,
 )
 from homeassistant.helpers.config_validation import time_period_str
 
@@ -99,7 +96,6 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
     BabyBuddyEntityDescription(
         key=ATTR_FEEDINGS,
         state_key=ATTR_AMOUNT,
-        unit_of_measurement=VOLUME_MILLILITERS,
         icon="mdi:baby-bottle-outline",
     ),
     BabyBuddyEntityDescription(
@@ -120,7 +116,6 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         key=ATTR_TEMPERATURE,
         state_key=ATTR_TEMPERATURE,
         device_class=DEVICE_CLASS_TEMPERATURE,
-        unit_of_measurement=TEMP_CELSIUS,
         icon="mdi:thermometer",
     ),
     BabyBuddyEntityDescription(
@@ -134,7 +129,6 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         key=ATTR_WEIGHT,
         state_key=ATTR_WEIGHT,
         state_class=STATE_CLASS_MEASUREMENT,
-        unit_of_measurement=MASS_KILOGRAMS,
         icon="mdi:scale-bathroom",
     ),
     BabyBuddyEntityDescription(
