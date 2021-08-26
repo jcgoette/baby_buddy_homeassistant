@@ -182,6 +182,10 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
             DOMAIN, "add_child", async_add_child, schema=SERVICE_ADD_CHILD_SCHEMA
         )
 
+        self.config_entry.async_on_unload(
+            self.config_entry.add_update_listener(options_updated_listener)
+        )
+
 
 async def options_updated_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Handle options update."""
