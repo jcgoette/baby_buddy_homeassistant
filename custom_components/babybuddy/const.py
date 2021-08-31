@@ -73,10 +73,7 @@ DIAPER_TYPE: Final = "change_type"
 DIAPER_TYPES: Final = ["Wet", "Solid", "Wet and Solid"]
 DIAPER_COLOR: Final = "diaper_color"
 DIAPER_COLORS: Final = ["Black", "Brown", "Green", "Yellow"]
-DEFAULT_FEEDING_TYPE: Final = "Breast milk"
-DEFAULT_FEEDING_METHOD: Final = "Both breasts"
 DEFAULT_DIAPER_TYPE: Final = ATTR_WET
-DEFAULT_DIAPER_COLOR: Final = "Brown"
 
 
 @dataclass
@@ -145,7 +142,6 @@ class BabyBuddySelectDescription(SelectEntityDescription):
     """Describe Baby Buddy select entity."""
 
     options: list[str] = field(default_factory=list)
-    default_option: str | None = None
 
 
 SELECTOR_TYPES: tuple[BabyBuddySelectDescription, ...] = (
@@ -153,28 +149,24 @@ SELECTOR_TYPES: tuple[BabyBuddySelectDescription, ...] = (
         key=FEEDING_METHOD,
         name=f"{DEFAULT_NAME} Feeding method",
         options=FEEDING_METHODS,
-        default_option=DEFAULT_FEEDING_METHOD,
         icon="mdi:baby-bottle-outline",
     ),
     BabyBuddySelectDescription(
         key=FEEDING_TYPE,
         name=f"{DEFAULT_NAME} Feeding type",
         options=FEEDING_TYPES,
-        default_option=DEFAULT_FEEDING_TYPE,
         icon="mdi:baby-bottle-outline",
     ),
     BabyBuddySelectDescription(
         key=DIAPER_TYPE,
         name=f"{DEFAULT_NAME} Diaper type",
         options=DIAPER_TYPES,
-        default_option=DEFAULT_DIAPER_TYPE,
         icon="mdi:paper-roll-outline",
     ),
     BabyBuddySelectDescription(
         key=DIAPER_COLOR,
         name=f"{DEFAULT_NAME} Diaper color",
         options=DIAPER_COLORS,
-        default_option=DEFAULT_DIAPER_COLOR,
         icon="mdi:paper-roll-outline",
     ),
 )

@@ -264,7 +264,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             _LOGGER.debug("Babybuddy child data sensor should be selected. Ignoring.")
             return
 
-        if self.state == None:
+        if self.extra_state_attributes.get(ATTR_ID) is None:
             _LOGGER.error(f"{self.entity_description.key} entry is not available.")
             return
         await self.coordinator.client.async_delete(

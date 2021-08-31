@@ -30,14 +30,13 @@ class BabyBuddySelect(SelectEntity, RestoreEntity):
         self._attr_unique_id = entity_description.key
         self._attr_options = entity_description.options
         self.entity_description = entity_description
+        self._attr_current_option = None
 
     async def async_added_to_hass(self) -> None:
         """Restore last state when added."""
         last_state = await self.async_get_last_state()
         if last_state:
             self._attr_current_option = last_state.state
-        else:
-            self._attr_current_option = self.entity_description.default_option
 
     async def async_select_option(self, option: str) -> None:
         """Update the current selected option."""
