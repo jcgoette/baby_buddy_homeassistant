@@ -15,6 +15,7 @@ from homeassistant.const import (
     MASS_POUNDS,
     TEMP_CELSIUS,
     TEMP_FAHRENHEIT,
+    VOLUME_FLUID_OUNCE,
     VOLUME_MILLILITERS,
 )
 from homeassistant.core import callback
@@ -161,11 +162,11 @@ class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Optional(
                 CONF_WEIGHT_UNIT,
                 default=self.config_entry.options.get(CONF_WEIGHT_UNIT, None),
-            ): vol.In([MASS_KILOGRAMS, MASS_POUNDS]),
+            ): vol.In([MASS_KILOGRAMS, MASS_POUNDS, MASS_OUNCES]),
             vol.Optional(
                 CONF_FEEDING_UNIT,
                 default=self.config_entry.options.get(CONF_FEEDING_UNIT, None),
-            ): vol.In([VOLUME_MILLILITERS, MASS_OUNCES]),
+            ): vol.In([VOLUME_MILLILITERS, VOLUME_FLUID_OUNCE]),
             vol.Optional(
                 CONF_SCAN_INTERVAL,
                 default=self.config_entry.options.get(
