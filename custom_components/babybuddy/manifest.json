@@ -1,9 +1,11 @@
 {
-  "codeowners": ["@jcgoette"],
+  "codeowners": ["@jcgoette", "@engrbm87"],
   "documentation": "https://github.com/jcgoette/baby_buddy_homeassistant",
   "domain": "babybuddy",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jcgoette/baby_buddy_homeassistant/issues",
   "name": "Baby Buddy",
-  "version": "v1.4.0"
+  "requirements": [],
+  "config_flow": true,
+  "version": "v2.0.0"
 }
