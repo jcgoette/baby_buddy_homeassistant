@@ -87,13 +87,8 @@ This service adds a feeding entry for your child. Feeding start/end/child fields
 | Service data attribute | Optional | Description |
 |------|:----:|-------------|
 | entity_id | no |   entity_id for the timer switch linked to the child.
-| type | no |   Specify type of feeding. Can be one of `Breast milk`, `Formula`, `Fortified breast milk` or `Solid food` (default= `Breast milk`).
-| method | no |   Specify method of feeding. Can be one of `Bottle`, `Left breast`, `Right breast`, `Both breasts`, `Self fed` or `Parent fed` (default= `Both breasts`).
-| timer | yes |   set to True to use the currently active timer.
-| start | yes |   Specify start time (must be in the past) else now() will be used. This can be ignored if timer is used.
-| end | yes |   Specify end time (must be in the past) else now() will be used. This can be ignored if timer is used.
-| amount | yes |   Specify amount of feeding as an integer.
-| notes | yes |   Add notes text to entry.
+| type | no |   Specify type of feeding. Can be one of `Breast milk`, `Formula`, `Fortified breast milk`, or `Solid food`.
+| method | no |   Specify method of feeding. Can be one of `Bottle`, `Left breast`, `Right breast`, `Both breasts`, `Self fed`, or `Parent fed`.
 
 ### SERVICE ADD_SLEEP
 
