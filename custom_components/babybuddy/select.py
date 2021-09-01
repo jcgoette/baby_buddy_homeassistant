@@ -1,4 +1,4 @@
-"""Support for Babybuddy selects."""
+"""Support for babybuddy selects."""
 from __future__ import annotations
 
 from homeassistant.components.select import SelectEntity
@@ -15,7 +15,7 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up Babybuddy select entities for feeding and diaper change."""
+    """Set up babybuddy select entities for feeding and diaper change."""
     async_add_entities([BabyBuddySelect(entity) for entity in SELECTOR_TYPES])
 
 

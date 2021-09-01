@@ -54,7 +54,7 @@ SERVICE_ADD_CHILD_SCHEMA = vol.Schema(
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
-    """Set up the Babybuddy component."""
+    """Set up the babybuddy component."""
 
     coordinator = BabyBuddyCoordinator(hass, config_entry)
     await coordinator.async_setup()
@@ -68,7 +68,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
 
 async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
-    """Unload Babybuddy Entry from config_entry."""
+    """Unload babybuddy entry from config_entry."""
 
     unload_ok = await hass.config_entries.async_unload_platforms(
         config_entry, PLATFORMS
@@ -82,7 +82,7 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> 
 
 
 class BabyBuddyCoordinator(DataUpdateCoordinator):
-    """Coordinate retrieving and updating data from Baby Buddy."""
+    """Coordinate retrieving and updating data from babybuddy."""
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
         """Initialize the BabyBuddyData object."""
@@ -108,7 +108,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         self.child_ids: list[str] = []
 
     async def async_remove_deleted_children(self) -> None:
-        """Remove child device if child is removed from Babybuddy."""
+        """Remove child device if child is removed from babybuddy."""
         dr: DeviceRegistry = (
             await self.hass.helpers.device_registry.async_get_registry()
         )
@@ -119,7 +119,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
     async def async_update(
         self,
     ) -> Tuple[list[dict[str, str]], dict[int, dict[str, dict[str, str]]]]:
-        """Update BabyBuddy data."""
+        """Update babybuddy data."""
         children_list: dict[str, Any] = {}
         child_data: dict[int, dict[str, dict[str, str]]] = {}
         try:
@@ -159,7 +159,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         return (children_list[ATTR_RESULTS], child_data)
 
     async def async_setup(self) -> None:
-        """Set up BabyBuddy."""
+        """Set up babybuddy."""
 
         try:
             await self.client.async_connect()

@@ -18,7 +18,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class BabyBuddyClient:
-    """Class for Babybuddy api interface."""
+    """Class for babybuddy API interface."""
 
     def __init__(
         self, host: str, port: int, api_key: str, session: ClientSession
@@ -32,7 +32,7 @@ class BabyBuddyClient:
     async def async_get(
         self, endpoint: str | None = None, entry: str | None = None
     ) -> Any:
-        """GET request to babybuddy api."""
+        """GET request to babybuddy API."""
         url = f"{self.url}/api/"
         if endpoint:
             url = self.endpoints[endpoint]
@@ -48,7 +48,7 @@ class BabyBuddyClient:
         return await resp.json()
 
     async def async_post(self, endpoint: str, data: dict[str, Any]) -> None:
-        """POST request to babybuddy api."""
+        """POST request to babybuddy API."""
         _LOGGER.debug("POST data: %s", data)
         try:
             with async_timeout.timeout(10):
@@ -96,7 +96,7 @@ class BabyBuddyClient:
             _LOGGER.error(f"Could not delete {endpoint}/{entry}. error: {error}")
 
     async def async_connect(self) -> None:
-        """Check connection to Babybuddy api."""
+        """Check connection to babybuddy API."""
         try:
             self.endpoints = await self.async_get()
         except ClientResponseError as err:

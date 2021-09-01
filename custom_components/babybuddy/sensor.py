@@ -1,4 +1,4 @@
-"""Platform for Baby Buddy sensor integration."""
+"""Platform for babybuddy sensor integration."""
 from __future__ import annotations
 
 import logging
@@ -59,7 +59,7 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Babybuddy sensors."""
+    """Set up the babybuddy sensors."""
     babybuddy_coordinator: BabyBuddyCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ]
@@ -151,7 +151,7 @@ def update_items(
 
 
 class BabyBuddySensor(CoordinatorEntity, SensorEntity):
-    """Base class for Babybuddy sensors."""
+    """Base class for babybuddy sensors."""
 
     coordinator: BabyBuddyCoordinator
 
@@ -274,7 +274,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
 
 
 class BabyBuddyChildSensor(BabyBuddySensor):
-    """Representation of a Babybuddy child sensor."""
+    """Representation of a babybuddy child sensor."""
 
     def __init__(self, coordinator: BabyBuddyCoordinator, child: dict) -> None:
         """Initialize the sensor."""
@@ -287,16 +287,16 @@ class BabyBuddyChildSensor(BabyBuddySensor):
         self._attr_state = child[ATTR_BIRTH_DATE]
         self._attr_icon = "mdi:baby-face-outline"
         self._attr_device_class = ATTR_TIMESTAMP
-        self._attr_device_class = "babybuddy__child"
+        self._attr_device_class = "babybuddy_child"
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
-        """Return entity specific state attributes for Babybuddy."""
+        """Return entity specific state attributes for babybuddy."""
         return self.child
 
     @property
     def entity_picture(self) -> str | None:
-        """Return Baby Buddy picture."""
+        """Return babybuddy picture."""
         image: str | None = self.child[ATTR_PICTURE]
         return image
 
@@ -320,7 +320,7 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
 
     @property
     def name(self) -> str:
-        """Return the name of the Babybuddy sensor."""
+        """Return the name of the babybuddy sensor."""
         type = self.entity_description.key
         if type[-1] == "s":
             type = type[:-1]

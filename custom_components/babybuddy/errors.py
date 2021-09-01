@@ -1,4 +1,4 @@
-"""Exceptions for Babybuddy integration."""
+"""Exceptions for babybuddy integration."""
 
 from homeassistant.exceptions import HomeAssistantError
 

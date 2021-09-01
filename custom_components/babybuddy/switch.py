@@ -55,7 +55,7 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up the Babybuddy switches."""
+    """Set up the babybuddy switches."""
     babybuddy_coordinator: BabyBuddyCoordinator = hass.data[DOMAIN][
         config_entry.entry_id
     ]
@@ -129,7 +129,7 @@ def update_items(
 
 
 class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
-    """Representation of a Baby Buddy Timer switch."""
+    """Representation of a babybuddy timer switch."""
 
     coordinator: BabyBuddyCoordinator
 
@@ -161,7 +161,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
-        """Return entity specific state attributes for Baby Buddy."""
+        """Return entity specific state attributes for babybuddy."""
         attrs: dict[str, Any] = {}
         if self.is_on:
             attrs = self.coordinator.data[1][self.child[ATTR_ID]].get(ATTR_TIMERS)
@@ -252,7 +252,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         end: datetime | time | None = None,
         milestone: str | None = None,
     ) -> None:
-        """Add a tummy-time entry."""
+        """Add a tummy time entry."""
         try:
             data = self.set_common_fields(timer, start, end)
         except ValidationError as err:

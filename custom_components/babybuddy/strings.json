@@ -31,10 +31,10 @@
     "step": {
       "init": {
         "data": {
-          "scan_interval": "Update interval in seconds",
+          "scan_interval": "Update interval (secs)",
           "temperature": "Temperature unit",
           "weight": "Weight unit",
-          "feedings": "Feeding amount measuring unit."
+          "feedings": "Feeding amount unit"
         }
       }
     }

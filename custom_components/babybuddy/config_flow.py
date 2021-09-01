@@ -1,4 +1,4 @@
-"""Config flow for Babybuddy integration."""
+"""Config flow for babybuddy integration."""
 from __future__ import annotations
 
 from typing import Any
@@ -42,7 +42,7 @@ DATA_SCHEMA = vol.Schema(
 
 
 class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle Baby Buddy config flow."""
+    """Handle babybuddy config flow."""
 
     VERSION = 1
 
@@ -140,7 +140,7 @@ class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
-    """Handle Babybuddy options."""
+    """Handle babybuddy options."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize options flow."""
@@ -149,7 +149,7 @@ class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Manage Babybuddy options."""
+        """Manage babybuddy options."""
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 

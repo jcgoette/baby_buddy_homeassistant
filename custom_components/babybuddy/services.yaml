@@ -1,5 +1,5 @@
 add_child:
-  name: Add Child
+  name: Add child
   description: Add a child to Baby Buddy
   fields:
     first_name:
@@ -22,7 +22,7 @@ add_child:
         text:
 
 start_timer:
-  name: Start Timer
+  name: Start timer
   description: Start a new timer
   target:
     entity:
@@ -41,7 +41,7 @@ start_timer:
         text:
 
 add_feeding:
-  name: Add Feeding
+  name: Add feeding
   description: Adds a feeding entry
   target:
     entity:
@@ -103,7 +103,7 @@ add_feeding:
           multiline: true
 
 add_sleep:
-  name: Add Sleep
+  name: Add sleep
   description: Adds sleep entry
   target:
     entity:
@@ -133,8 +133,8 @@ add_sleep:
           multiline: true
 
 add_tummy_time:
-  name: Add Tummy Time
-  description: Adds Tummy Time entry
+  name: Add tummy time
+  description: Adds tummy time entry
   target:
     entity:
       integration: babybuddy
@@ -169,7 +169,7 @@ add_diaper_change:
     entity:
       integration: babybuddy
       domain: sensor
-      device_class: babybuddy__child
+      device_class: babybuddy_child
   fields:
     time:
       name: Change time
@@ -213,13 +213,13 @@ add_diaper_change:
           multiline: true
 
 add_temperature:
-  name: Add Temperature
+  name: Add temperature
   description: Adds a temperature entry
   target:
     entity:
       integration: babybuddy
       domain: sensor
-      device_class: babybuddy__child
+      device_class: babybuddy_child
   fields:
     temperature:
       name: Temperature
@@ -244,13 +244,13 @@ add_temperature:
           multiline: true
 
 add_weight:
-  name: Add Weight
+  name: Add weight
   description: Adds a weight entry
   target:
     entity:
       integration: babybuddy
       domain: sensor
-      device_class: babybuddy__child
+      device_class: babybuddy_child
   fields:
     weight:
       name: Weight
@@ -275,13 +275,13 @@ add_weight:
           multiline: true
 
 add_note:
-  name: Add Note
+  name: Add note
   description: Adds a note entry
   target:
     entity:
       integration: babybuddy
       domain: sensor
-      device_class: babybuddy__child
+      device_class: babybuddy_child
   fields:
     note:
       name: Note
@@ -297,8 +297,8 @@ add_note:
         time:
 
 delete_last_entry:
-  name: Delete last Babybuddy entry
-  description: Delete the last babybuddy sensor entry
+  name: Delete last entry
+  description: Delete the last sensor entry
   target:
     entity:
       integration: babybuddy
