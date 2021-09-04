@@ -355,5 +355,5 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
         """Return entity unit of measurement."""
         return self.coordinator.config_entry.options.get(
             self.entity_description.key,
-            self.entity_description.unit_of_measurement,
+            self.entity_description.native_unit_of_measurement,
         )
