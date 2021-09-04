@@ -106,7 +106,7 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         state_key=lambda value: int(
             time_period_str(value[ATTR_DURATION]).total_seconds() / 60
         ),
-        unit_of_measurement=TIME_MINUTES,
+        native_unit_of_measurement=TIME_MINUTES,
         icon="mdi:sleep",
     ),
     BabyBuddyEntityDescription(
