@@ -284,7 +284,7 @@ class BabyBuddyChildSensor(BabyBuddySensor):
         self._attr_unique_id = (
             f"{coordinator.config_entry.data[CONF_HOST]}-{child[ATTR_ID]}"
         )
-        self._attr_state = child[ATTR_BIRTH_DATE]
+        self._attr_native_value = child[ATTR_BIRTH_DATE]
         self._attr_icon = "mdi:baby-face-outline"
         self._attr_device_class = ATTR_TIMESTAMP
         self._attr_device_class = "babybuddy_child"
@@ -327,7 +327,7 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
         return f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} last {type}"
 
     @property
-    def state(self) -> StateType:
+    def native_value(self) -> StateType:
         """Return entity state."""
         if self.child[ATTR_ID] not in self.coordinator.data[1]:
             return None
@@ -351,7 +351,7 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
         return attrs
 
     @property
-    def unit_of_measurement(self) -> str | None:
+    def native_unit_of_measurement(self) -> str | None:
         """Return entity unit of measurement."""
         return self.coordinator.config_entry.options.get(
             self.entity_description.key,
