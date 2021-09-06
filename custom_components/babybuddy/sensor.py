@@ -351,7 +351,7 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
         return attrs
 
     @property
-    def unit_of_measurement(self) -> str | None:
+    def native_unit_of_measurement(self) -> str | None:
         """Return entity unit of measurement."""
         return self.coordinator.config_entry.options.get(
             self.entity_description.key,
