@@ -1,6 +1,7 @@
 {
   "ignorePaths": [
     ".cspell.json",
+    ".gitattributes",
     ".github",
     ".gitignore",
     ".pyc",
