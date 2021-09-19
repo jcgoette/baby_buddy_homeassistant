@@ -136,8 +136,6 @@ def update_items(
                 tracked[child[ATTR_ID]] = BabyBuddyChildSensor(coordinator, child)
                 new_entities.append(tracked[child[ATTR_ID]])
             for description in SENSOR_TYPES:
-                if description.key == ATTR_TIMERS:
-                    continue
                 if (
                     coordinator.data[1][child[ATTR_ID]].get(description.key)
                     and f"{child[ATTR_ID]}_{description.key}" not in tracked
