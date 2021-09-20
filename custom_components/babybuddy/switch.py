@@ -141,7 +141,9 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         """Initialize the sensor."""
         super().__init__(coordinator)
         self.child = child
-        self._attr_name = f"{self.child[ATTR_FIRST_NAME]} last {ATTR_TIMER}"
+        self._attr_name = (
+            f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} {ATTR_TIMER}"
+        )
         self._attr_unique_id = f"{self.coordinator.config_entry.data[CONF_HOST]}-{child[ATTR_ID]}-{ATTR_TIMER}"
         self._attr_icon = "mdi:timer-sand"
         self._attr_device_info = {
