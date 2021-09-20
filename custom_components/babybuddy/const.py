@@ -130,7 +130,7 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
     ),
     BabyBuddyEntityDescription(
         key=ATTR_TIMERS,
-        state_key=ATTR_ACTIVE,
+        state_key=ATTR_START,
         device_class=DEVICE_CLASS_TIMESTAMP,
         icon="mdi:timer-sand",
     ),
