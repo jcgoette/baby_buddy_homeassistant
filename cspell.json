@@ -18,5 +18,8 @@
     "isort",
     "reauth"
   ],
+  "import": [
+    "@cspell/dict-python/cspell-ext.json"
+  ],
   "language": "en"
 }
