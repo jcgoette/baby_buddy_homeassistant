@@ -16,9 +16,7 @@
     "hass",
     "homeassistant",
     "isort",
-    "multiline",
-    "reauth",
-    "reauthenticate"
+    "reauth"
   ],
   "language": "en"
 }
