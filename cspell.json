@@ -1,4 +1,13 @@
 {
+  "dictionaries": [
+    "homeassistant"
+  ],
+  "dictionaryDefinitions": [
+    {
+      "name": "homeassistant",
+      "path": "./homeassistant.txt"
+    }
+  ],
   "ignorePaths": [
     ".cspell.json",
     ".gitattributes",
@@ -12,9 +21,6 @@
     "aiohttp",
     "asyncio",
     "babybuddy",
-    "hacs",
-    "hass",
-    "homeassistant",
     "isort",
     "reauth"
   ],
