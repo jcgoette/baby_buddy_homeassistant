@@ -146,13 +146,13 @@ add_tummy_time:
       selector:
         boolean:
     start:
-      name: Sleep start time
-      description: Sleep start time
+      name: Tummy Time start time
+      description: Tummy Time start time
       selector:
         time:
     end:
-      name: Sleep end time
-      description: Sleep end time
+      name: Tummy Time end time
+      description: Tummy Time end time
       selector:
         time:
     milestone:
