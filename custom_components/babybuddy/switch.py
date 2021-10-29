@@ -88,7 +88,7 @@ async def async_setup_entry(
             vol.Required(ATTR_TYPE): vol.In(FEEDING_TYPES),
             vol.Required(ATTR_METHOD): vol.In(FEEDING_METHODS),
             **COMMON_FIELDS,
-            vol.Optional(ATTR_AMOUNT): cv.positive_int,
+            vol.Optional(ATTR_AMOUNT): cv.positive_float,
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_feeding",
