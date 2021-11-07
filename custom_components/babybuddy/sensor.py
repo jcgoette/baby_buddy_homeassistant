@@ -16,6 +16,7 @@ from homeassistant.const import (
     ATTR_TEMPERATURE,
     ATTR_TIME,
     CONF_HOST,
+    CONF_PORT,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv
@@ -37,6 +38,7 @@ from .const import (
     ATTR_NOTE,
     ATTR_NOTES,
     ATTR_PICTURE,
+    ATTR_SLUG,
     ATTR_SOLID,
     ATTR_TYPE,
     ATTR_WEIGHT,
@@ -157,8 +159,9 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self.child = child
         self._attr_device_info = {
-            "identifiers": {(DOMAIN, child[ATTR_ID])},
+            "configuration_url": f"{coordinator.config_entry.data[CONF_HOST]}:{coordinator.config_entry.data[CONF_PORT]}/children/{child[ATTR_SLUG]}/dashboard/",
             "default_name": f"Baby {child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]}",
+            "identifiers": {(DOMAIN, child[ATTR_ID])},
         }
 
     async def async_add_diaper_change(
