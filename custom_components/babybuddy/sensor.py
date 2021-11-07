@@ -38,7 +38,6 @@ from .const import (
     ATTR_NOTES,
     ATTR_PICTURE,
     ATTR_SOLID,
-    ATTR_TIMERS,
     ATTR_TYPE,
     ATTR_WEIGHT,
     ATTR_WET,
