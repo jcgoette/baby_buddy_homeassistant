@@ -93,6 +93,7 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
     ),
     BabyBuddyEntityDescription(
         key=ATTR_FEEDINGS,
+        state_class=STATE_CLASS_MEASUREMENT,
         state_key=ATTR_AMOUNT,
         icon="mdi:baby-bottle-outline",
     ),
@@ -115,6 +116,8 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         state_key=ATTR_TEMPERATURE,
         device_class=DEVICE_CLASS_TEMPERATURE,
         icon="mdi:thermometer",
+        state_class=STATE_CLASS_MEASUREMENT,
+        state_key=ATTR_TEMPERATURE,
     ),
     BabyBuddyEntityDescription(
         key=ATTR_TUMMY_TIMES,
