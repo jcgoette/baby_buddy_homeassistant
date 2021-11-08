@@ -49,7 +49,7 @@ class BabyBuddyClient:
 
     async def async_post(self, endpoint: str, data: dict[str, Any]) -> None:
         """POST request to babybuddy API."""
-        _LOGGER.debug("POST data: %s", data)
+        _LOGGER.debug(f"POST data: {data}")
         try:
             with async_timeout.timeout(10):
                 resp = await self.session.post(
