@@ -119,6 +119,12 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         state_key=ATTR_TEMPERATURE,
     ),
     BabyBuddyEntityDescription(
+        device_class=DEVICE_CLASS_TIMESTAMP,
+        icon="mdi:timer-sand",
+        key=ATTR_TIMERS,
+        state_key=ATTR_START,
+    ),
+    BabyBuddyEntityDescription(
         icon="mdi:baby",
         key=ATTR_TUMMY_TIMES,
         state_key=lambda value: int(
@@ -130,12 +136,6 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         key=ATTR_WEIGHT,
         state_class=STATE_CLASS_MEASUREMENT,
         state_key=ATTR_WEIGHT,
-    ),
-    BabyBuddyEntityDescription(
-        device_class=DEVICE_CLASS_TIMESTAMP,
-        icon="mdi:timer-sand",
-        key=ATTR_TIMERS,
-        state_key=ATTR_START,
     ),
 )
 
@@ -149,6 +149,18 @@ class BabyBuddySelectDescription(SelectEntityDescription):
 
 SELECTOR_TYPES: tuple[BabyBuddySelectDescription, ...] = (
     BabyBuddySelectDescription(
+        icon="mdi:paper-roll-outline",
+        key=DIAPER_COLOR,
+        name=f"{DEFAULT_NAME} Diaper color",
+        options=DIAPER_COLORS,
+    ),
+    BabyBuddySelectDescription(
+        icon="mdi:paper-roll-outline",
+        key=DIAPER_TYPE,
+        name=f"{DEFAULT_NAME} Diaper type",
+        options=DIAPER_TYPES,
+    ),
+    BabyBuddySelectDescription(
         icon="mdi:baby-bottle-outline",
         key=FEEDING_METHOD,
         name=f"{DEFAULT_NAME} Feeding method",
@@ -159,18 +171,6 @@ SELECTOR_TYPES: tuple[BabyBuddySelectDescription, ...] = (
         key=FEEDING_TYPE,
         name=f"{DEFAULT_NAME} Feeding type",
         options=FEEDING_TYPES,
-    ),
-    BabyBuddySelectDescription(
-        icon="mdi:paper-roll-outline",
-        key=DIAPER_TYPE,
-        name=f"{DEFAULT_NAME} Diaper type",
-        options=DIAPER_TYPES,
-    ),
-    BabyBuddySelectDescription(
-        icon="mdi:paper-roll-outline",
-        key=DIAPER_COLOR,
-        name=f"{DEFAULT_NAME} Diaper color",
-        options=DIAPER_COLORS,
     ),
 )
 
