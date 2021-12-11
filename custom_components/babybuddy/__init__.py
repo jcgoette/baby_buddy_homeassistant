@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 from asyncio import TimeoutError
 from datetime import timedelta
+from http import HTTPStatus
 from typing import Any, Tuple
 
 import homeassistant.util.dt as dt_util
@@ -16,7 +17,6 @@ from homeassistant.const import (
     CONF_HOST,
     CONF_PORT,
     CONF_SCAN_INTERVAL,
-    HTTP_FORBIDDEN,
 )
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
@@ -125,7 +125,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         try:
             children_list = await self.client.async_get(ATTR_CHILDREN)
         except ClientResponseError as err:
-            if err.status == HTTP_FORBIDDEN:
+            if err.status == HTTPStatus.FORBIDDEN:
                 raise ConfigEntryAuthFailed from err
 
         except (TimeoutError, ClientError) as err:

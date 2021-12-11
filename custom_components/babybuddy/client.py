@@ -4,13 +4,13 @@ from __future__ import annotations
 import logging
 from asyncio import TimeoutError
 from datetime import datetime, time
+from http import HTTPStatus
 from typing import Any
 
 import async_timeout
 import homeassistant.util.dt as dt_util
 from aiohttp.client import ClientSession
 from aiohttp.client_exceptions import ClientError, ClientResponseError
-from homeassistant.const import HTTP_CREATED, HTTP_OK
 
 from .errors import AuthorizationError, ConnectError, ValidationError
 
@@ -60,7 +60,7 @@ class BabyBuddyClient:
         except (TimeoutError, ClientError) as err:
             _LOGGER.error(err)
 
-        if resp.status != HTTP_CREATED:
+        if resp.status != HTTPStatus.CREATED:
             error = await resp.json()
             _LOGGER.error(f"Could not create {endpoint}. error: {error}")
 
@@ -77,7 +77,7 @@ class BabyBuddyClient:
         except (TimeoutError, ClientError) as err:
             _LOGGER.error(err)
 
-        if resp.status != HTTP_OK:
+        if resp.status != HTTPStatus.OK:
             error = await resp.json()
             _LOGGER.error(f"Could not update {endpoint}/{entry}. error: {error}")
 
