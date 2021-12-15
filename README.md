@@ -126,7 +126,7 @@ This service adds a diaper change entry for your child.
 | Service data attribute | Optional | Description |
 |------|:----:|-------------|
 | entity_id | no |   entity_id for the child sensor
-| type | no |   Specify type of diaper. This can be `Wet` or `Solid`.
+| type | no |   Specify type of diaper. This can be `Wet`, `Solid`, or `Wet and Solid`.
 | time | yes |   Specify diaper change time (must be in the past, else now() will be used)
 | color | yes |   Specify diaper color. This can be `Black`, `Brown` , `Green`, or `Yellow`.
 | amount | yes |   Add number of diapers
