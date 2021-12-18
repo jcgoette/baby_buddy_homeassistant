@@ -17,7 +17,6 @@ from homeassistant.const import (
     ATTR_TIME,
     CONF_HOST,
     CONF_PORT,
-    DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_TIMESTAMP,
 )
 from homeassistant.core import HomeAssistant, callback
