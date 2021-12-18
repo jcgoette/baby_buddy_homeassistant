@@ -34,6 +34,7 @@ from .const import (
     ATTR_CHANGES,
     ATTR_CHILD,
     ATTR_COLOR,
+    ATTR_DESCRIPTIVE,
     ATTR_FIRST_NAME,
     ATTR_LAST_NAME,
     ATTR_NOTE,
@@ -351,6 +352,22 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
             attrs = self.coordinator.data[1][self.child[ATTR_ID]][
                 self.entity_description.key
             ]
+            if self.entity_description.key == ATTR_CHANGES:
+                wet_and_solid: tuple(bool, bool) = (
+                    self.coordinator.data[1][self.child[ATTR_ID]][
+                        self.entity_description.key
+                    ][ATTR_WET],
+                    self.coordinator.data[1][self.child[ATTR_ID]][
+                        self.entity_description.key
+                    ][ATTR_SOLID],
+                )
+                if wet_and_solid == (True, False):
+                    attrs[ATTR_DESCRIPTIVE] = DIAPER_TYPES[0]
+                if wet_and_solid == (False, True):
+                    attrs[ATTR_DESCRIPTIVE] = DIAPER_TYPES[1]
+                if wet_and_solid == (True, True):
+                    attrs[ATTR_DESCRIPTIVE] = DIAPER_TYPES[2]
+
         return attrs
 
     @property
