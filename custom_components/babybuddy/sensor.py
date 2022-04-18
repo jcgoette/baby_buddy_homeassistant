@@ -31,11 +31,15 @@ from .client import get_datetime_from_time
 from .const import (
     ATTR_AMOUNT,
     ATTR_BIRTH_DATE,
+    ATTR_BMI,
     ATTR_CHANGES,
     ATTR_CHILD,
     ATTR_COLOR,
     ATTR_DESCRIPTIVE,
     ATTR_FIRST_NAME,
+    ATTR_HEAD_CIRCUMFERENCE_DASH,
+    ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
+    ATTR_HEIGHT,
     ATTR_LAST_NAME,
     ATTR_NOTE,
     ATTR_NOTES,
@@ -81,6 +85,15 @@ async def async_setup_entry(
 
     platform = entity_platform.async_get_current_platform()
     platform.async_register_entity_service(
+        "add_bmi",
+        {
+            vol.Required(ATTR_BMI): cv.positive_float,
+            vol.Optional(ATTR_DATE): cv.date,
+            vol.Optional(ATTR_NOTES): cv.string,
+        },
+        "async_add_bmi",
+    )
+    platform.async_register_entity_service(
         "add_diaper_change",
         {
             vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
@@ -91,24 +104,23 @@ async def async_setup_entry(
         },
         "async_add_diaper_change",
     )
-
     platform.async_register_entity_service(
-        "add_temperature",
+        "add_head_circumference",
         {
-            vol.Required(ATTR_TEMPERATURE): cv.positive_float,
-            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
-            vol.Optional(ATTR_NOTES): cv.string,
-        },
-        "async_add_temperature",
-    )
-    platform.async_register_entity_service(
-        "add_weight",
-        {
-            vol.Required(ATTR_WEIGHT): cv.positive_float,
+            vol.Required(ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE): cv.positive_float,
             vol.Optional(ATTR_DATE): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
-        "async_add_weight",
+        "async_add_head_circumference",
+    )
+    platform.async_register_entity_service(
+        "add_height",
+        {
+            vol.Required(ATTR_HEIGHT): cv.positive_float,
+            vol.Optional(ATTR_DATE): cv.date,
+            vol.Optional(ATTR_NOTES): cv.string,
+        },
+        "async_add_height",
     )
     platform.async_register_entity_service(
         "add_note",
@@ -184,6 +196,26 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             "identifiers": {(DOMAIN, child[ATTR_ID])},
         }
 
+    async def async_add_bmi(
+        self, bmi: float, date: date | None = None, notes: str | None = None
+    ) -> None:
+        """Add BMI entry."""
+        if not isinstance(self, BabyBuddyChildSensor):
+            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
+            return
+        data = {
+            ATTR_CHILD: self.child[ATTR_ID],
+            ATTR_BMI: bmi,
+        }
+        if date:
+            data[ATTR_DATE] = date
+        if notes:
+            data[ATTR_NOTES] = notes
+
+        date_now = dt_util.now().date()
+        await self.coordinator.client.async_post(ATTR_BMI, data, date_now)
+        await self.coordinator.async_request_refresh()
+
     async def async_add_diaper_change(
         self,
         type: str,
@@ -219,6 +251,50 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.client.async_post(ATTR_CHANGES, data, date_time_now)
         await self.coordinator.async_request_refresh()
 
+    async def async_add_head_circumference(
+        self,
+        head_circumference: float,
+        date: date | None = None,
+        notes: str | None = None,
+    ) -> None:
+        """Add head circumference entry."""
+        if not isinstance(self, BabyBuddyChildSensor):
+            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
+            return
+        data = {
+            ATTR_CHILD: self.child[ATTR_ID],
+            ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE: head_circumference,
+        }
+        if date:
+            data[ATTR_DATE] = date
+        if notes:
+            data[ATTR_NOTES] = notes
+
+        date_now = dt_util.now().date()
+        await self.coordinator.client.async_post(
+            ATTR_HEAD_CIRCUMFERENCE_DASH, data, date_now
+        )
+        await self.coordinator.async_request_refresh()
+
+    async def async_add_height(
+        self, height: float, date: date | None = None, notes: str | None = None
+    ) -> None:
+        """Add height entry."""
+        if not isinstance(self, BabyBuddyChildSensor):
+            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
+            return
+        data = {
+            ATTR_CHILD: self.child[ATTR_ID],
+            ATTR_HEIGHT: height,
+        }
+        if date:
+            data[ATTR_DATE] = date
+        if notes:
+            data[ATTR_NOTES] = notes
+
+        date_now = dt_util.now().date()
+        await self.coordinator.client.async_post(ATTR_HEIGHT, data, date_now)
+        await self.coordinator.async_request_refresh()
 
     async def async_add_note(
         self, note: str, time: datetime | time | None = None

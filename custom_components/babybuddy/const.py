@@ -32,6 +32,7 @@ DEFAULT_SCAN_INTERVAL: Final = 60
 ATTR_ACTIVE: Final = "active"
 ATTR_AMOUNT: Final = "amount"
 ATTR_BIRTH_DATE: Final = "birth_date"
+ATTR_BMI: Final = "bmi"
 ATTR_CHANGES: Final = "changes"
 ATTR_CHILD: Final = "child"
 ATTR_CHILDREN: Final = "children"
@@ -42,6 +43,9 @@ ATTR_DURATION: Final = "duration"
 ATTR_END: Final = "end"
 ATTR_FEEDINGS: Final = "feedings"
 ATTR_FIRST_NAME: Final = "first_name"
+ATTR_HEAD_CIRCUMFERENCE_DASH: Final = "head-circumference"
+ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE: Final = "head_circumference"
+ATTR_HEIGHT: Final = "height"
 ATTR_LAST_NAME: Final = "last_name"
 ATTR_METHOD: Final = "method"
 ATTR_MILESTONE: Final = "milestone"
@@ -87,6 +91,12 @@ class BabyBuddyEntityDescription(SensorEntityDescription, SwitchEntityDescriptio
 
 SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
     BabyBuddyEntityDescription(
+        icon="mdi:scale-bathroom",
+        key=ATTR_BMI,
+        state_class=STATE_CLASS_MEASUREMENT,
+        state_key=ATTR_BMI,
+    ),
+    BabyBuddyEntityDescription(
         device_class=DEVICE_CLASS_TIMESTAMP,
         icon="mdi:paper-roll-outline",
         key=ATTR_CHANGES,
@@ -97,6 +107,18 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         key=ATTR_FEEDINGS,
         state_class=STATE_CLASS_MEASUREMENT,
         state_key=ATTR_AMOUNT,
+    ),
+    BabyBuddyEntityDescription(
+        icon="mdi:head-outline",
+        key=ATTR_HEAD_CIRCUMFERENCE_DASH,
+        state_class=STATE_CLASS_MEASUREMENT,
+        state_key=ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
+    ),
+    BabyBuddyEntityDescription(
+        icon="mdi:human-male-height",
+        key=ATTR_HEIGHT,
+        state_class=STATE_CLASS_MEASUREMENT,
+        state_key=ATTR_HEIGHT,
     ),
     BabyBuddyEntityDescription(
         device_class=DEVICE_CLASS_TIMESTAMP,

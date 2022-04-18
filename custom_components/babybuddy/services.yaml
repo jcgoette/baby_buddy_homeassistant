@@ -1,3 +1,34 @@
+add_bmi:
+  name: Add BMI
+  description: Adds a BMI entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy_child
+  fields:
+    bmi:
+      name: BMI
+      description: BMI value
+      required: true
+      selector:
+        number:
+          min: 0.0
+          max: 100.0
+          step: 0.1
+          mode: box
+    date:
+      name: BMI date
+      description: BMI date in YYYY-MM-DD format
+      selector:
+        text:
+    notes:
+      name: BMI notes
+      description: BMI notes
+      selector:
+        text:
+          multiline: true
+
 add_child:
   name: Add child
   description: Add a child to Baby Buddy
@@ -133,62 +164,64 @@ add_feeding:
         text:
           multiline: true
 
-add_sleep:
-  name: Add sleep
-  description: Adds sleep entry
+add_head_circumference:
+  name: Add Head Circumference
+  description: Adds a head circumference entry
   target:
     entity:
       integration: babybuddy
-      domain: switch
+      domain: sensor
+      device_class: babybuddy_child
   fields:
-    timer:
-      name: Use timer
-      description: Use active timer to assign child/start/end
+    head_circumference:
+      name: Head Circumference
+      description: Head circumference value
+      required: true
       selector:
-        boolean:
-    start:
-      name: Sleep start time
-      description: Sleep start time
+        number:
+          min: 0.0
+          max: 100.0
+          step: 0.1
+          mode: box
+    date:
+      name: Head circumference date
+      description: Head circumference date in YYYY-MM-DD format
       selector:
-        time:
-    end:
-      name: Sleep end time
-      description: Sleep end time
-      selector:
-        time:
+        text:
     notes:
-      name: Sleep notes
-      description: Sleep notes
+      name: Head circumference notes
+      description: Head circumference notes
       selector:
         text:
           multiline: true
 
-add_tummy_time:
-  name: Add tummy time
-  description: Adds tummy time entry
+add_height:
+  name: Add Height
+  description: Adds a height entry
   target:
     entity:
       integration: babybuddy
-      domain: switch
+      domain: sensor
+      device_class: babybuddy_child
   fields:
-    timer:
-      name: Use timer
-      description: Use active timer to assign child/start/end
+    height:
+      name: Height
+      description: Height value
+      required: true
       selector:
-        boolean:
-    start:
-      name: Tummy Time start time
-      description: Tummy Time start time
+        number:
+          min: 0.0
+          max: 100.0
+          step: 0.1
+          mode: box
+    date:
+      name: Height date
+      description: Height date in YYYY-MM-DD format
       selector:
-        time:
-    end:
-      name: Tummy Time end time
-      description: Tummy Time end time
-      selector:
-        time:
-    milestone:
-      name: Tummy Time milestone
-      description: Tummy Time milestone
+        text:
+    notes:
+      name: Height notes
+      description: Height notes
       selector:
         text:
           multiline: true
@@ -357,7 +390,7 @@ start_timer:
       name: Timer start time
       description: Leave blank for a quick start
       selector:
-    time:
+        time:
     name:
       name: Timer name
       description: Specify optional timer name
