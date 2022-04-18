@@ -119,6 +119,24 @@ async def async_setup_entry(
         "async_add_note",
     )
     platform.async_register_entity_service(
+        "add_temperature",
+        {
+            vol.Required(ATTR_TEMPERATURE): cv.positive_float,
+            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
+            vol.Optional(ATTR_NOTES): cv.string,
+        },
+        "async_add_temperature",
+    )
+    platform.async_register_entity_service(
+        "add_weight",
+        {
+            vol.Required(ATTR_WEIGHT): cv.positive_float,
+            vol.Optional(ATTR_DATE): cv.date,
+            vol.Optional(ATTR_NOTES): cv.string,
+        },
+        "async_add_weight",
+    )
+    platform.async_register_entity_service(
         "delete_last_entry",
         {},
         "async_delete_last_entry",
@@ -201,6 +219,27 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.client.async_post(ATTR_CHANGES, data, date_time_now)
         await self.coordinator.async_request_refresh()
 
+
+    async def async_add_note(
+        self, note: str, time: datetime | time | None = None
+    ) -> None:
+        """Add note entry."""
+        if not isinstance(self, BabyBuddyChildSensor):
+            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
+            return
+        data = {ATTR_CHILD: self.child[ATTR_ID], ATTR_NOTE: note}
+        if time:
+            try:
+                date_time = get_datetime_from_time(time)
+                data[ATTR_TIME] = date_time
+            except ValidationError as err:
+                _LOGGER.error(err)
+                return
+
+        date_time_now = get_datetime_from_time(dt_util.now())
+        await self.coordinator.client.async_post(ATTR_NOTES, data, date_time_now)
+        await self.coordinator.async_request_refresh()
+
     async def async_add_temperature(
         self,
         temperature: float,
@@ -248,26 +287,6 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
 
         date_now = dt_util.now().date()
         await self.coordinator.client.async_post(ATTR_WEIGHT, data, date_now)
-        await self.coordinator.async_request_refresh()
-
-    async def async_add_note(
-        self, note: str, time: datetime | time | None = None
-    ) -> None:
-        """Add note entry."""
-        if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
-            return
-        data = {ATTR_CHILD: self.child[ATTR_ID], ATTR_NOTE: note}
-        if time:
-            try:
-                date_time = get_datetime_from_time(time)
-                data[ATTR_TIME] = date_time
-            except ValidationError as err:
-                _LOGGER.error(err)
-                return
-
-        date_time_now = get_datetime_from_time(dt_util.now())
-        await self.coordinator.client.async_post(ATTR_NOTES, data, date_time_now)
         await self.coordinator.async_request_refresh()
 
     async def async_delete_last_entry(self) -> None:
