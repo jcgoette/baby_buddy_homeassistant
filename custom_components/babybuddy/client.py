@@ -11,6 +11,7 @@ import async_timeout
 import homeassistant.util.dt as dt_util
 from aiohttp.client import ClientSession
 from aiohttp.client_exceptions import ClientError, ClientResponseError
+from homeassistant.const import ATTR_DATE, ATTR_TIME
 
 from .errors import AuthorizationError, ConnectError, ValidationError
 
@@ -47,7 +48,9 @@ class BabyBuddyClient:
 
         return await resp.json()
 
-    async def async_post(self, endpoint: str, data: dict[str, Any]) -> None:
+    async def async_post(
+        self, endpoint: str, data: dict[str, Any], call_time: datetime | None = None
+    ) -> None:
         """POST request to babybuddy API."""
         _LOGGER.debug(f"POST data: {data}")
         try:
@@ -62,7 +65,17 @@ class BabyBuddyClient:
 
         if resp.status != HTTPStatus.CREATED:
             error = await resp.json()
-            _LOGGER.error(f"Could not create {endpoint}. error: {error}")
+            _LOGGER.error(
+                f"Could not create {endpoint}. error: {error}. Please upgrade to babybuddy v1.11.0. In the meantime, attempting to use 'now()'..."
+            )
+
+            # crude backward compatibility fix for babybuddy < v1.11.0
+            if error == {"time": ["This field is required."]}:
+                data[ATTR_TIME] = call_time
+                await self.async_post(endpoint, data)
+            if error == {"date": ["This field is required."]}:
+                data[ATTR_DATE] = call_time
+                await self.async_post(endpoint, data)
 
     async def async_patch(
         self, endpoint: str, entry: str, data: dict[str, str]
