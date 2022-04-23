@@ -26,7 +26,9 @@ class BabyBuddyClient:
     ) -> None:
         """Initialize the client."""
         self.headers = {"Authorization": f"Token {api_key}"}
-        _LOGGER.debug(f"Client API Token: {api_key}")
+        _LOGGER.debug(
+            f"Client API Token, obfuscated: {api_key[:4]}{'.' * (len(api_key)-8)}{api_key[-4:]}"
+        )
         self.url = f"{host}:{port}"
         _LOGGER.debug(f"Client URL: {host}:{port}")
         self.session = session
