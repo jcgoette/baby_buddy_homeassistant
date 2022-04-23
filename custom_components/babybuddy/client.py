@@ -26,7 +26,9 @@ class BabyBuddyClient:
     ) -> None:
         """Initialize the client."""
         self.headers = {"Authorization": f"Token {api_key}"}
+        _LOGGER.debug(f"Client API Token: {api_key}")
         self.url = f"{host}:{port}"
+        _LOGGER.debug(f"Client URL: {host}:{port}")
         self.session = session
         self.endpoints: dict[str, str] = {}
 
@@ -40,12 +42,14 @@ class BabyBuddyClient:
             if entry:
                 url = f"{url}{entry}"
         with async_timeout.timeout(10):
+            _LOGGER.debug(f"GET URL: {url}")
             resp = await self.session.get(
                 url=url,
                 headers=self.headers,
                 raise_for_status=True,
             )
 
+        _LOGGER.debug(f"GET response: {await resp.text()}")
         return await resp.json()
 
     async def async_post(
@@ -112,6 +116,7 @@ class BabyBuddyClient:
         """Check connection to babybuddy API."""
         try:
             self.endpoints = await self.async_get()
+            _LOGGER.debug(f"Endpoints: {self.endpoints}")
         except ClientResponseError as err:
             raise AuthorizationError from err
         except (TimeoutError, ClientError) as err:
