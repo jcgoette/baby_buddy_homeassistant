@@ -329,7 +329,6 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_TEMPERATURE: temperature,
-            ATTR_TIME: date_time,
         }
         if time:
             try:
