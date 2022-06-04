@@ -1,5 +1,4 @@
 {
-  "domains": ["sensor", "switch"],
   "homeassistant": "2021.9",
   "iot_class": "Cloud Polling",
   "name": "Baby Buddy",
