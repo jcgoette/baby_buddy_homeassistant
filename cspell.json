@@ -21,6 +21,7 @@
     "aiohttp",
     "asyncio",
     "babybuddy",
+    "clientsession",
     "isort",
     "reauth"
   ],
