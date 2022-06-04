@@ -121,21 +121,24 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         """Update babybuddy data."""
         children_list: dict[str, Any] = {}
         child_data: dict[int, dict[str, dict[str, str]]] = {}
+
         try:
             children_list = await self.client.async_get(ATTR_CHILDREN)
         except ClientResponseError as err:
             if err.status == HTTPStatus.FORBIDDEN:
                 raise ConfigEntryAuthFailed from err
-
         except (TimeoutError, ClientError) as err:
             raise UpdateFailed(err) from err
 
         if children_list[ATTR_COUNT] == 0:
             raise UpdateFailed("No children found. Please add at least one child.")
+        if children_list[ATTR_COUNT] > len(self.child_ids):
+            self.child_ids = [child[ATTR_ID] for child in children_list[ATTR_RESULTS]]
+        if children_list[ATTR_COUNT] < len(self.child_ids):
+            self.child_ids = [child[ATTR_ID] for child in children_list[ATTR_RESULTS]]
+            await self.async_remove_deleted_children()
 
         for child in children_list[ATTR_RESULTS]:
-            if child[ATTR_ID] not in self.child_ids:
-                self.child_ids.append(child[ATTR_ID])
             child_data.setdefault(child[ATTR_ID], {})
             for endpoint in SENSOR_TYPES:
                 endpoint_data: dict = {}
@@ -154,7 +157,6 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
                 data: list[dict[str, str]] = endpoint_data[ATTR_RESULTS]
                 child_data[child[ATTR_ID]][endpoint.key] = data[0] if data else {}
 
-        await self.async_remove_deleted_children()
         return (children_list[ATTR_RESULTS], child_data)
 
     async def async_setup(self) -> None:
