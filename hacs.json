@@ -1,6 +1,5 @@
 {
   "homeassistant": "2021.9",
-  "iot_class": "Cloud Polling",
   "name": "Baby Buddy",
   "render_readme": true
 }
