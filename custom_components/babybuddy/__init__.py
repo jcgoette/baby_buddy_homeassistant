@@ -24,6 +24,7 @@ from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.device_registry import (
     DeviceRegistry,
     async_entries_for_config_entry,
+    async_get,
 )
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -109,9 +110,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
 
     async def async_remove_deleted_children(self) -> None:
         """Remove child device if child is removed from babybuddy."""
-        dr: DeviceRegistry = (
-            await self.hass.helpers.device_registry.async_get_registry()
-        )
+        dr: DeviceRegistry = async_get(self.hass)
         for device in async_entries_for_config_entry(dr, self.config_entry.entry_id):
             if next(iter(device.identifiers))[1] not in self.child_ids:
                 dr.async_remove_device(device.id)
