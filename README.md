@@ -24,8 +24,9 @@ Adding BabyBuddy to your Home Assistant instance can be done via the user interf
 
 | Name | Optional | Description |
 |------|:----:|-------------|
-| address  | no |   Full URL host for your instance of Baby Buddy
+| address  | no |   Host URL for your instance of Baby Buddy, without sub path
 | port  | no |   Host port (default = 8000)
+| path  | no |   Sub path of your Baby Buddy instance (default = "")
 | api_key| no |  The API key from the user settings page on your instance of Baby Buddy
 
 ### Options

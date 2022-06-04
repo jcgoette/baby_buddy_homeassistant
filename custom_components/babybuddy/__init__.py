@@ -15,6 +15,7 @@ from homeassistant.const import (
     ATTR_ID,
     CONF_API_KEY,
     CONF_HOST,
+    CONF_PATH,
     CONF_PORT,
     CONF_SCAN_INTERVAL,
 )
@@ -103,6 +104,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         self.client: BabyBuddyClient = BabyBuddyClient(
             config_entry.data[CONF_HOST],
             config_entry.data[CONF_PORT],
+            config_entry.data[CONF_PATH],
             config_entry.data[CONF_API_KEY],
             hass.helpers.aiohttp_client.async_get_clientsession(),
         )
