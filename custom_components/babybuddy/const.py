@@ -27,6 +27,7 @@ CONF_WEIGHT_UNIT: Final = "weight"
 
 DEFAULT_NAME: Final = "Baby Buddy"
 DEFAULT_PORT: Final = 8000
+DEFAULT_PATH: Final = ""
 DEFAULT_SCAN_INTERVAL: Final = 60
 
 ATTR_ACTIVE: Final = "active"

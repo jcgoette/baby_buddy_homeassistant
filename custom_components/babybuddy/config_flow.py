@@ -9,6 +9,7 @@ from homeassistant import config_entries
 from homeassistant.const import (
     CONF_API_KEY,
     CONF_HOST,
+    CONF_PATH,
     CONF_PORT,
     CONF_SCAN_INTERVAL,
     MASS_KILOGRAMS,
@@ -28,6 +29,7 @@ from .const import (
     CONF_TEMPERATURE_UNIT,
     CONF_WEIGHT_UNIT,
     DEFAULT_NAME,
+    DEFAULT_PATH,
     DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
@@ -38,6 +40,7 @@ DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST): str,
         vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
+        vol.Required(CONF_PATH, default=DEFAULT_PATH): str,
         vol.Required(CONF_API_KEY): str,
     }
 )
@@ -75,6 +78,7 @@ class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 client: BabyBuddyClient = BabyBuddyClient(
                     user_input[CONF_HOST],
                     user_input[CONF_PORT],
+                    user_input[CONF_PATH],
                     user_input[CONF_API_KEY],
                     self.hass.helpers.aiohttp_client.async_get_clientsession(),
                 )
@@ -111,10 +115,12 @@ class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None and existing_entry is not None:
             user_input[CONF_HOST] = existing_entry.data[CONF_HOST]
             user_input[CONF_PORT] = existing_entry.data[CONF_PORT]
+            user_input[CONF_PATH] = existing_entry.data[CONF_PATH]
             try:
                 client: BabyBuddyClient = BabyBuddyClient(
                     user_input[CONF_HOST],
                     user_input[CONF_PORT],
+                    user_input[CONF_PATH],
                     user_input[CONF_API_KEY],
                     self.hass.helpers.aiohttp_client.async_get_clientsession(),
                 )
