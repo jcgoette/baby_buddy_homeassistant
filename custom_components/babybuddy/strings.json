@@ -3,10 +3,11 @@
     "step": {
       "user": {
         "title": "Set up Baby Buddy",
-        "description": "The host entry must be in full URL format, e.g., https://192.168.1.100",
+        "description": "The host entry must be in full URL format without sub path, e.g., https://192.168.1.100",
         "data": {
           "host": "[%key:common::config_flow::data::host%]",
           "port": "[%key:common::config_flow::data::port%]",
+          "path": "[%key:common::config_flow::data::path%]",
           "api_key": "[%key:common::config_flow::data::api_key%]"
         }
       },

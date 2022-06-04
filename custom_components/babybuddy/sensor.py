@@ -16,6 +16,7 @@ from homeassistant.const import (
     ATTR_TEMPERATURE,
     ATTR_TIME,
     CONF_HOST,
+    CONF_PATH,
     CONF_PORT,
     DEVICE_CLASS_TIMESTAMP,
 )
@@ -201,7 +202,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self.child = child
         self._attr_device_info = {
-            "configuration_url": f"{coordinator.config_entry.data[CONF_HOST]}:{coordinator.config_entry.data[CONF_PORT]}/children/{child[ATTR_SLUG]}/dashboard/",
+            "configuration_url": f"{coordinator.config_entry.data[CONF_HOST]}:{coordinator.config_entry.data[CONF_PORT]}{coordinator.config_entry.data[CONF_PATH]}/children/{child[ATTR_SLUG]}/dashboard/",
             "default_name": f"Baby {child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]}",
             "identifiers": {(DOMAIN, child[ATTR_ID])},
         }

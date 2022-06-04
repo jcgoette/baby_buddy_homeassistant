@@ -3,10 +3,11 @@
     "step": {
       "user": {
         "title": "Set up Baby Buddy",
-        "description": "The host entry must be in full URL format, e.g., https://192.168.1.100",
+        "description": "The host entry must be in full URL format without sub path, e.g., https://192.168.1.100",
         "data": {
           "host": "Host",
           "port": "Port",
+          "path": "Path",
           "api_key": "API Key"
         }
       },
