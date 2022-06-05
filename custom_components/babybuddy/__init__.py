@@ -106,14 +106,55 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
             config_entry.data[CONF_API_KEY],
             hass.helpers.aiohttp_client.async_get_clientsession(),
         )
+        self.dr: DeviceRegistry = async_get(self.hass)
         self.child_ids: list[str] = []
+
+    async def async_set_children_from_db(self) -> None:
+        """Set child_ids from HA database."""
+        self.child_ids = [
+            next(iter(device.identifiers))[1]
+            for device in async_entries_for_config_entry(
+                self.dr, self.config_entry.entry_id
+            )
+        ]
+
+    async def async_setup(self) -> None:
+        """Set up babybuddy."""
+
+        try:
+            await self.client.async_connect()
+        except AuthorizationError as err:
+            raise ConfigEntryAuthFailed from err
+        except ConnectError as err:
+            raise ConfigEntryNotReady(err) from err
+
+        await self.async_set_children_from_db()
+
+        async def async_add_child(call: ServiceCall) -> None:
+            """Add new child."""
+            data = {
+                ATTR_FIRST_NAME: call.data[ATTR_FIRST_NAME],
+                ATTR_LAST_NAME: call.data[ATTR_LAST_NAME],
+                ATTR_BIRTH_DATE: call.data[ATTR_BIRTH_DATE],
+            }
+            await self.client.async_post(ATTR_CHILDREN, data)
+            await self.async_request_refresh()
+
+        self.hass.services.async_register(
+            DOMAIN, "add_child", async_add_child, schema=SERVICE_ADD_CHILD_SCHEMA
+        )
+
+        self.config_entry.async_on_unload(
+            self.config_entry.add_update_listener(options_updated_listener)
+        )
 
     async def async_remove_deleted_children(self) -> None:
         """Remove child device if child is removed from babybuddy."""
-        dr: DeviceRegistry = async_get(self.hass)
-        for device in async_entries_for_config_entry(dr, self.config_entry.entry_id):
+        for device in async_entries_for_config_entry(
+            self.dr, self.config_entry.entry_id
+        ):
             if next(iter(device.identifiers))[1] not in self.child_ids:
-                dr.async_remove_device(device.id)
+                self.dr.async_remove_device(device.id)
 
     async def async_update(
         self,
@@ -130,13 +171,13 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         except (TimeoutError, ClientError) as err:
             raise UpdateFailed(err) from err
 
+        if children_list[ATTR_COUNT] < len(self.child_ids):
+            self.child_ids = [child[ATTR_ID] for child in children_list[ATTR_RESULTS]]
+            await self.async_remove_deleted_children()
         if children_list[ATTR_COUNT] == 0:
             raise UpdateFailed("No children found. Please add at least one child.")
         if children_list[ATTR_COUNT] > len(self.child_ids):
             self.child_ids = [child[ATTR_ID] for child in children_list[ATTR_RESULTS]]
-        if children_list[ATTR_COUNT] < len(self.child_ids):
-            self.child_ids = [child[ATTR_ID] for child in children_list[ATTR_RESULTS]]
-            await self.async_remove_deleted_children()
 
         for child in children_list[ATTR_RESULTS]:
             child_data.setdefault(child[ATTR_ID], {})
@@ -158,34 +199,6 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
                 child_data[child[ATTR_ID]][endpoint.key] = data[0] if data else {}
 
         return (children_list[ATTR_RESULTS], child_data)
-
-    async def async_setup(self) -> None:
-        """Set up babybuddy."""
-
-        try:
-            await self.client.async_connect()
-        except AuthorizationError as err:
-            raise ConfigEntryAuthFailed from err
-        except ConnectError as err:
-            raise ConfigEntryNotReady(err) from err
-
-        async def async_add_child(call: ServiceCall) -> None:
-            """Add new child."""
-            data = {
-                ATTR_FIRST_NAME: call.data[ATTR_FIRST_NAME],
-                ATTR_LAST_NAME: call.data[ATTR_LAST_NAME],
-                ATTR_BIRTH_DATE: call.data[ATTR_BIRTH_DATE],
-            }
-            await self.client.async_post(ATTR_CHILDREN, data)
-            await self.async_request_refresh()
-
-        self.hass.services.async_register(
-            DOMAIN, "add_child", async_add_child, schema=SERVICE_ADD_CHILD_SCHEMA
-        )
-
-        self.config_entry.async_on_unload(
-            self.config_entry.add_update_listener(options_updated_listener)
-        )
 
 
 async def options_updated_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
