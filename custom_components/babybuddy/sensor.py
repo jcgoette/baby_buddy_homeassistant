@@ -98,7 +98,7 @@ async def async_setup_entry(
         "add_diaper_change",
         {
             vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
-            vol.Required(ATTR_TYPE, default=DEFAULT_DIAPER_TYPE): vol.In(DIAPER_TYPES),
+            vol.Optional(ATTR_TYPE): vol.In(DIAPER_TYPES),
             vol.Optional(ATTR_COLOR): vol.In(DIAPER_COLORS),
             vol.Optional(ATTR_AMOUNT): cv.positive_int,
             vol.Optional(ATTR_NOTES): cv.string,
@@ -228,7 +228,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
 
     async def async_add_diaper_change(
         self,
-        type: str,
+        type: str | None = None,
         time: datetime | time | None = None,
         color: str | None = None,
         amount: int | None = None,
@@ -240,8 +240,6 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
-            ATTR_WET: type == "Wet and Solid" or type.lower() == ATTR_WET,
-            ATTR_SOLID: type == "Wet and Solid" or type.lower() == ATTR_SOLID,
         }
         if time:
             try:
@@ -250,6 +248,9 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             except ValidationError as err:
                 _LOGGER.error(err)
                 return
+        if type:
+            data[ATTR_WET] = type == "Wet and Solid" or type.lower() == ATTR_WET
+            data[ATTR_SOLID] = type == "Wet and Solid" or type.lower() == ATTR_SOLID
         if color:
             data[ATTR_COLOR] = color.lower()
         if amount:

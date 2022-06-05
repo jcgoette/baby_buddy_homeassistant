@@ -69,8 +69,6 @@ add_diaper_change:
     type:
       name: Diaper type
       description: Type of diaper change
-      required: true
-      default: wet
       selector:
         select:
           options:
