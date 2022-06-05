@@ -95,6 +95,17 @@ This service adds a feeding entry for your child. Feeding start/end/child fields
 | amount | yes |   Specify amount of feeding as an integer
 | notes | yes |   Add notes text to entry
 
+### SERVICE ADD_PUMPING
+
+This service adds a pumping entry for your child.
+
+| Service data attribute | Optional | Description |
+|------|:----:|-------------|
+| entity_id | no |   entity_id for the child sensor
+| amount | no |   Specify amount of pumping as an integer
+| time | yes |   Specify pumping recording time (must be in the past, else now() will be used)
+| notes | yes |   Add notes text to entry
+
 ### SERVICE ADD_SLEEP
 
 This service adds a sleep entry for your child. Sleep start/end/child fields can be linked to an active timer.

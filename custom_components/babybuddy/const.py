@@ -52,6 +52,7 @@ ATTR_MILESTONE: Final = "milestone"
 ATTR_NOTE: Final = "note"
 ATTR_NOTES: Final = "notes"
 ATTR_PICTURE: Final = "picture"
+ATTR_PUMPING: Final = "pumping"
 ATTR_RESULTS: Final = "results"
 ATTR_SLEEP: Final = "sleep"
 ATTR_SLUG: Final = "slug"
@@ -125,6 +126,12 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         icon="mdi:note-multiple-outline",
         key=ATTR_NOTES,
         state_key=ATTR_TIME,
+    ),
+    BabyBuddyEntityDescription(
+        icon="mdi:mother-nurse",
+        key=ATTR_PUMPING,
+        state_class=STATE_CLASS_MEASUREMENT,
+        state_key=ATTR_AMOUNT,
     ),
     BabyBuddyEntityDescription(
         icon="mdi:sleep",

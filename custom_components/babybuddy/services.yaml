@@ -248,6 +248,35 @@ add_note:
       selector:
         time:
 
+add_pumping:
+  name: Add pumping
+  description: Adds a pumping entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy_child
+  fields:
+    amount:
+      name: Pumping amount
+      description: Pumping amount
+      selector:
+        number:
+          min: 1
+          max: 10
+          mode: box
+    time:
+      name: Pumping time
+      description: Pumping time
+      selector:
+        time:
+    notes:
+      name: Pumping notes
+      description: Pumping notes
+      selector:
+        text:
+          multiline: true
+
 add_sleep:
   name: Add sleep
   description: Adds sleep entry
