@@ -30,6 +30,8 @@ DEFAULT_PORT: Final = 8000
 DEFAULT_PATH: Final = ""
 DEFAULT_SCAN_INTERVAL: Final = 60
 
+CONFIG_FLOW_VERSION: Final = 2
+
 ATTR_ACTIVE: Final = "active"
 ATTR_AMOUNT: Final = "amount"
 ATTR_BIRTH_DATE: Final = "birth_date"
