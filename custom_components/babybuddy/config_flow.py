@@ -40,7 +40,7 @@ DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST): str,
         vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
-        vol.Required(CONF_PATH, default=DEFAULT_PATH): str,
+        vol.Optional(CONF_PATH, default=DEFAULT_PATH): str,
         vol.Required(CONF_API_KEY): str,
     }
 )
@@ -49,7 +49,7 @@ DATA_SCHEMA = vol.Schema(
 class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle babybuddy config flow."""
 
-    VERSION = 1
+    VERSION = 2
 
     @staticmethod
     @callback
