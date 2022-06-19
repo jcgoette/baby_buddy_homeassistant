@@ -37,6 +37,8 @@ from .const import (
     ATTR_FIRST_NAME,
     ATTR_LAST_NAME,
     ATTR_RESULTS,
+    CONFIG_FLOW_VERSION,
+    DEFAULT_PATH,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     PLATFORMS,
@@ -81,6 +83,26 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> 
         hass.services.async_remove(DOMAIN, "add_child")
 
     return unload_ok
+
+
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+    """Handle migration of config entries."""
+
+    _LOGGER.debug(f"Migrating from ConfigFlow version {config_entry.version}.")
+
+    if config_entry.version == 1:
+
+        new = {**config_entry.data}
+        new[CONF_PATH] = DEFAULT_PATH
+
+        config_entry.version = CONFIG_FLOW_VERSION
+        hass.config_entries.async_update_entry(config_entry, data=new)
+
+    _LOGGER.info(
+        f"Migration to ConfigFlow version {config_entry.version} successful.",
+    )
+
+    return True
 
 
 class BabyBuddyCoordinator(DataUpdateCoordinator):
