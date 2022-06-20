@@ -39,12 +39,14 @@ add_child:
     first_name:
       name: First Name
       description: Child's first name
+      example: Little
       required: true
       selector:
         text:
     last_name:
       name: Last Name
       description: Child's last name
+      example: Girl
       required: true
       selector:
         text:
@@ -68,6 +70,7 @@ add_diaper_change:
     time:
       name: Change time
       description: Change time
+      example: 15:00:00
       selector:
         time:
     type:
@@ -124,11 +127,13 @@ add_feeding:
     start:
       name: Feeding start time
       description: Feeding start time
+      example: 15:00:00
       selector:
         time:
     end:
       name: Feeding end time
       description: Feeding end time
+      example: 15:10:00
       selector:
         time:
     type:
@@ -262,6 +267,7 @@ add_note:
     time:
       name: Note time
       description: Note time
+      example: 15:00:00
       selector:
         time:
 
@@ -286,6 +292,7 @@ add_pumping:
     time:
       name: Pumping time
       description: Pumping time
+      example: 15:00:00
       selector:
         time:
     notes:
@@ -312,11 +319,13 @@ add_sleep:
     start:
       name: Sleep start time
       description: Sleep start time
+      example: 15:00:00
       selector:
         time:
     end:
       name: Sleep end time
       description: Sleep end time
+      example: 15:10:00
       selector:
         time:
     notes:
@@ -350,6 +359,7 @@ add_temperature:
     time:
       name: Temperature time
       description: Temperature time
+      example: 15:00:00
       selector:
         time:
     notes:
@@ -376,11 +386,13 @@ add_tummy_time:
     start:
       name: Tummy Time start time
       description: Tummy Time start time
+      example: 15:00:00
       selector:
         time:
     end:
       name: Tummy Time end time
       description: Tummy Time end time
+      example: 15:10:00
       selector:
         time:
     milestone:
@@ -444,6 +456,7 @@ start_timer:
     start:
       name: Timer start time
       description: Leave blank for a quick start
+      example: 15:00:00
       selector:
         time:
     name:
