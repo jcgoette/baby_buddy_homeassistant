@@ -1,0 +1,26 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  manifest_bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get version
+        id: version
+        uses: home-assistant/actions/helpers/version@master
+      - name: Bump manifest and create zip
+        run: |
+          sed -i 's/v0.0.0/${{ steps.version.outputs.version }}/' custom_components/baby_buddy_homeassistant/manifest.json
+        
+          cd custom_components/baby_buddy_homeassistant/
+          zip ../../baby_buddy_homeassistant.zip ./* frontend/dist/* -x '.*'
+      - uses: gacts/upload-to-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: ./baby_buddy_homeassistant.zip
+          type: application/zip
