@@ -465,5 +465,6 @@ start_timer:
     name:
       name: Timer name
       description: Specify optional timer name
+      example: Timer name
       selector:
         text:
