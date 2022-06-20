@@ -122,6 +122,7 @@ add_feeding:
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
+      example: false
       selector:
         boolean:
     start:
@@ -314,6 +315,7 @@ add_sleep:
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
+      example: false
       selector:
         boolean:
     start:
@@ -381,6 +383,7 @@ add_tummy_time:
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
+      example: false
       selector:
         boolean:
     start:
