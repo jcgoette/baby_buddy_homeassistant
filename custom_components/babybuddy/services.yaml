@@ -10,6 +10,7 @@ add_bmi:
     bmi:
       name: BMI
       description: BMI value
+      example: 5.0
       required: true
       selector:
         number:
@@ -20,11 +21,13 @@ add_bmi:
     date:
       name: BMI date
       description: BMI date in YYYY-MM-DD format
+      example: 2022-06-20
       selector:
         text:
     notes:
       name: BMI notes
       description: BMI notes
+      example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et blandit elit. Duis in varius eros. Morbi eleifend, nulla a.
       selector:
         text:
           multiline: true
@@ -48,6 +51,7 @@ add_child:
     birth_date:
       name: Birth Date
       description: Child's birth date in YYYY-MM-DD format
+      example: 2022-06-20
       required: true
       selector:
         text:
@@ -69,6 +73,7 @@ add_diaper_change:
     type:
       name: Diaper type
       description: Type of diaper change
+      example: Wet
       selector:
         select:
           options:
@@ -78,6 +83,7 @@ add_diaper_change:
     color:
       name: Diaper color
       description: Diaper color
+      example: Black
       selector:
         select:
           options:
@@ -88,6 +94,7 @@ add_diaper_change:
     amount:
       name: Diaper change amount
       description: Diaper change amount
+      example: 5
       selector:
         number:
           min: 1
@@ -96,6 +103,7 @@ add_diaper_change:
     notes:
       name: Change notes
       description: Change notes
+      example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et blandit elit. Duis in varius eros. Morbi eleifend, nulla a.
       selector:
         text:
           multiline: true
@@ -126,6 +134,7 @@ add_feeding:
     type:
       name: Feeding type
       description: Feeding type
+      example: Breast milk
       required: true
       selector:
         select:
@@ -137,6 +146,7 @@ add_feeding:
     method:
       name: Feeding method
       description: Feeding method
+      example: Bottle
       required: true
       selector:
         select:
@@ -150,6 +160,7 @@ add_feeding:
     amount:
       name: Feeding amount
       description: Feeding amount in number format
+      example: 1
       selector:
         number:
           min: 1
@@ -158,6 +169,7 @@ add_feeding:
     notes:
       name: Feeding notes
       description: Feeding notes
+      example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et blandit elit. Duis in varius eros. Morbi eleifend, nulla a.
       selector:
         text:
           multiline: true
@@ -174,6 +186,7 @@ add_head_circumference:
     head_circumference:
       name: Head Circumference
       description: Head circumference value
+      example: 5.0
       required: true
       selector:
         number:
@@ -184,11 +197,13 @@ add_head_circumference:
     date:
       name: Head circumference date
       description: Head circumference date in YYYY-MM-DD format
+      example: 2022-06-20
       selector:
         text:
     notes:
       name: Head circumference notes
       description: Head circumference notes
+      example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et blandit elit. Duis in varius eros. Morbi eleifend, nulla a.
       selector:
         text:
           multiline: true
@@ -205,6 +220,7 @@ add_height:
     height:
       name: Height
       description: Height value
+      example: 5.0
       required: true
       selector:
         number:
@@ -215,11 +231,13 @@ add_height:
     date:
       name: Height date
       description: Height date in YYYY-MM-DD format
+      example: 2022-06-20
       selector:
         text:
     notes:
       name: Height notes
       description: Height notes
+      example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et blandit elit. Duis in varius eros. Morbi eleifend, nulla a.
       selector:
         text:
           multiline: true
@@ -236,6 +254,7 @@ add_note:
     note:
       name: Note
       description: Note text
+      example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et blandit elit. Duis in varius eros. Morbi eleifend, nulla a.
       required: true
       selector:
         text:
@@ -258,6 +277,7 @@ add_pumping:
     amount:
       name: Pumping amount
       description: Pumping amount
+      example: 1
       selector:
         number:
           min: 1
@@ -271,6 +291,7 @@ add_pumping:
     notes:
       name: Pumping notes
       description: Pumping notes
+      example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et blandit elit. Duis in varius eros. Morbi eleifend, nulla a.
       selector:
         text:
           multiline: true
@@ -301,6 +322,7 @@ add_sleep:
     notes:
       name: Sleep notes
       description: Sleep notes
+      example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et blandit elit. Duis in varius eros. Morbi eleifend, nulla a.
       selector:
         text:
           multiline: true
@@ -317,6 +339,7 @@ add_temperature:
     temperature:
       name: Temperature
       description: Temperature
+      example: 37.0
       required: true
       selector:
         number:
@@ -332,6 +355,7 @@ add_temperature:
     notes:
       name: Temperature notes
       description: Temperature notes
+      example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et blandit elit. Duis in varius eros. Morbi eleifend, nulla a.
       selector:
         text:
           multiline: true
@@ -362,6 +386,7 @@ add_tummy_time:
     milestone:
       name: Tummy Time milestone
       description: Tummy Time milestone
+      example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et blandit elit. Duis in varius eros. Morbi eleifend, nulla a.
       selector:
         text:
           multiline: true
@@ -378,6 +403,7 @@ add_weight:
     weight:
       name: Weight
       description: Weight value
+      example: 5.0
       required: true
       selector:
         number:
@@ -388,11 +414,13 @@ add_weight:
     date:
       name: Weight date
       description: Weight date in YYYY-MM-DD format
+      example: 2022-06-20
       selector:
         text:
     notes:
       name: Weight notes
       description: Weight notes
+      example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et blandit elit. Duis in varius eros. Morbi eleifend, nulla a.
       selector:
         text:
           multiline: true
