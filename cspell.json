@@ -28,5 +28,5 @@
   "import": [
     "@cspell/dict-python/cspell-ext.json"
   ],
-  "language": "en"
+  "language": "en,lorem"
 }

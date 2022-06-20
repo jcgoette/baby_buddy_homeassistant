@@ -28,6 +28,7 @@ from .const import (
     CONF_FEEDING_UNIT,
     CONF_TEMPERATURE_UNIT,
     CONF_WEIGHT_UNIT,
+    CONFIG_FLOW_VERSION,
     DEFAULT_NAME,
     DEFAULT_PATH,
     DEFAULT_PORT,
@@ -49,7 +50,7 @@ DATA_SCHEMA = vol.Schema(
 class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle babybuddy config flow."""
 
-    VERSION = 2
+    VERSION = CONFIG_FLOW_VERSION
 
     @staticmethod
     @callback
