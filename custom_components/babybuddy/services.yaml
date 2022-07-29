@@ -318,6 +318,12 @@ add_sleep:
       example: false
       selector:
         boolean:
+    napping:
+      name: Nap
+      description: Record this sleep as a nap
+      example: false
+      selector:
+        boolean:
     start:
       name: Sleep start time
       description: Sleep start time
