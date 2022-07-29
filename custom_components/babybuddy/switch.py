@@ -28,6 +28,7 @@ from .const import (
     ATTR_LAST_NAME,
     ATTR_METHOD,
     ATTR_MILESTONE,
+    ATTR_NAPPING,
     ATTR_NOTES,
     ATTR_SLEEP,
     ATTR_START,
