@@ -97,6 +97,7 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         "add_sleep",
         {
+            vol.Optional(ATTR_NAPPING, default=False): cv.boolean,
             **COMMON_FIELDS,
             vol.Optional(ATTR_NOTES): cv.string,
         },
@@ -231,14 +232,14 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
     async def async_add_sleep(
         self,
         timer: bool,
+        napping: bool,
         start: datetime | time | None = None,
         end: datetime | time | None = None,
-        napping: bool,
         notes: str | None = None,
     ) -> None:
         """Add a sleep entry."""
         try:
-            data = self.set_common_fields(timer, start, end, napping)
+            data = self.set_common_fields(timer, napping, start, end)
         except ValidationError as err:
             _LOGGER.error(err)
             return
