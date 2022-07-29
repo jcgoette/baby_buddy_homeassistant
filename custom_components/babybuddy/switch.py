@@ -232,11 +232,12 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         timer: bool,
         start: datetime | time | None = None,
         end: datetime | time | None = None,
+        napping: bool,
         notes: str | None = None,
     ) -> None:
         """Add a sleep entry."""
         try:
-            data = self.set_common_fields(timer, start, end)
+            data = self.set_common_fields(timer, start, end, napping)
         except ValidationError as err:
             _LOGGER.error(err)
             return
