@@ -201,7 +201,7 @@ This service adds a weight entry for your child.
 
 ### SERVICE DELETE_LAST_ENTRY
 
-This service starts a new timer for specified child with optional starting time.
+This service will delete the last entry for specified child.
 
 | Service data attribute | Optional | Description |
 |------|:----:|-------------|
