@@ -120,8 +120,12 @@ class BabyBuddyClient:
             self.endpoints = await self.async_get()
             _LOGGER.debug(f"Endpoints: {self.endpoints}")
         except ClientResponseError as err:
-            raise AuthorizationError from err
+            _LOGGER.error(f"API Call failed with {err}")
+            if error.code == 401:
+                raise AuthorizationError from err
+            raise ConnectError(err) from err
         except (TimeoutError, ClientError) as err:
+            _LOGGER.error(f"API Call failed with {err}")
             raise ConnectError(err) from err
 
 
