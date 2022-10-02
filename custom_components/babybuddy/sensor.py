@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 from datetime import date, datetime, time
 from typing import Any
+import json
 
 import homeassistant.util.dt as dt_util
 import voluptuous as vol
@@ -48,6 +49,7 @@ from .const import (
     ATTR_PUMPING,
     ATTR_SLUG,
     ATTR_SOLID,
+    ATTR_TAGS,
     ATTR_TYPE,
     ATTR_WEIGHT,
     ATTR_WET,
@@ -129,6 +131,7 @@ async def async_setup_entry(
         {
             vol.Required(ATTR_NOTE): cv.string,
             vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
+            vol.Optional(ATTR_TAGS): cv.string,
         },
         "async_add_note",
     )
@@ -309,7 +312,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_add_note(
-        self, note: str, time: datetime | time | None = None
+        self, note: str, time: datetime | time | None = None, tags: str | None = None
     ) -> None:
         """Add note entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -323,6 +326,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             except ValidationError as err:
                 _LOGGER.error(err)
                 return
+        if tags:
+            data[ATTR_TAGS] = json.dumps([tags])
 
         date_time_now = get_datetime_from_time(dt_util.now())
         await self.coordinator.client.async_post(ATTR_NOTES, data, date_time_now)
