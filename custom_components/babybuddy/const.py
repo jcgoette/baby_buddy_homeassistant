@@ -1,22 +1,18 @@
 """Constants for the babybuddy integration."""
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, Final
+from typing import Final
 
 from homeassistant.components.select import SelectEntityDescription
 from homeassistant.components.sensor import (
-    STATE_CLASS_MEASUREMENT,
+    SensorDeviceClass,
     SensorEntityDescription,
+    SensorStateClass,
 )
 from homeassistant.components.switch import SwitchEntityDescription
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    ATTR_TIME,
-    DEVICE_CLASS_TEMPERATURE,
-    DEVICE_CLASS_TIMESTAMP,
-    TIME_MINUTES,
-)
+from homeassistant.const import ATTR_TIME, TIME_MINUTES
 from homeassistant.helpers.config_validation import time_period_str
 
 DOMAIN: Final = "babybuddy"
@@ -97,11 +93,11 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
     BabyBuddyEntityDescription(
         icon="mdi:scale-bathroom",
         key=ATTR_BMI,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_BMI,
     ),
     BabyBuddyEntityDescription(
-        device_class=DEVICE_CLASS_TIMESTAMP,
+        device_class=SensorDeviceClass.TIMESTAMP,
         icon="mdi:paper-roll-outline",
         key=ATTR_CHANGES,
         state_key=ATTR_TIME,
@@ -109,23 +105,23 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
     BabyBuddyEntityDescription(
         icon="mdi:baby-bottle-outline",
         key=ATTR_FEEDINGS,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_AMOUNT,
     ),
     BabyBuddyEntityDescription(
         icon="mdi:head-outline",
         key=ATTR_HEAD_CIRCUMFERENCE_DASH,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
     ),
     BabyBuddyEntityDescription(
         icon="mdi:human-male-height",
         key=ATTR_HEIGHT,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_HEIGHT,
     ),
     BabyBuddyEntityDescription(
-        device_class=DEVICE_CLASS_TIMESTAMP,
+        device_class=SensorDeviceClass.TIMESTAMP,
         icon="mdi:note-multiple-outline",
         key=ATTR_NOTES,
         state_key=ATTR_TIME,
@@ -133,27 +129,27 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
     BabyBuddyEntityDescription(
         icon="mdi:mother-nurse",
         key=ATTR_PUMPING,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_AMOUNT,
     ),
     BabyBuddyEntityDescription(
         icon="mdi:sleep",
         key=ATTR_SLEEP,
         native_unit_of_measurement=TIME_MINUTES,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         state_key=lambda value: int(
             time_period_str(value[ATTR_DURATION]).total_seconds() / 60
         ),
     ),
     BabyBuddyEntityDescription(
-        device_class=DEVICE_CLASS_TEMPERATURE,
+        device_class=SensorDeviceClass.TEMPERATURE,
         icon="mdi:thermometer",
-        key=ATTR_TEMPERATURE,
-        state_class=STATE_CLASS_MEASUREMENT,
-        state_key=ATTR_TEMPERATURE,
+        key=SensorDeviceClass.TEMPERATURE,
+        state_class=SensorStateClass.MEASUREMENT,
+        state_key=SensorDeviceClass.TEMPERATURE,
     ),
     BabyBuddyEntityDescription(
-        device_class=DEVICE_CLASS_TIMESTAMP,
+        device_class=SensorDeviceClass.TIMESTAMP,
         icon="mdi:timer-sand",
         key=ATTR_TIMERS,
         state_key=ATTR_START,
@@ -162,7 +158,7 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         icon="mdi:baby",
         key=ATTR_TUMMY_TIMES,
         native_unit_of_measurement=TIME_MINUTES,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         state_key=lambda value: int(
             time_period_str(value[ATTR_DURATION]).total_seconds() / 60
         ),
@@ -170,7 +166,7 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
     BabyBuddyEntityDescription(
         icon="mdi:scale-bathroom",
         key=ATTR_WEIGHT,
-        state_class=STATE_CLASS_MEASUREMENT,
+        state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_WEIGHT,
     ),
 )

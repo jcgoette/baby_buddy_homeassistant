@@ -5,7 +5,7 @@ import logging
 from asyncio import TimeoutError
 from datetime import timedelta
 from http import HTTPStatus
-from typing import Any, Tuple
+from typing import Any
 
 import homeassistant.util.dt as dt_util
 import voluptuous as vol
@@ -182,7 +182,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
 
     async def async_update(
         self,
-    ) -> Tuple[list[dict[str, str]], dict[int, dict[str, dict[str, str]]]]:
+    ) -> tuple[list[dict[str, str]], dict[int, dict[str, dict[str, str]]]]:
         """Update babybuddy data."""
         children_list: dict[str, Any] = {}
         child_data: dict[int, dict[str, dict[str, str]]] = {}
