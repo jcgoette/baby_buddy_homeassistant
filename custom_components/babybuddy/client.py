@@ -86,6 +86,7 @@ class BabyBuddyClient:
     async def async_patch(
         self, endpoint: str, entry: str, data: dict[str, str]
     ) -> None:
+        """PATCH request to babybuddy API."""
         try:
             with async_timeout.timeout(10):
                 resp = await self.session.patch(
@@ -101,6 +102,7 @@ class BabyBuddyClient:
             _LOGGER.error(f"Could not update {endpoint}/{entry}. error: {error}")
 
     async def async_delete(self, endpoint: str, entry: str) -> None:
+        """DELETE request to babybuddy API."""
         try:
             with async_timeout.timeout(10):
                 resp = await self.session.delete(
