@@ -51,7 +51,6 @@ from .const import (
     ATTR_TYPE,
     ATTR_WEIGHT,
     ATTR_WET,
-    DEFAULT_DIAPER_TYPE,
     DIAPER_COLORS,
     DIAPER_TYPES,
     DOMAIN,
