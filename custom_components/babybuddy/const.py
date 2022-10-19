@@ -5,6 +5,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Final
 
+import homeassistant.util.dt as dt_util
 from homeassistant.components.select import SelectEntityDescription
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -13,7 +14,6 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.components.switch import SwitchEntityDescription
 from homeassistant.const import ATTR_TIME, TIME_MINUTES
-from homeassistant.helpers.config_validation import time_period_str
 
 DOMAIN: Final = "babybuddy"
 
@@ -138,7 +138,7 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         native_unit_of_measurement=TIME_MINUTES,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=lambda value: int(
-            time_period_str(value[ATTR_DURATION]).total_seconds() / 60
+            dt_util.parse_duration(value[ATTR_DURATION]).total_seconds() / 60
         ),
     ),
     BabyBuddyEntityDescription(
@@ -160,7 +160,7 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         native_unit_of_measurement=TIME_MINUTES,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=lambda value: int(
-            time_period_str(value[ATTR_DURATION]).total_seconds() / 60
+            dt_util.parse_duration(value[ATTR_DURATION]).total_seconds() / 60
         ),
     ),
     BabyBuddyEntityDescription(
