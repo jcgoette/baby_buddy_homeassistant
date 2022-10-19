@@ -8,7 +8,7 @@ from typing import Any
 import homeassistant.util.dt as dt_util
 import voluptuous as vol
 from homeassistant.components.input_datetime import ATTR_TIMESTAMP
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_DATE,
@@ -18,7 +18,6 @@ from homeassistant.const import (
     CONF_HOST,
     CONF_PATH,
     CONF_PORT,
-    DEVICE_CLASS_TIMESTAMP,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv
@@ -483,7 +482,7 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
             return None
         if callable(self.entity_description.state_key):
             return self.entity_description.state_key(data)
-        if self.entity_description.device_class == DEVICE_CLASS_TIMESTAMP:
+        if self.entity_description.device_class == SensorDeviceClass.TIMESTAMP:
             return dt_util.parse_datetime(data[self.entity_description.state_key])
         return data[self.entity_description.state_key]
 
