@@ -176,8 +176,6 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
 class BabyBuddySelectDescription(SelectEntityDescription):
     """Describe Baby Buddy select entity."""
 
-    options: list[str] = field(default_factory=list)
-
 
 SELECTOR_TYPES: tuple[BabyBuddySelectDescription, ...] = (
     BabyBuddySelectDescription(
