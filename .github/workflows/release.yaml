@@ -14,13 +14,12 @@ jobs:
         uses: home-assistant/actions/helpers/version@master
       - name: Bump manifest and create zip
         run: |
-          sed -i 's/v0.0.0/${{ steps.version.outputs.version }}/' custom_components/baby_buddy_homeassistant/manifest.json
-        
-          cd custom_components/baby_buddy_homeassistant/
-          zip ../../baby_buddy_homeassistant.zip ./* frontend/dist/* -x '.*'
+          sed -i 's/v0.0.0/${{ steps.version.outputs.version }}/' custom_components/babybuddy/manifest.json
+          cd custom_components/babybuddy/
+          zip ../../babybuddy.zip ./* frontend/dist/* -x '.*'
       - uses: gacts/upload-to-release@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: ./baby_buddy_homeassistant.zip
+          file: ./babybuddy.zip
           type: application/zip
