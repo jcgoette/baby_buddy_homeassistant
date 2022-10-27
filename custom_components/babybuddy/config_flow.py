@@ -12,13 +12,9 @@ from homeassistant.const import (
     CONF_PATH,
     CONF_PORT,
     CONF_SCAN_INTERVAL,
-    MASS_KILOGRAMS,
-    MASS_OUNCES,
-    MASS_POUNDS,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-    VOLUME_FLUID_OUNCE,
-    VOLUME_MILLILITERS,
+    UnitOfMass,
+    UnitOfTemperature,
+    UnitOfVolume,
 )
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
@@ -165,15 +161,15 @@ class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Optional(
                 CONF_TEMPERATURE_UNIT,
                 default=self.config_entry.options.get(CONF_TEMPERATURE_UNIT, None),
-            ): vol.In([TEMP_CELSIUS, TEMP_FAHRENHEIT]),
+            ): vol.In([UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT]),
             vol.Optional(
                 CONF_WEIGHT_UNIT,
                 default=self.config_entry.options.get(CONF_WEIGHT_UNIT, None),
-            ): vol.In([MASS_KILOGRAMS, MASS_POUNDS, MASS_OUNCES]),
+            ): vol.In([UnitOfMass.KILOGRAMS, UnitOfMass.POUNDS, UnitOfMass.OUNCES]),
             vol.Optional(
                 CONF_FEEDING_UNIT,
                 default=self.config_entry.options.get(CONF_FEEDING_UNIT, None),
-            ): vol.In([VOLUME_MILLILITERS, VOLUME_FLUID_OUNCE]),
+            ): vol.In([UnitOfVolume.MILLILITERS, UnitOfVolume.FLUID_OUNCES]),
             vol.Optional(
                 CONF_SCAN_INTERVAL,
                 default=self.config_entry.options.get(
