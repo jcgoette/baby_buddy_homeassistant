@@ -18,7 +18,6 @@ from homeassistant.const import ATTR_TIME, TIME_MINUTES
 DOMAIN: Final = "babybuddy"
 
 CONF_FEEDING_UNIT: Final = "feedings"
-CONF_TEMPERATURE_UNIT: Final = "temperature"
 CONF_WEIGHT_UNIT: Final = "weight"
 
 DEFAULT_NAME: Final = "Baby Buddy"

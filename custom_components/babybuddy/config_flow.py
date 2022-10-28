@@ -12,6 +12,7 @@ from homeassistant.const import (
     CONF_PATH,
     CONF_PORT,
     CONF_SCAN_INTERVAL,
+    TEMPERATURE,
     UnitOfMass,
     UnitOfTemperature,
     UnitOfVolume,
@@ -22,7 +23,6 @@ from homeassistant.data_entry_flow import FlowResult
 from .client import BabyBuddyClient
 from .const import (
     CONF_FEEDING_UNIT,
-    CONF_TEMPERATURE_UNIT,
     CONF_WEIGHT_UNIT,
     CONFIG_FLOW_VERSION,
     DEFAULT_NAME,
@@ -159,8 +159,8 @@ class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
 
         options = {
             vol.Optional(
-                CONF_TEMPERATURE_UNIT,
-                default=self.config_entry.options.get(CONF_TEMPERATURE_UNIT, None),
+                TEMPERATURE,
+                default=self.config_entry.options.get(TEMPERATURE, None),
             ): vol.In([UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT]),
             vol.Optional(
                 CONF_WEIGHT_UNIT,
