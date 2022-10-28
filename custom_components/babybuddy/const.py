@@ -81,6 +81,10 @@ FEEDING_METHODS: Final = [
 FEEDING_TYPE: Final = "feeding_type"
 FEEDING_TYPES: Final = ["Breast milk", "Formula", "Fortified breast milk", "Solid food"]
 
+ERROR_CHILD_SENSOR_SELECT: Final = (
+    "Babybuddy child sensor should be selected - ignoring"
+)
+
 
 @dataclass
 class BabyBuddyEntityDescription(SensorEntityDescription, SwitchEntityDescription):

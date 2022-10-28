@@ -53,6 +53,7 @@ from .const import (
     DIAPER_COLORS,
     DIAPER_TYPES,
     DOMAIN,
+    ERROR_CHILD_SENSOR_SELECT,
     SENSOR_TYPES,
     BabyBuddyEntityDescription,
 )
@@ -210,7 +211,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add BMI entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
+            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -235,7 +236,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add diaper change entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
+            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -269,7 +270,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add head circumference entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
+            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -291,7 +292,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add height entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
+            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -311,7 +312,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add note entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
+            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {ATTR_CHILD: self.child[ATTR_ID], ATTR_NOTE: note}
         if time:
@@ -334,7 +335,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add a pumping entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
+            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -362,7 +363,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add a temperature entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
+            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -387,7 +388,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add weight entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug("Babybuddy child sensor should be selected. Ignoring.")
+            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -405,7 +406,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_delete_last_entry(self) -> None:
         """Delete last data entry."""
         if not isinstance(self, BabyBuddyChildDataSensor):
-            _LOGGER.debug("Babybuddy child data sensor should be selected. Ignoring.")
+            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
 
         if self.extra_state_attributes.get(ATTR_ID) is None:
