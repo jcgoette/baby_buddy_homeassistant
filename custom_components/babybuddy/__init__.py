@@ -130,7 +130,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
             config_entry.data[CONF_API_KEY],
             hass.helpers.aiohttp_client.async_get_clientsession(),
         )
-        self.dr: DeviceRegistry = async_get(self.hass)
+        self.device_registry: DeviceRegistry = async_get(self.hass)
         self.child_ids: list[str] = []
 
     async def async_set_children_from_db(self) -> None:
@@ -138,7 +138,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         self.child_ids = [
             next(iter(device.identifiers))[1]
             for device in async_entries_for_config_entry(
-                self.dr, self.config_entry.entry_id
+                self.device_registry, self.config_entry.entry_id
             )
         ]
 
@@ -175,10 +175,10 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
     async def async_remove_deleted_children(self) -> None:
         """Remove child device if child is removed from babybuddy."""
         for device in async_entries_for_config_entry(
-            self.dr, self.config_entry.entry_id
+            self.device_registry, self.config_entry.entry_id
         ):
             if next(iter(device.identifiers))[1] not in self.child_ids:
-                self.dr.async_remove_device(device.id)
+                self.device_registry.async_remove_device(device.id)
 
     async def async_update(
         self,
