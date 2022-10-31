@@ -16,10 +16,11 @@ jobs:
         run: |
           sed -i 's/v0.0.0/${{ steps.version.outputs.version }}/' custom_components/babybuddy/manifest.json
           cd custom_components/babybuddy/
-          zip ../../babybuddy.zip ./* frontend/dist/* -x '.*'
-      - uses: gacts/upload-to-release@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          zip ../../babybuddy.zip -r ./
+      - uses: svenstaro/upload-release-action@master
         with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./babybuddy.zip
-          type: application/zip
+          asset_name: babybuddy.zip
+          tag: ${{ github.ref }}
+          overwrite: true
