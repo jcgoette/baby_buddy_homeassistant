@@ -271,6 +271,13 @@ add_note:
       example: "15:00:00"
       selector:
         time:
+    tags:
+      name: Tag
+      description: Tag to add
+      example: medication
+      required: false
+      selector:
+        text:
 
 add_pumping:
   name: Add pumping
