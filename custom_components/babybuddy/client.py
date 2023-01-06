@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from asyncio import TimeoutError
+from asyncio import TimeoutError as AsyncIOTimeoutError
 from datetime import datetime, time
 from http import HTTPStatus
 from typing import Any
@@ -66,7 +66,7 @@ class BabyBuddyClient:
                     headers=self.headers,
                     data=data,
                 )
-        except (TimeoutError, ClientError) as err:
+        except (AsyncIOTimeoutError, ClientError) as err:
             _LOGGER.error(err)
 
         if resp.status != HTTPStatus.CREATED:
@@ -94,7 +94,7 @@ class BabyBuddyClient:
                     headers=self.headers,
                     data=data,
                 )
-        except (TimeoutError, ClientError) as err:
+        except (AsyncIOTimeoutError, ClientError) as err:
             _LOGGER.error(err)
 
         if resp.status != HTTPStatus.OK:
@@ -109,7 +109,7 @@ class BabyBuddyClient:
                     f"{self.endpoints[endpoint]}{entry}/",
                     headers=self.headers,
                 )
-        except (TimeoutError, ClientError) as err:
+        except (AsyncIOTimeoutError, ClientError) as err:
             _LOGGER.error(err)
 
         if resp.status != 204:

@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from asyncio import TimeoutError
+from asyncio import TimeoutError as AsyncIOTimeoutError
 from datetime import timedelta
 from http import HTTPStatus
 from typing import Any
@@ -192,7 +192,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         except ClientResponseError as err:
             if err.status == HTTPStatus.FORBIDDEN:
                 raise ConfigEntryAuthFailed from err
-        except (TimeoutError, ClientError) as err:
+        except (AsyncIOTimeoutError, ClientError) as err:
             raise UpdateFailed(err) from err
 
         if children_list[ATTR_COUNT] < len(self.child_ids):
@@ -216,7 +216,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
                         f"No {endpoint} found for {child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]}. Skipping"
                     )
                     continue
-                except (TimeoutError, ClientError) as err:
+                except (AsyncIOTimeoutError, ClientError) as err:
                     _LOGGER.error(err)
                     continue
                 data: list[dict[str, str]] = endpoint_data[ATTR_RESULTS]

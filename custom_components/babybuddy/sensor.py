@@ -207,7 +207,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         }
 
     async def async_add_bmi(
-        self, bmi: float, date: date | None = None, notes: str | None = None
+        self, bmi: float, bmi_date: date | None = None, notes: str | None = None
     ) -> None:
         """Add BMI entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -217,8 +217,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_BMI: bmi,
         }
-        if date:
-            data[ATTR_DATE] = date
+        if bmi_date:
+            data[ATTR_DATE] = bmi_date
         if notes:
             data[ATTR_NOTES] = notes
 
@@ -228,8 +228,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
 
     async def async_add_diaper_change(
         self,
-        type: str | None = None,
-        time: datetime | time | None = None,
+        diaper_type: str | None = None,
+        change_time: datetime | time | None = None,
         color: str | None = None,
         amount: int | None = None,
         notes: str | None = None,
@@ -241,16 +241,20 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
         }
-        if time:
+        if change_time:
             try:
-                date_time = get_datetime_from_time(time)
+                date_time = get_datetime_from_time(change_time)
                 data[ATTR_TIME] = date_time
             except ValidationError as err:
                 _LOGGER.error(err)
                 return
-        if type:
-            data[ATTR_WET] = type == "Wet and Solid" or type.lower() == ATTR_WET
-            data[ATTR_SOLID] = type == "Wet and Solid" or type.lower() == ATTR_SOLID
+        if diaper_type:
+            data[ATTR_WET] = (
+                diaper_type == "Wet and Solid" or diaper_type.lower() == ATTR_WET
+            )
+            data[ATTR_SOLID] = (
+                diaper_type == "Wet and Solid" or diaper_type.lower() == ATTR_SOLID
+            )
         if color:
             data[ATTR_COLOR] = color.lower()
         if amount:
@@ -265,7 +269,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_add_head_circumference(
         self,
         head_circumference: float,
-        date: date | None = None,
+        head_circ_date: date | None = None,
         notes: str | None = None,
     ) -> None:
         """Add head circumference entry."""
@@ -276,8 +280,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE: head_circumference,
         }
-        if date:
-            data[ATTR_DATE] = date
+        if head_circ_date:
+            data[ATTR_DATE] = head_circ_date
         if notes:
             data[ATTR_NOTES] = notes
 
@@ -288,7 +292,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_add_height(
-        self, height: float, date: date | None = None, notes: str | None = None
+        self, height: float, height_date: date | None = None, notes: str | None = None
     ) -> None:
         """Add height entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -298,8 +302,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_HEIGHT: height,
         }
-        if date:
-            data[ATTR_DATE] = date
+        if height_date:
+            data[ATTR_DATE] = height_date
         if notes:
             data[ATTR_NOTES] = notes
 
@@ -308,16 +312,16 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_add_note(
-        self, note: str, time: datetime | time | None = None
+        self, note: str, note_time: datetime | time | None = None
     ) -> None:
         """Add note entry."""
         if not isinstance(self, BabyBuddyChildSensor):
             _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {ATTR_CHILD: self.child[ATTR_ID], ATTR_NOTE: note}
-        if time:
+        if note_time:
             try:
-                date_time = get_datetime_from_time(time)
+                date_time = get_datetime_from_time(note_time)
                 data[ATTR_TIME] = date_time
             except ValidationError as err:
                 _LOGGER.error(err)
@@ -330,7 +334,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_add_pumping(
         self,
         amount: float,
-        time: datetime | time | None = None,
+        pumping_time: datetime | time | None = None,
         notes: str | None = None,
     ) -> None:
         """Add a pumping entry."""
@@ -341,9 +345,9 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_AMOUNT: amount,
         }
-        if time:
+        if pumping_time:
             try:
-                date_time = get_datetime_from_time(time)
+                date_time = get_datetime_from_time(pumping_time)
                 data[ATTR_TIME] = date_time
             except ValidationError as err:
                 _LOGGER.error(err)
@@ -358,7 +362,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_add_temperature(
         self,
         temperature: float,
-        time: datetime | time | None = None,
+        temperature_time: datetime | time | None = None,
         notes: str | None = None,
     ) -> None:
         """Add a temperature entry."""
@@ -369,9 +373,9 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_TEMPERATURE: temperature,
         }
-        if time:
+        if temperature_time:
             try:
-                date_time = get_datetime_from_time(time)
+                date_time = get_datetime_from_time(temperature_time)
                 data[ATTR_TIME] = date_time
             except ValidationError as err:
                 _LOGGER.error(err)
@@ -384,7 +388,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_add_weight(
-        self, weight: float, date: date | None = None, notes: str | None = None
+        self, weight: float, weight_date: date | None = None, notes: str | None = None
     ) -> None:
         """Add weight entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -394,8 +398,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_WEIGHT: weight,
         }
-        if date:
-            data[ATTR_DATE] = date
+        if weight_date:
+            data[ATTR_DATE] = weight_date
         if notes:
             data[ATTR_NOTES] = notes
 
@@ -424,7 +428,6 @@ class BabyBuddyChildSensor(BabyBuddySensor):
     def __init__(self, coordinator: BabyBuddyCoordinator, child: dict) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator, child)
-
         self._attr_name = f"Baby {child['first_name']} {child['last_name']}"
         self._attr_unique_id = (
             f"{coordinator.config_entry.data[CONF_HOST]}-{child[ATTR_ID]}"
@@ -459,17 +462,16 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator, child)
-
         self.entity_description = description
         self._attr_unique_id = f"{self.coordinator.config_entry.data[CONF_HOST]}-{child[ATTR_ID]}-{description.key}"
 
     @property
     def name(self) -> str:
         """Return the name of the babybuddy sensor."""
-        type = self.entity_description.key
-        if type[-1] == "s":
-            type = type[:-1]
-        return f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} last {type}"
+        sensor_type = self.entity_description.key
+        if sensor_type[-1] == "s":
+            sensor_type = sensor_type[:-1]
+        return f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} last {sensor_type}"
 
     @property
     def native_value(self) -> StateType:

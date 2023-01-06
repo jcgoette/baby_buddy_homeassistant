@@ -197,7 +197,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
 
     async def async_add_feeding(
         self,
-        type: str,
+        feed_type: str,
         method: str,
         timer: bool,
         start: datetime | time | None = None,
@@ -214,7 +214,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
 
         data.update(
             {
-                ATTR_TYPE: type.lower(),
+                ATTR_TYPE: feed_type.lower(),
                 ATTR_METHOD: method.lower(),
             }
         )
