@@ -13,7 +13,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.components.switch import SwitchEntityDescription
-from homeassistant.const import ATTR_TIME, TIME_MINUTES
+from homeassistant.const import ATTR_TIME, UnitOfTime
 
 DOMAIN: Final = "babybuddy"
 
@@ -138,7 +138,7 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
     BabyBuddyEntityDescription(
         icon="mdi:sleep",
         key=ATTR_SLEEP,
-        native_unit_of_measurement=TIME_MINUTES,
+        native_unit_of_measurement=UnitOfTime.MINUTES,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=lambda value: int(
             dt_util.parse_duration(value[ATTR_DURATION]).total_seconds() / 60
@@ -160,7 +160,7 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
     BabyBuddyEntityDescription(
         icon="mdi:baby",
         key=ATTR_TUMMY_TIMES,
-        native_unit_of_measurement=TIME_MINUTES,
+        native_unit_of_measurement=UnitOfTime.MINUTES,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=lambda value: int(
             dt_util.parse_duration(value[ATTR_DURATION]).total_seconds() / 60
