@@ -25,6 +25,7 @@ class BabyBuddyClient:
         self, host: str, port: int, path: str, api_key: str, session: ClientSession
     ) -> None:
         """Initialize the client."""
+        _LOGGER.debug("Initializing BabyBuddyClient")
         self.headers = {"Authorization": f"Token {api_key}"}
         _LOGGER.debug(
             f"Client API Token, obfuscated: {api_key[:4]}{'.' * (len(api_key)-8)}{api_key[-4:]}"

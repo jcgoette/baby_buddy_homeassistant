@@ -110,6 +110,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
         """Initialize the BabyBuddyData object."""
+        _LOGGER.debug("Initializing BabyBuddyCoordinator")
         super().__init__(
             hass,
             _LOGGER,
