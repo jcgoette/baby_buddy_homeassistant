@@ -85,7 +85,7 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         "add_feeding",
         {
-            vol.Required(ATTR_TYPE): vol.In(FEEDING_TYPES),
+            vol.Required("feed_type"): vol.In(FEEDING_TYPES),
             vol.Required(ATTR_METHOD): vol.In(FEEDING_METHODS),
             **COMMON_FIELDS,
             vol.Optional(ATTR_AMOUNT): cv.positive_float,

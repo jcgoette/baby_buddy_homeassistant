@@ -89,7 +89,7 @@ async def async_setup_entry(
         "add_bmi",
         {
             vol.Required(ATTR_BMI): cv.positive_float,
-            vol.Optional(ATTR_DATE): cv.date,
+            vol.Optional("bmi_date"): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_bmi",
@@ -97,8 +97,8 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         "add_diaper_change",
         {
-            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
-            vol.Optional(ATTR_TYPE): vol.In(DIAPER_TYPES),
+            vol.Optional("change_time"): vol.Any(cv.datetime, cv.time),
+            vol.Optional("diaper_type"): vol.In(DIAPER_TYPES),
             vol.Optional(ATTR_COLOR): vol.In(DIAPER_COLORS),
             vol.Optional(ATTR_AMOUNT): cv.positive_int,
             vol.Optional(ATTR_NOTES): cv.string,
@@ -109,7 +109,7 @@ async def async_setup_entry(
         "add_head_circumference",
         {
             vol.Required(ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE): cv.positive_float,
-            vol.Optional(ATTR_DATE): cv.date,
+            vol.Optional("head_circ_date"): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_head_circumference",
@@ -118,7 +118,7 @@ async def async_setup_entry(
         "add_height",
         {
             vol.Required(ATTR_HEIGHT): cv.positive_float,
-            vol.Optional(ATTR_DATE): cv.date,
+            vol.Optional("height_date"): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_height",
@@ -127,7 +127,7 @@ async def async_setup_entry(
         "add_note",
         {
             vol.Required(ATTR_NOTE): cv.string,
-            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
+            vol.Optional("note_time"): vol.Any(cv.datetime, cv.time),
         },
         "async_add_note",
     )
@@ -135,7 +135,7 @@ async def async_setup_entry(
         "add_pumping",
         {
             vol.Required(ATTR_AMOUNT): cv.positive_int,
-            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
+            vol.Optional("pumping_time"): vol.Any(cv.datetime, cv.time),
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_pumping",
@@ -144,7 +144,7 @@ async def async_setup_entry(
         "add_temperature",
         {
             vol.Required(ATTR_TEMPERATURE): cv.positive_float,
-            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
+            vol.Optional("temperature_time"): vol.Any(cv.datetime, cv.time),
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_temperature",
@@ -153,7 +153,7 @@ async def async_setup_entry(
         "add_weight",
         {
             vol.Required(ATTR_WEIGHT): cv.positive_float,
-            vol.Optional(ATTR_DATE): cv.date,
+            vol.Optional("weight_date"): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_weight",
