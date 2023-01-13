@@ -18,7 +18,7 @@ add_bmi:
           max: 100.0
           step: 0.1
           mode: box
-    bmi_date:
+    date:
       name: BMI date
       description: BMI date in YYYY-MM-DD format
       example: "2022-06-20"
@@ -67,13 +67,13 @@ add_diaper_change:
       domain: sensor
       device_class: babybuddy_child
   fields:
-    change_time:
+    time:
       name: Change time
       description: Change time
       example: "15:00:00"
       selector:
         time:
-    diaper_type:
+    type:
       name: Diaper type
       description: Type of diaper change
       example: Wet
@@ -137,7 +137,7 @@ add_feeding:
       example: "15:10:00"
       selector:
         time:
-    feed_type:
+    type:
       name: Feeding type
       description: Feeding type
       example: Breast milk
@@ -200,7 +200,7 @@ add_head_circumference:
           max: 100.0
           step: 0.1
           mode: box
-    head_circ_date:
+    date:
       name: Head circumference date
       description: Head circumference date in YYYY-MM-DD format
       example: "2022-06-20"
@@ -234,7 +234,7 @@ add_height:
           max: 100.0
           step: 0.1
           mode: box
-    height_date:
+    date:
       name: Height date
       description: Height date in YYYY-MM-DD format
       example: "2022-06-20"
@@ -265,7 +265,7 @@ add_note:
       selector:
         text:
           multiline: true
-    note_time:
+    time:
       name: Note time
       description: Note time
       example: "15:00:00"
@@ -290,7 +290,7 @@ add_pumping:
           min: 1
           max: 10
           mode: box
-    pumping_time:
+    time:
       name: Pumping time
       description: Pumping time
       example: "15:00:00"
@@ -358,7 +358,7 @@ add_temperature:
           max: 150.0
           step: 0.1
           mode: box
-    temperature_time:
+    time:
       name: Temperature time
       description: Temperature time
       example: "15:00:00"
@@ -426,7 +426,7 @@ add_weight:
           max: 100.0
           step: 0.1
           mode: box
-    weight_date:
+    date:
       name: Weight date
       description: Weight date in YYYY-MM-DD format
       example: "2022-06-20"

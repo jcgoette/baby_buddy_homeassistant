@@ -85,7 +85,7 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         "add_feeding",
         {
-            vol.Required("feed_type"): vol.In(FEEDING_TYPES),
+            vol.Required(ATTR_TYPE): vol.In(FEEDING_TYPES),
             vol.Required(ATTR_METHOD): vol.In(FEEDING_METHODS),
             **COMMON_FIELDS,
             vol.Optional(ATTR_AMOUNT): cv.positive_float,
@@ -197,7 +197,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
 
     async def async_add_feeding(
         self,
-        feed_type: str,
+        type: str,
         method: str,
         timer: bool,
         start: datetime | time | None = None,
@@ -214,7 +214,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
 
         data.update(
             {
-                ATTR_TYPE: feed_type.lower(),
+                ATTR_TYPE: type.lower(),
                 ATTR_METHOD: method.lower(),
             }
         )

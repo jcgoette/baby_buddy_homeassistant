@@ -89,7 +89,7 @@ async def async_setup_entry(
         "add_bmi",
         {
             vol.Required(ATTR_BMI): cv.positive_float,
-            vol.Optional("bmi_date"): cv.date,
+            vol.Optional(ATTR_DATE): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_bmi",
@@ -97,8 +97,8 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         "add_diaper_change",
         {
-            vol.Optional("change_time"): vol.Any(cv.datetime, cv.time),
-            vol.Optional("diaper_type"): vol.In(DIAPER_TYPES),
+            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
+            vol.Optional(ATTR_TYPE): vol.In(DIAPER_TYPES),
             vol.Optional(ATTR_COLOR): vol.In(DIAPER_COLORS),
             vol.Optional(ATTR_AMOUNT): cv.positive_int,
             vol.Optional(ATTR_NOTES): cv.string,
@@ -109,7 +109,7 @@ async def async_setup_entry(
         "add_head_circumference",
         {
             vol.Required(ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE): cv.positive_float,
-            vol.Optional("head_circ_date"): cv.date,
+            vol.Optional(ATTR_DATE): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_head_circumference",
@@ -118,7 +118,7 @@ async def async_setup_entry(
         "add_height",
         {
             vol.Required(ATTR_HEIGHT): cv.positive_float,
-            vol.Optional("height_date"): cv.date,
+            vol.Optional(ATTR_DATE): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_height",
@@ -127,7 +127,7 @@ async def async_setup_entry(
         "add_note",
         {
             vol.Required(ATTR_NOTE): cv.string,
-            vol.Optional("note_time"): vol.Any(cv.datetime, cv.time),
+            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
         },
         "async_add_note",
     )
@@ -135,7 +135,7 @@ async def async_setup_entry(
         "add_pumping",
         {
             vol.Required(ATTR_AMOUNT): cv.positive_int,
-            vol.Optional("pumping_time"): vol.Any(cv.datetime, cv.time),
+            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_pumping",
@@ -144,7 +144,7 @@ async def async_setup_entry(
         "add_temperature",
         {
             vol.Required(ATTR_TEMPERATURE): cv.positive_float,
-            vol.Optional("temperature_time"): vol.Any(cv.datetime, cv.time),
+            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_temperature",
@@ -153,7 +153,7 @@ async def async_setup_entry(
         "add_weight",
         {
             vol.Required(ATTR_WEIGHT): cv.positive_float,
-            vol.Optional("weight_date"): cv.date,
+            vol.Optional(ATTR_DATE): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_weight",
@@ -207,7 +207,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         }
 
     async def async_add_bmi(
-        self, bmi: float, bmi_date: date | None = None, notes: str | None = None
+        self, bmi: float, date: date | None = None, notes: str | None = None
     ) -> None:
         """Add BMI entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -217,8 +217,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_BMI: bmi,
         }
-        if bmi_date:
-            data[ATTR_DATE] = bmi_date
+        if date:
+            data[ATTR_DATE] = date
         if notes:
             data[ATTR_NOTES] = notes
 
@@ -228,8 +228,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
 
     async def async_add_diaper_change(
         self,
-        diaper_type: str | None = None,
-        change_time: datetime | time | None = None,
+        type: str | None = None,
+        time: datetime | time | None = None,
         color: str | None = None,
         amount: int | None = None,
         notes: str | None = None,
@@ -241,20 +241,16 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
         }
-        if change_time:
+        if time:
             try:
-                date_time = get_datetime_from_time(change_time)
+                date_time = get_datetime_from_time(time)
                 data[ATTR_TIME] = date_time
             except ValidationError as err:
                 _LOGGER.error(err)
                 return
-        if diaper_type:
-            data[ATTR_WET] = (
-                diaper_type == "Wet and Solid" or diaper_type.lower() == ATTR_WET
-            )
-            data[ATTR_SOLID] = (
-                diaper_type == "Wet and Solid" or diaper_type.lower() == ATTR_SOLID
-            )
+        if type:
+            data[ATTR_WET] = type == "Wet and Solid" or type.lower() == ATTR_WET
+            data[ATTR_SOLID] = type == "Wet and Solid" or type.lower() == ATTR_SOLID
         if color:
             data[ATTR_COLOR] = color.lower()
         if amount:
@@ -269,7 +265,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_add_head_circumference(
         self,
         head_circumference: float,
-        head_circ_date: date | None = None,
+        date: date | None = None,
         notes: str | None = None,
     ) -> None:
         """Add head circumference entry."""
@@ -280,8 +276,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE: head_circumference,
         }
-        if head_circ_date:
-            data[ATTR_DATE] = head_circ_date
+        if date:
+            data[ATTR_DATE] = date
         if notes:
             data[ATTR_NOTES] = notes
 
@@ -292,7 +288,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_add_height(
-        self, height: float, height_date: date | None = None, notes: str | None = None
+        self, height: float, date: date | None = None, notes: str | None = None
     ) -> None:
         """Add height entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -302,8 +298,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_HEIGHT: height,
         }
-        if height_date:
-            data[ATTR_DATE] = height_date
+        if date:
+            data[ATTR_DATE] = date
         if notes:
             data[ATTR_NOTES] = notes
 
@@ -312,16 +308,16 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_add_note(
-        self, note: str, note_time: datetime | time | None = None
+        self, note: str, time: datetime | time | None = None
     ) -> None:
         """Add note entry."""
         if not isinstance(self, BabyBuddyChildSensor):
             _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {ATTR_CHILD: self.child[ATTR_ID], ATTR_NOTE: note}
-        if note_time:
+        if time:
             try:
-                date_time = get_datetime_from_time(note_time)
+                date_time = get_datetime_from_time(time)
                 data[ATTR_TIME] = date_time
             except ValidationError as err:
                 _LOGGER.error(err)
@@ -334,7 +330,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_add_pumping(
         self,
         amount: float,
-        pumping_time: datetime | time | None = None,
+        time: datetime | time | None = None,
         notes: str | None = None,
     ) -> None:
         """Add a pumping entry."""
@@ -345,9 +341,9 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_AMOUNT: amount,
         }
-        if pumping_time:
+        if time:
             try:
-                date_time = get_datetime_from_time(pumping_time)
+                date_time = get_datetime_from_time(time)
                 data[ATTR_TIME] = date_time
             except ValidationError as err:
                 _LOGGER.error(err)
@@ -362,7 +358,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_add_temperature(
         self,
         temperature: float,
-        temperature_time: datetime | time | None = None,
+        time: datetime | time | None = None,
         notes: str | None = None,
     ) -> None:
         """Add a temperature entry."""
@@ -373,9 +369,9 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_TEMPERATURE: temperature,
         }
-        if temperature_time:
+        if time:
             try:
-                date_time = get_datetime_from_time(temperature_time)
+                date_time = get_datetime_from_time(time)
                 data[ATTR_TIME] = date_time
             except ValidationError as err:
                 _LOGGER.error(err)
@@ -388,7 +384,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_add_weight(
-        self, weight: float, weight_date: date | None = None, notes: str | None = None
+        self, weight: float, date: date | None = None, notes: str | None = None
     ) -> None:
         """Add weight entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -398,8 +394,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             ATTR_CHILD: self.child[ATTR_ID],
             ATTR_WEIGHT: weight,
         }
-        if weight_date:
-            data[ATTR_DATE] = weight_date
+        if date:
+            data[ATTR_DATE] = date
         if notes:
             data[ATTR_NOTES] = notes
 
@@ -428,6 +424,7 @@ class BabyBuddyChildSensor(BabyBuddySensor):
     def __init__(self, coordinator: BabyBuddyCoordinator, child: dict) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator, child)
+
         self._attr_name = f"Baby {child['first_name']} {child['last_name']}"
         self._attr_unique_id = (
             f"{coordinator.config_entry.data[CONF_HOST]}-{child[ATTR_ID]}"
@@ -462,16 +459,17 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator, child)
+
         self.entity_description = description
         self._attr_unique_id = f"{self.coordinator.config_entry.data[CONF_HOST]}-{child[ATTR_ID]}-{description.key}"
 
     @property
     def name(self) -> str:
         """Return the name of the babybuddy sensor."""
-        sensor_type = self.entity_description.key
-        if sensor_type[-1] == "s":
-            sensor_type = sensor_type[:-1]
-        return f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} last {sensor_type}"
+        type = self.entity_description.key
+        if type[-1] == "s":
+            type = type[:-1]
+        return f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} last {type}"
 
     @property
     def native_value(self) -> StateType:
