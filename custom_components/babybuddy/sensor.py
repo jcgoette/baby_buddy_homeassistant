@@ -207,7 +207,10 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         }
 
     async def async_add_bmi(
-        self, bmi: float, date: date | None = None, notes: str | None = None
+        self,
+        bmi: float,
+        date: date | None = None,  # pylint: disable=redefined-outer-name
+        notes: str | None = None,
     ) -> None:
         """Add BMI entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -228,8 +231,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
 
     async def async_add_diaper_change(
         self,
-        type: str | None = None,
-        time: datetime | time | None = None,
+        type: str | None = None,  # pylint: disable=redefined-builtin
+        time: datetime | time | None = None,  # pylint: disable=redefined-outer-name
         color: str | None = None,
         amount: int | None = None,
         notes: str | None = None,
@@ -265,7 +268,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_add_head_circumference(
         self,
         head_circumference: float,
-        date: date | None = None,
+        date: date | None = None,  # pylint: disable=redefined-outer-name
         notes: str | None = None,
     ) -> None:
         """Add head circumference entry."""
@@ -288,7 +291,10 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_add_height(
-        self, height: float, date: date | None = None, notes: str | None = None
+        self,
+        height: float,
+        date: date | None = None,  # pylint: disable=redefined-outer-name
+        notes: str | None = None,
     ) -> None:
         """Add height entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -308,7 +314,9 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_add_note(
-        self, note: str, time: datetime | time | None = None
+        self,
+        note: str,
+        time: datetime | time | None = None,  # pylint: disable=redefined-outer-name
     ) -> None:
         """Add note entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -330,7 +338,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_add_pumping(
         self,
         amount: float,
-        time: datetime | time | None = None,
+        time: datetime | time | None = None,  # pylint: disable=redefined-outer-name
         notes: str | None = None,
     ) -> None:
         """Add a pumping entry."""
@@ -358,7 +366,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_add_temperature(
         self,
         temperature: float,
-        time: datetime | time | None = None,
+        time: datetime | time | None = None,  # pylint: disable=redefined-outer-name
         notes: str | None = None,
     ) -> None:
         """Add a temperature entry."""
@@ -384,7 +392,10 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         await self.coordinator.async_request_refresh()
 
     async def async_add_weight(
-        self, weight: float, date: date | None = None, notes: str | None = None
+        self,
+        weight: float,
+        date: date | None = None,  # pylint: disable=redefined-outer-name
+        notes: str | None = None,
     ) -> None:
         """Add weight entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -466,7 +477,7 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
     @property
     def name(self) -> str:
         """Return the name of the babybuddy sensor."""
-        type = self.entity_description.key
+        type = self.entity_description.key  # pylint: disable=redefined-builtin
         if type[-1] == "s":
             type = type[:-1]
         return f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} last {type}"

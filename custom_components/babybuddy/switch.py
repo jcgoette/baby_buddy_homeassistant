@@ -197,7 +197,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
 
     async def async_add_feeding(
         self,
-        type: str,
+        type: str,  # pylint: disable=redefined-builtin
         method: str,
         timer: bool,
         start: datetime | time | None = None,
