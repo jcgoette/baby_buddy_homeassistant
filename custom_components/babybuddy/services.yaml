@@ -285,6 +285,7 @@ add_pumping:
       name: Pumping amount
       description: Pumping amount
       example: 1
+      required: true
       selector:
         number:
           min: 1
