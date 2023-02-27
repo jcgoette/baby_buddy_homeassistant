@@ -16,18 +16,14 @@ jobs:
   lint-black:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
       - uses: psf/black@stable
         with:
-          options: ". --check"
+          options: ". --check --color --diff"
   lint-isort:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-      - uses: jamescurtin/isort-action@master
+      - uses: actions/checkout@v3
+      - uses: isort/isort-action@master
         with:
           configuration: "--check-only --diff --profile black"

@@ -8,7 +8,7 @@ jobs:
   manifest_bump:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Get version
         id: version
         uses: home-assistant/actions/helpers/version@master
