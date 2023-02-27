@@ -91,7 +91,6 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
     _LOGGER.debug(f"Migrating from ConfigFlow version {config_entry.version}.")
 
     if config_entry.version == 1:
-
         new = {**config_entry.data}
         new[CONF_PATH] = DEFAULT_PATH
 
