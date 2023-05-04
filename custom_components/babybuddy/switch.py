@@ -19,7 +19,6 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from . import BabyBuddyCoordinator
 from .client import get_datetime_from_time
 from .const import (
-    ATTR_ACTIVE,
     ATTR_AMOUNT,
     ATTR_CHILD,
     ATTR_END,
@@ -156,9 +155,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         """Return entity state."""
         is_on = False
         if self.child[ATTR_ID] in self.coordinator.data[1]:
-            is_on = self.coordinator.data[1][self.child[ATTR_ID]][ATTR_TIMERS].get(
-                ATTR_ACTIVE, False
-            )
+            is_on = len(self.coordinator.data[1][self.child[ATTR_ID]][ATTR_TIMERS]) > 0
         return is_on
 
     @property
