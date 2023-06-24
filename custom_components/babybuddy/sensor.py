@@ -510,10 +510,10 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
                 wet_and_solid: tuple(bool, bool) = (
                     self.coordinator.data[1][self.child[ATTR_ID]][
                         self.entity_description.key
-                    ][ATTR_WET],
+                    ].get(ATTR_WET, False),
                     self.coordinator.data[1][self.child[ATTR_ID]][
                         self.entity_description.key
-                    ][ATTR_SOLID],
+                    ].get(ATTR_SOLID, False),
                 )
                 if wet_and_solid == (True, False):
                     attrs[ATTR_DESCRIPTIVE] = DIAPER_TYPES[0]
