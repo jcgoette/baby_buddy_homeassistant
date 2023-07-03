@@ -9,7 +9,7 @@ import homeassistant.util.dt as dt_util
 import voluptuous as vol
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_ID, ATTR_NAME, CONF_HOST
+from homeassistant.const import ATTR_ID, ATTR_NAME, CONF_API_KEY
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import entity_platform
@@ -144,7 +144,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         self._attr_name = (
             f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} {ATTR_TIMER}"
         )
-        self._attr_unique_id = f"{self.coordinator.config_entry.data[CONF_HOST]}-{child[ATTR_ID]}-{ATTR_TIMER}"
+        self._attr_unique_id = f"{self.coordinator.config_entry.data[CONF_API_KEY]}-{child[ATTR_ID]}-{ATTR_TIMER}"
         self._attr_icon = "mdi:timer-sand"
         self._attr_device_info = {
             "identifiers": {(DOMAIN, child[ATTR_ID])},

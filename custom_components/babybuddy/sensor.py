@@ -15,6 +15,7 @@ from homeassistant.const import (
     ATTR_ID,
     ATTR_TEMPERATURE,
     ATTR_TIME,
+    CONF_API_KEY,
     CONF_HOST,
     CONF_PATH,
     CONF_PORT,
@@ -438,7 +439,7 @@ class BabyBuddyChildSensor(BabyBuddySensor):
 
         self._attr_name = f"Baby {child['first_name']} {child['last_name']}"
         self._attr_unique_id = (
-            f"{coordinator.config_entry.data[CONF_HOST]}-{child[ATTR_ID]}"
+            f"{coordinator.config_entry.data[CONF_API_KEY]}-{child[ATTR_ID]}"
         )
         self._attr_native_value = child[ATTR_BIRTH_DATE]
         self._attr_icon = "mdi:baby-face-outline"
@@ -472,7 +473,7 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
         super().__init__(coordinator, child)
 
         self.entity_description = description
-        self._attr_unique_id = f"{self.coordinator.config_entry.data[CONF_HOST]}-{child[ATTR_ID]}-{description.key}"
+        self._attr_unique_id = f"{self.coordinator.config_entry.data[CONF_API_KEY]}-{child[ATTR_ID]}-{description.key}"
 
     @property
     def name(self) -> str:
