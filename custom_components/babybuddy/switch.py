@@ -154,12 +154,13 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
     @property
     def is_on(self) -> bool:
         """Return entity state."""
-        is_on = False
         if self.child[ATTR_ID] in self.coordinator.data[1]:
-            is_on = self.coordinator.data[1][self.child[ATTR_ID]][ATTR_TIMERS].get(
-                ATTR_ACTIVE, False
-            )
-        return is_on
+            timer_data = self.coordinator.data[1][self.child[ATTR_ID]][ATTR_TIMERS]
+            # In Babybuddy 2.0 'active' is not in the JSON response, so return
+            # True if any timers are returned, as only active timers are
+            # returned.
+            return timer_data.get(ATTR_ACTIVE, len(timer_data) > 0)
+        return False
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
