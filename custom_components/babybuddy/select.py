@@ -3,31 +3,45 @@ from __future__ import annotations
 
 from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_API_KEY
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import SELECTOR_TYPES, BabyBuddySelectDescription
+from . import BabyBuddyCoordinator
+from .const import DOMAIN, SELECTOR_TYPES, BabyBuddySelectDescription
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up babybuddy select entities for feeding and diaper change."""
-    async_add_entities([BabyBuddySelect(entity) for entity in SELECTOR_TYPES])
+    babybuddy_coordinator: BabyBuddyCoordinator = hass.data[DOMAIN][
+        config_entry.entry_id
+    ]
+    async_add_entities(
+        [BabyBuddySelect(babybuddy_coordinator, entity) for entity in SELECTOR_TYPES]
+    )
 
 
-class BabyBuddySelect(SelectEntity, RestoreEntity):
+class BabyBuddySelect(CoordinatorEntity, SelectEntity, RestoreEntity):
     """Babybuddy select entity for feeding and diaper change."""
 
     _attr_should_poll = False
+    coordinator: BabyBuddyCoordinator
     entity_description: BabyBuddySelectDescription
 
-    def __init__(self, entity_description: BabyBuddySelectDescription) -> None:
+    def __init__(
+        self,
+        coordinator: BabyBuddyCoordinator,
+        entity_description: BabyBuddySelectDescription,
+    ) -> None:
         """Initialize the Babybuddy select entity."""
-        self._attr_unique_id = entity_description.key
+        super().__init__(coordinator)
+        self._attr_unique_id = f"{self.coordinator.config_entry.data[CONF_API_KEY]}-{entity_description.key}"
         self._attr_options = entity_description.options
         self.entity_description = entity_description
         self._attr_current_option = None
