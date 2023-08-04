@@ -102,6 +102,15 @@ async def async_setup_entry(
         "async_add_sleep",
     )
     platform.async_register_entity_service(
+        "add_pumping",
+        {
+            vol.Required(ATTR_AMOUNT): cv.positive_int,
+            **COMMON_FIELDS,
+            vol.Optional(ATTR_NOTES): cv.string,
+        },
+        "async_add_pumping",
+    )
+    platform.async_register_entity_service(
         "add_tummy_time",
         {
             **COMMON_FIELDS,
@@ -247,6 +256,32 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
 
         await self.coordinator.client.async_post(ATTR_SLEEP, data)
         await self.coordinator.async_request_refresh()
+
+    async def async_add_pumping(
+        self,
+        amount: float,
+        timer: bool,
+        start: datetime | time | None = None,
+        end: datetime | time | None = None,
+        notes: str | None = None,
+    ) -> None:
+        """Add a pumping entry."""
+        try:
+            data = self.set_common_fields(timer, start, end)
+        except ValidationError as err:
+            _LOGGER.error(err)
+            return
+
+        data.update( {
+            ATTR_CHILD: self.child[ATTR_ID],
+            ATTR_AMOUNT: amount,
+        })
+        if notes:
+            data[ATTR_NOTES] = notes
+
+        await self.coordinator.client.async_post(ATTR_PUMPING, data)
+        await self.coordinator.async_request_refresh()
+
 
     async def async_add_tummy_time(
         self,
