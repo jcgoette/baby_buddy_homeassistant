@@ -1,0 +1,43 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configurar o Baby Buddy",
+        "description": "O endereço deve ser preenchido com exemplo, https://192.168.1.100",
+        "data": {
+          "host": "Endereço",
+          "port": "Porta",
+          "path": "subpasta",
+          "api_key": "Chave de API"
+        }
+      },
+      "reauth_confirm": {
+        "description": "A chave API guardada já não é váliada.",
+        "title": "Repita a autorização",
+        "data": {
+          "api_key": "Chave da API"
+        }
+      }
+    },
+    "abort": {
+      "reauth_successful": "Reautenticação efeduada",
+      "already_configured": "Equipamento já configurado"
+    },
+    "error": {
+      "cannot_connect": "Falha na ligação",
+      "invalid_auth": "Autenticação invalida"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": {
+          "scan_interval": "Intervalo de atuailzação em segundos",
+          "temperature": "Unidade de temperatura",
+          "weight": "Unidade de medição altura",
+          "feedings": "Unidade de alimentação"
+        }
+      }
+    }
+  }
+}
