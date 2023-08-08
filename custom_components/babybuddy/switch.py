@@ -272,16 +272,16 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
             _LOGGER.error(err)
             return
 
-        data.update( {
-            ATTR_CHILD: self.child[ATTR_ID],
-            ATTR_AMOUNT: amount,
-        })
+        data.update(
+            {
+                ATTR_AMOUNT: amount,
+            }
+        )
         if notes:
             data[ATTR_NOTES] = notes
 
         await self.coordinator.client.async_post(ATTR_PUMPING, data)
         await self.coordinator.async_request_refresh()
-
 
     async def async_add_tummy_time(
         self,
