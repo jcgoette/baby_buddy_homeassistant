@@ -4,9 +4,13 @@ on:
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - '**/translations/*.json'
   push:
     branches:
       - main
+    paths-ignore:
+      - '**/translations/*.json'
 
 jobs:
   spellcheck:
