@@ -1,7 +1,7 @@
 {
   "domain": "babybuddy",
   "name": "Baby Buddy",
-  "codeowners": ["@jcgoette", "@engrbm87"],
+  "codeowners": ["@jcgoette"],
   "config_flow": true,
   "documentation": "https://github.com/jcgoette/baby_buddy_homeassistant",
   "integration_type": "service",
