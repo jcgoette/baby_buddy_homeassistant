@@ -148,6 +148,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         self._attr_icon = "mdi:timer-sand"
         self._attr_device_info = {
             "identifiers": {(DOMAIN, child[ATTR_ID])},
+            "name": f"{child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]}",
         }
 
     @property
