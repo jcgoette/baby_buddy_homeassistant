@@ -145,11 +145,12 @@ class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
 
-@dataclass
 class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
     """Handle babybuddy options."""
 
-    config_entry: config_entries.ConfigEntry
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """Init object."""
+        self.config_entry = config_entry
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
