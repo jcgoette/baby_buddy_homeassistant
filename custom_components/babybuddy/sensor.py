@@ -133,15 +133,6 @@ async def async_setup_entry(
         "async_add_note",
     )
     platform.async_register_entity_service(
-        "add_pumping",
-        {
-            vol.Required(ATTR_AMOUNT): cv.positive_int,
-            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
-            vol.Optional(ATTR_NOTES): cv.string,
-        },
-        "async_add_pumping",
-    )
-    platform.async_register_entity_service(
         "add_temperature",
         {
             vol.Required(ATTR_TEMPERATURE): cv.positive_float,
@@ -334,34 +325,6 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
 
         date_time_now = get_datetime_from_time(dt_util.now())
         await self.coordinator.client.async_post(ATTR_NOTES, data, date_time_now)
-        await self.coordinator.async_request_refresh()
-
-    async def async_add_pumping(
-        self,
-        amount: float,
-        time: datetime | time | None = None,  # pylint: disable=redefined-outer-name
-        notes: str | None = None,
-    ) -> None:
-        """Add a pumping entry."""
-        if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
-            return
-        data = {
-            ATTR_CHILD: self.child[ATTR_ID],
-            ATTR_AMOUNT: amount,
-        }
-        if time:
-            try:
-                date_time = get_datetime_from_time(time)
-                data[ATTR_TIME] = date_time
-            except ValidationError as err:
-                _LOGGER.error(err)
-                return
-        if notes:
-            data[ATTR_NOTES] = notes
-
-        date_time_now = get_datetime_from_time(dt_util.now())
-        await self.coordinator.client.async_post(ATTR_PUMPING, data, date_time_now)
         await self.coordinator.async_request_refresh()
 
     async def async_add_temperature(
