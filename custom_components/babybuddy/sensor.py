@@ -37,6 +37,7 @@ from .const import (
     ATTR_CHILD,
     ATTR_COLOR,
     ATTR_DESCRIPTIVE,
+    ATTR_END,
     ATTR_FIRST_NAME,
     ATTR_HEAD_CIRCUMFERENCE_DASH,
     ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
@@ -48,6 +49,7 @@ from .const import (
     ATTR_PUMPING,
     ATTR_SLUG,
     ATTR_SOLID,
+    ATTR_START,
     ATTR_TYPE,
     ATTR_WEIGHT,
     ATTR_WET,
@@ -136,7 +138,8 @@ async def async_setup_entry(
         "add_pumping",
         {
             vol.Required(ATTR_AMOUNT): cv.positive_int,
-            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
+            vol.Required(ATTR_START): vol.Any(cv.datetime, cv.time),
+            vol.Required(ATTR_END): vol.Any(cv.datetime, cv.time),
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_pumping",
@@ -339,24 +342,25 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_add_pumping(
         self,
         amount: float,
-        time: datetime | time | None = None,  # pylint: disable=redefined-outer-name
+        start: datetime | time,  
+        end: datetime | time, 
         notes: str | None = None,
     ) -> None:
         """Add a pumping entry."""
         if not isinstance(self, BabyBuddyChildSensor):
             _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
-        data = {
-            ATTR_CHILD: self.child[ATTR_ID],
-            ATTR_AMOUNT: amount,
-        }
-        if time:
-            try:
-                date_time = get_datetime_from_time(time)
-                data[ATTR_TIME] = date_time
-            except ValidationError as err:
-                _LOGGER.error(err)
-                return
+        try:
+            data = {
+                ATTR_CHILD: self.child[ATTR_ID],
+                ATTR_AMOUNT: amount,
+                ATTR_START: get_datetime_from_time(start),
+                ATTR_END: get_datetime_from_time(end),
+            }
+        except ValidationError as err:
+            _LOGGER.error(err)
+            return
+
         if notes:
             data[ATTR_NOTES] = notes
 
