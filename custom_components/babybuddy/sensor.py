@@ -101,7 +101,7 @@ async def async_setup_entry(
             vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
             vol.Optional(ATTR_TYPE): vol.In(DIAPER_TYPES),
             vol.Optional(ATTR_COLOR): vol.In(DIAPER_COLORS),
-            vol.Optional(ATTR_AMOUNT): cv.positive_int,
+            vol.Optional(ATTR_AMOUNT): cv.positive_float,
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_diaper_change",
@@ -135,7 +135,7 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         "add_pumping",
         {
-            vol.Required(ATTR_AMOUNT): cv.positive_int,
+            vol.Required(ATTR_AMOUNT): cv.positive_float,
             vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
             vol.Optional(ATTR_NOTES): cv.string,
         },
@@ -235,7 +235,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         type: str | None = None,  # pylint: disable=redefined-builtin
         time: datetime | time | None = None,  # pylint: disable=redefined-outer-name
         color: str | None = None,
-        amount: int | None = None,
+        amount: float | None = None,
         notes: str | None = None,
     ) -> None:
         """Add diaper change entry."""
