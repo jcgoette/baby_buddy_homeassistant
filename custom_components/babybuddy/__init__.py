@@ -22,6 +22,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.device_registry import (
     DeviceRegistry,
     async_entries_for_config_entry,
@@ -128,7 +129,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
             config_entry.data[CONF_PORT],
             config_entry.data[CONF_PATH],
             config_entry.data[CONF_API_KEY],
-            hass.helpers.aiohttp_client.async_get_clientsession(),
+            async_get_clientsession(self.hass),
         )
         self.device_registry: DeviceRegistry = async_get(self.hass)
         self.child_ids: list[str] = []

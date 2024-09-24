@@ -19,6 +19,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .client import BabyBuddyClient
 from .const import (
@@ -78,7 +79,7 @@ class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     user_input[CONF_PORT],
                     user_input[CONF_PATH],
                     user_input[CONF_API_KEY],
-                    self.hass.helpers.aiohttp_client.async_get_clientsession(),
+                    async_get_clientsession(self.hass),
                 )
                 await client.async_connect()
             except AuthorizationError:
@@ -120,7 +121,7 @@ class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     user_input[CONF_PORT],
                     user_input[CONF_PATH],
                     user_input[CONF_API_KEY],
-                    self.hass.helpers.aiohttp_client.async_get_clientsession(),
+                    async_get_clientsession(self.hass),
                 )
                 await client.async_connect()
             except ConnectError:
