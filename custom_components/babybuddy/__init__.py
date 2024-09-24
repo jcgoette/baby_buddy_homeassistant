@@ -7,6 +7,7 @@ from datetime import timedelta
 from http import HTTPStatus
 from typing import Any
 
+import homeassistant.helpers.device_registry as dr
 import homeassistant.util.dt as dt_util
 import voluptuous as vol
 from aiohttp.client_exceptions import ClientError, ClientResponseError
@@ -23,11 +24,6 @@ from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.device_registry import (
-    DeviceRegistry,
-    async_entries_for_config_entry,
-    async_get,
-)
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .client import BabyBuddyClient
@@ -131,14 +127,14 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
             config_entry.data[CONF_API_KEY],
             async_get_clientsession(self.hass),
         )
-        self.device_registry: DeviceRegistry = async_get(self.hass)
+        self.device_registry: dr.DeviceRegistry = dr.async_get(self.hass)
         self.child_ids: list[str] = []
 
     async def async_set_children_from_db(self) -> None:
         """Set child_ids from HA database."""
         self.child_ids = [
             next(iter(device.identifiers))[1]
-            for device in async_entries_for_config_entry(
+            for device in dr.async_entries_for_config_entry(
                 self.device_registry, self.config_entry.entry_id
             )
         ]
@@ -175,7 +171,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
 
     async def async_remove_deleted_children(self) -> None:
         """Remove child device if child is removed from babybuddy."""
-        for device in async_entries_for_config_entry(
+        for device in dr.async_entries_for_config_entry(
             self.device_registry, self.config_entry.entry_id
         ):
             if next(iter(device.identifiers))[1] not in self.child_ids:
