@@ -1,7 +1,7 @@
 """Config flow for babybuddy integration."""
+
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Any
 
 import voluptuous as vol
@@ -168,7 +168,14 @@ class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Optional(
                 CONF_WEIGHT_UNIT,
                 default=self.config_entry.options.get(CONF_WEIGHT_UNIT, None),
-            ): vol.In([UnitOfMass.KILOGRAMS, UnitOfMass.POUNDS, UnitOfMass.OUNCES]),
+            ): vol.In(
+                [
+                    UnitOfMass.KILOGRAMS,
+                    UnitOfMass.GRAMS,
+                    UnitOfMass.POUNDS,
+                    UnitOfMass.OUNCES,
+                ]
+            ),
             vol.Optional(
                 CONF_FEEDING_UNIT,
                 default=self.config_entry.options.get(CONF_FEEDING_UNIT, None),
