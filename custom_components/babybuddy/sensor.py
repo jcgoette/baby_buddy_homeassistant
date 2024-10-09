@@ -508,7 +508,7 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
                 self.entity_description.key
             ]
             if self.entity_description.key == ATTR_CHANGES:
-                wet_and_solid: tuple(bool, bool) = (
+                wet_and_solid: tuple[bool, bool] = (
                     self.coordinator.data[1][self.child[ATTR_ID]][
                         self.entity_description.key
                     ].get(ATTR_WET, False),
