@@ -1,7 +1,5 @@
 {
-  "dictionaries": [
-    "homeassistant"
-  ],
+  "dictionaries": ["homeassistant"],
   "dictionaryDefinitions": [
     {
       "name": "homeassistant",
@@ -23,11 +21,8 @@
     "babybuddy",
     "clientsession",
     "fstring",
-    "isort",
     "reauth"
   ],
-  "import": [
-    "@cspell/dict-python/cspell-ext.json"
-  ],
+  "import": ["@cspell/dict-python/cspell-ext.json"],
   "language": "en,lorem"
 }

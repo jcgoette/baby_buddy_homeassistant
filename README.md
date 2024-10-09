@@ -1,8 +1,7 @@
 # baby_buddy_homeassistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 This custom integration allows you to monitor [Baby Buddy](https://github.com/babybuddy/babybuddy) data for your child within [Home Assistant](https://github.com/home-assistant/core). It also allows you to start timers and add data entries from within Home Assistant.
 
@@ -22,12 +21,12 @@ Adding BabyBuddy to your Home Assistant instance can be done via the user interf
 
 ### Parameters
 
-| Name | Optional | Description |
-|------|:----:|-------------|
-| address  | no |   Host URL for your instance of Baby Buddy, without sub path
-| port  | no |   Host port (default = 8000)
-| path  | no |   Sub path of your Baby Buddy instance (default = "")
-| api_key| no |  The API key from the user settings page on your instance of Baby Buddy
+| Name    | Optional | Description                                                            |
+| ------- | :------: | ---------------------------------------------------------------------- |
+| address |    no    | Host URL for your instance of Baby Buddy, without sub path             |
+| port    |    no    | Host port (default = 8000)                                             |
+| path    |    no    | Sub path of your Baby Buddy instance (default = "")                    |
+| api_key |    no    | The API key from the user settings page on your instance of Baby Buddy |
 
 ### Options
 
@@ -65,154 +64,154 @@ This integration provides the following entities.
 
 This service adds a new child. At least one child should be added to start seeing the different sensors and switches.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| first_name | no |   Baby's first name
-| last_name | no |   Baby's last name
-| birth_date | no |   Child's birth date in YYYY-MM-DD format
+| Service data attribute | Optional | Description                             |
+| ---------------------- | :------: | --------------------------------------- |
+| first_name             |    no    | Baby's first name                       |
+| last_name              |    no    | Baby's last name                        |
+| birth_date             |    no    | Child's birth date in YYYY-MM-DD format |
 
 ### SERVICE ADD_BMI
 
 This service adds a BMI entry for your child.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the child sensor
-| BMI | no |   Specify BMI value (float)
-| date | yes |   Specify BMI recording date (YYYY-MM-DD format, else today() will be used)
-| notes | yes |   Add notes text to entry
+| Service data attribute | Optional | Description                                                               |
+| ---------------------- | :------: | ------------------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the child sensor                                            |
+| BMI                    |    no    | Specify BMI value (float)                                                 |
+| date                   |   yes    | Specify BMI recording date (YYYY-MM-DD format, else today() will be used) |
+| notes                  |   yes    | Add notes text to entry                                                   |
 
 ### SERVICE ADD_DIAPER_CHANGE
 
 This service adds a diaper change entry for your child.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the child sensor
-| type | yes |   Specify type of diaper. This can be `Wet`, `Solid`, or `Wet and Solid`.
-| time | yes |   Specify diaper change time (must be in the past, else now() will be used)
-| color | yes |   Specify diaper color. This can be `Black`, `Brown` , `Green`, or `Yellow`.
-| amount | yes |   Add number of diapers
-| notes | yes |   Add notes text to entry
+| Service data attribute | Optional | Description                                                                |
+| ---------------------- | :------: | -------------------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the child sensor                                             |
+| type                   |   yes    | Specify type of diaper. This can be `Wet`, `Solid`, or `Wet and Solid`.    |
+| time                   |   yes    | Specify diaper change time (must be in the past, else now() will be used)  |
+| color                  |   yes    | Specify diaper color. This can be `Black`, `Brown` , `Green`, or `Yellow`. |
+| amount                 |   yes    | Add number of diapers                                                      |
+| notes                  |   yes    | Add notes text to entry                                                    |
 
 ### SERVICE ADD_FEEDING
 
 This service adds a feeding entry for your child. Feeding start/end/child fields can be linked to an active timer.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the timer switch linked to the child.
-| type | no |   Specify type of feeding. Can be one of `Breast milk`, `Formula`, `Fortified breast milk`, or `Solid food`.
-| method | no |   Specify method of feeding. Can be one of `Bottle`, `Left breast`, `Right breast`, `Both breasts`, `Self fed`, or `Parent fed`.
-| timer | yes |   Set to True to use the currently active timer
-| start | yes |   Specify start time (must be in the past, else now() will be used). This can be ignored if timer is used.
-| end | yes |   Specify end time (must be in the past, else now() will be used). This can be ignored if timer is used.
-| amount | yes |   Specify amount of feeding as an integer
-| notes | yes |   Add notes text to entry
+| Service data attribute | Optional | Description                                                                                                                    |
+| ---------------------- | :------: | ------------------------------------------------------------------------------------------------------------------------------ |
+| entity_id              |    no    | entity_id for the timer switch linked to the child.                                                                            |
+| type                   |    no    | Specify type of feeding. Can be one of `Breast milk`, `Formula`, `Fortified breast milk`, or `Solid food`.                     |
+| method                 |    no    | Specify method of feeding. Can be one of `Bottle`, `Left breast`, `Right breast`, `Both breasts`, `Self fed`, or `Parent fed`. |
+| timer                  |   yes    | Set to True to use the currently active timer                                                                                  |
+| start                  |   yes    | Specify start time (must be in the past, else now() will be used). This can be ignored if timer is used.                       |
+| end                    |   yes    | Specify end time (must be in the past, else now() will be used). This can be ignored if timer is used.                         |
+| amount                 |   yes    | Specify amount of feeding as an integer                                                                                        |
+| notes                  |   yes    | Add notes text to entry                                                                                                        |
 
 ### SERVICE ADD_HEAD_CIRCUMFERENCE
 
 This service adds a head circumference entry for your child.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the child sensor
-| head_circumference | no |   Specify head circumference value (float)
-| date | yes |   Specify head circumference recording date (YYYY-MM-DD format, else today() will be used)
-| notes | yes |   Add notes text to entry
+| Service data attribute | Optional | Description                                                                              |
+| ---------------------- | :------: | ---------------------------------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the child sensor                                                           |
+| head_circumference     |    no    | Specify head circumference value (float)                                                 |
+| date                   |   yes    | Specify head circumference recording date (YYYY-MM-DD format, else today() will be used) |
+| notes                  |   yes    | Add notes text to entry                                                                  |
 
 ### SERVICE ADD_HEIGHT
 
 This service adds a height entry for your child.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the child sensor
-| height | no |   Specify height value (float)
-| date | yes |   Specify height recording date (YYYY-MM-DD format, else today() will be used)
-| notes | yes |   Add notes text to entry
+| Service data attribute | Optional | Description                                                                  |
+| ---------------------- | :------: | ---------------------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the child sensor                                               |
+| height                 |    no    | Specify height value (float)                                                 |
+| date                   |   yes    | Specify height recording date (YYYY-MM-DD format, else today() will be used) |
+| notes                  |   yes    | Add notes text to entry                                                      |
 
 ### SERVICE ADD_NOTE
 
 This service adds a note entry for your child.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the child sensor
-| notes | yes |   Add notes text to entry
-| time | yes |   Specify notes recording time (must be in the past, else now() will be used)
+| Service data attribute | Optional | Description                                                                 |
+| ---------------------- | :------: | --------------------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the child sensor                                              |
+| notes                  |   yes    | Add notes text to entry                                                     |
+| time                   |   yes    | Specify notes recording time (must be in the past, else now() will be used) |
 
 ### SERVICE ADD_PUMPING
 
 This service adds a pumping entry for your child.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the child sensor
-| amount | no |   Specify amount of pumping as an integer
-| time | yes |   Specify pumping recording time (must be in the past, else now() will be used)
-| notes | yes |   Add notes text to entry
+| Service data attribute | Optional | Description                                                                   |
+| ---------------------- | :------: | ----------------------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the child sensor                                                |
+| amount                 |    no    | Specify amount of pumping as an integer                                       |
+| time                   |   yes    | Specify pumping recording time (must be in the past, else now() will be used) |
+| notes                  |   yes    | Add notes text to entry                                                       |
 
 ### SERVICE ADD_SLEEP
 
 This service adds a sleep entry for your child. Sleep start/end/child fields can be linked to an active timer.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the timer switch linked to the child
-| timer | yes |   Set to True to use the currently active timer
-| start | yes |   Specify start time (must be in the past, else now() will be used). This can be ignored if timer is used.
-| end | yes |   Specify end time (must be in the past, else now() will be used). This can be ignored if timer is used.
-| notes | yes |   Add notes text to entry
+| Service data attribute | Optional | Description                                                                                              |
+| ---------------------- | :------: | -------------------------------------------------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the timer switch linked to the child                                                       |
+| timer                  |   yes    | Set to True to use the currently active timer                                                            |
+| start                  |   yes    | Specify start time (must be in the past, else now() will be used). This can be ignored if timer is used. |
+| end                    |   yes    | Specify end time (must be in the past, else now() will be used). This can be ignored if timer is used.   |
+| notes                  |   yes    | Add notes text to entry                                                                                  |
 
 ### SERVICE ADD_TEMPERATURE
 
 This service adds a temperature entry for your child.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the child sensor
-| temperature | no |   Specify temperature value (float)
-| time | yes |   Specify temperature recording time (must be in the past, else now() will be used)
-| notes | yes |   Add notes text to entry
+| Service data attribute | Optional | Description                                                                       |
+| ---------------------- | :------: | --------------------------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the child sensor                                                    |
+| temperature            |    no    | Specify temperature value (float)                                                 |
+| time                   |   yes    | Specify temperature recording time (must be in the past, else now() will be used) |
+| notes                  |   yes    | Add notes text to entry                                                           |
 
 ### SERVICE ADD_TUMMY_TIME
 
 This service adds a tummy time entry for your child. Tummy time start/end/child fields can be linked to an active timer.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the timer switch linked to the child
-| timer | yes |   Set to True to use the currently active timer
-| start | yes |   Specify start time (must be in the past, else now() will be used). This can be ignored if timer is used.
-| end | yes |   Specify end time (must be in the past, else now() will be used). This can be ignored if timer is used.
-| milestone | yes |   Add milestone text to entry
+| Service data attribute | Optional | Description                                                                                              |
+| ---------------------- | :------: | -------------------------------------------------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the timer switch linked to the child                                                       |
+| timer                  |   yes    | Set to True to use the currently active timer                                                            |
+| start                  |   yes    | Specify start time (must be in the past, else now() will be used). This can be ignored if timer is used. |
+| end                    |   yes    | Specify end time (must be in the past, else now() will be used). This can be ignored if timer is used.   |
+| milestone              |   yes    | Add milestone text to entry                                                                              |
 
 ### SERVICE ADD_WEIGHT
 
 This service adds a weight entry for your child.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the child sensor
-| weight | no |   Specify weight value (float)
-| date | yes |   Specify weight recording date (YYYY-MM-DD format, else today() will be used)
-| notes | yes |   Add notes text to entry
+| Service data attribute | Optional | Description                                                                  |
+| ---------------------- | :------: | ---------------------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the child sensor                                               |
+| weight                 |    no    | Specify weight value (float)                                                 |
+| date                   |   yes    | Specify weight recording date (YYYY-MM-DD format, else today() will be used) |
+| notes                  |   yes    | Add notes text to entry                                                      |
 
 ### SERVICE DELETE_LAST_ENTRY
 
 This service will delete the last entry for specified child.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the child who's last entry will be deleted
+| Service data attribute | Optional | Description                                              |
+| ---------------------- | :------: | -------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the child who's last entry will be deleted |
 
 ### SERVICE START_TIMER
 
 This service starts a new timer for specified child with optional starting time.
 
-| Service data attribute | Optional | Description |
-|------|:----:|-------------|
-| entity_id | no |   entity_id for the switch linked to the child
-| start | yes |   Specify start time (must be in the past, else now() will be used)
-| name | yes |   Optional name for new timer
+| Service data attribute | Optional | Description                                                       |
+| ---------------------- | :------: | ----------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the switch linked to the child                      |
+| start                  |   yes    | Specify start time (must be in the past, else now() will be used) |
+| name                   |   yes    | Optional name for new timer                                       |
