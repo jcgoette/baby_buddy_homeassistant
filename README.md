@@ -162,6 +162,7 @@ This service adds a sleep entry for your child. Sleep start/end/child fields can
 | timer                  |   yes    | Set to True to use the currently active timer                                                            |
 | start                  |   yes    | Specify start time (must be in the past, else now() will be used). This can be ignored if timer is used. |
 | end                    |   yes    | Specify end time (must be in the past, else now() will be used). This can be ignored if timer is used.   |
+| nap                    |   yes    | Set to True to designate as nap.                                                                         |
 | notes                  |   yes    | Add notes text to entry                                                                                  |
 
 ### SERVICE ADD_TEMPERATURE

@@ -1,4 +1,5 @@
 """Constants for the babybuddy integration."""
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -48,6 +49,7 @@ ATTR_LAST_NAME: Final = "last_name"
 ATTR_METHOD: Final = "method"
 ATTR_MILESTONE: Final = "milestone"
 ATTR_NOTE: Final = "note"
+ATTR_NAP: Final = "nap"
 ATTR_NOTES: Final = "notes"
 ATTR_PICTURE: Final = "picture"
 ATTR_PUMPING: Final = "pumping"

@@ -1,4 +1,5 @@
 """Platform for Baby Buddy binary switch integration."""
+
 from __future__ import annotations
 
 import logging
@@ -28,6 +29,7 @@ from .const import (
     ATTR_LAST_NAME,
     ATTR_METHOD,
     ATTR_MILESTONE,
+    ATTR_NAP,
     ATTR_NOTES,
     ATTR_SLEEP,
     ATTR_START,
@@ -97,6 +99,7 @@ async def async_setup_entry(
         "add_sleep",
         {
             **COMMON_FIELDS,
+            vol.Optional(ATTR_NAP): cv.boolean,
             vol.Optional(ATTR_NOTES): cv.string,
         },
         "async_add_sleep",
@@ -233,6 +236,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         timer: bool,
         start: datetime | time | None = None,
         end: datetime | time | None = None,
+        nap: bool | None = None,
         notes: str | None = None,
     ) -> None:
         """Add a sleep entry."""
@@ -242,6 +246,8 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
             _LOGGER.error(err)
             return
 
+        if nap is not None:
+            data[ATTR_NAP] = nap
         if notes:
             data[ATTR_NOTES] = notes
 

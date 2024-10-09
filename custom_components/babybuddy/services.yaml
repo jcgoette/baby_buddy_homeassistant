@@ -334,6 +334,12 @@ add_sleep:
       example: "15:10:00"
       selector:
         time:
+    nap:
+      name: Nap?
+      description: Nap?
+      example: false
+      selector:
+        boolean:
     notes:
       name: Sleep notes
       description: Sleep notes
