@@ -6,18 +6,25 @@ on:
 
 jobs:
   manifest_bump:
+    name: manifest_bump
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
       - name: Get version
-        id: version
         uses: home-assistant/actions/helpers/version@master
+        id: version
+
       - name: Bump manifest and create zip
         run: |
           sed -i 's/v0.0.0/${{ steps.version.outputs.version }}/' custom_components/babybuddy/manifest.json
           cd custom_components/babybuddy/
           zip ../../babybuddy.zip -r ./
-      - uses: svenstaro/upload-release-action@master
+
+      - name: Upload the release
+        uses: svenstaro/upload-release-action@master
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./babybuddy.zip

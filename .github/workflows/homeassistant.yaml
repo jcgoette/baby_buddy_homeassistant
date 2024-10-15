@@ -10,14 +10,24 @@ on:
 
 jobs:
   hassfest:
+    name: hassfest
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: home-assistant/actions/hassfest@master
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Hassfest
+        uses: home-assistant/actions/hassfest@master
+
   hacs:
-    runs-on: "ubuntu-latest"
+    name: hacs
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
       - name: HACS Action
         uses: hacs/action@main
         with:

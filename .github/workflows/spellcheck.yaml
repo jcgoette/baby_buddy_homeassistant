@@ -14,9 +14,14 @@ on:
 
 jobs:
   spellcheck:
+    name: spellcheck
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: streetsidesoftware/cspell-action@main
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Run cspell
+        uses: streetsidesoftware/cspell-action@main
         with:
           config: cspell.json
