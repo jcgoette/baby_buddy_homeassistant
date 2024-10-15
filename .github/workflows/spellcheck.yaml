@@ -6,11 +6,13 @@ on:
       - main
     paths-ignore:
       - '**/translations/*.json'
+      - '*.toml'
   push:
     branches:
       - main
     paths-ignore:
       - '**/translations/*.json'
+      - '*.toml'
 
 jobs:
   spellcheck:

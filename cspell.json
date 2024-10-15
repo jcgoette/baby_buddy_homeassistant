@@ -6,6 +6,7 @@
       "path": "./homeassistant.txt"
     }
   ],
+  "ignoreWords": ["fstring", "clientsession", "babybuddy"],
   "ignorePaths": [
     ".cspell.json",
     ".gitattributes",
@@ -14,14 +15,6 @@
     ".pyc",
     "LICENSE",
     "manifest.json"
-  ],
-  "ignoreWords": [
-    "aiohttp",
-    "asyncio",
-    "babybuddy",
-    "clientsession",
-    "fstring",
-    "reauth"
   ],
   "import": ["@cspell/dict-python/cspell-ext.json"],
   "language": "en,lorem"
