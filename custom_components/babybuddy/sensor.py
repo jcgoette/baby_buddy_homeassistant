@@ -1,7 +1,7 @@
 """Platform for babybuddy sensor integration."""  # pylint: disable=logging-fstring-interpolation
+
 from __future__ import annotations
 
-import logging
 from datetime import date, datetime, time
 from typing import Any
 
@@ -30,6 +30,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from . import BabyBuddyCoordinator
 from .client import get_datetime_from_time
 from .const import (
+    _LOGGER,
     ATTR_AMOUNT,
     ATTR_BIRTH_DATE,
     ATTR_BMI,
@@ -59,8 +60,6 @@ from .const import (
     BabyBuddyEntityDescription,
 )
 from .errors import ValidationError
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(

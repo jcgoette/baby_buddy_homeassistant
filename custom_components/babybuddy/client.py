@@ -1,7 +1,7 @@
 """Baby buddy client class"""  # pylint: disable=logging-fstring-interpolation
+
 from __future__ import annotations
 
-import logging
 from asyncio import TimeoutError as AsyncIOTimeoutError
 from datetime import datetime, time
 from http import HTTPStatus
@@ -13,9 +13,8 @@ from aiohttp.client import ClientSession
 from aiohttp.client_exceptions import ClientError, ClientResponseError
 from homeassistant.const import ATTR_DATE, ATTR_TIME
 
+from .const import _LOGGER
 from .errors import AuthorizationError, ConnectError, ValidationError
-
-_LOGGER = logging.getLogger(__name__)
 
 
 class BabyBuddyClient:

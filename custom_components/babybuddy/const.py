@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Final
@@ -15,6 +16,8 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.components.switch import SwitchEntityDescription
 from homeassistant.const import ATTR_TIME, UnitOfTime
+
+_LOGGER = logging.getLogger(__package__)
 
 DOMAIN: Final = "babybuddy"
 

@@ -1,7 +1,7 @@
 """The babybuddy sensor integration."""  # pylint: disable=logging-fstring-interpolation
+
 from __future__ import annotations
 
-import logging
 from asyncio import TimeoutError as AsyncIOTimeoutError
 from datetime import timedelta
 from http import HTTPStatus
@@ -28,6 +28,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .client import BabyBuddyClient
 from .const import (
+    _LOGGER,
     ATTR_BIRTH_DATE,
     ATTR_CHILDREN,
     ATTR_COUNT,
@@ -42,8 +43,6 @@ from .const import (
     SENSOR_TYPES,
 )
 from .errors import AuthorizationError, ConnectError
-
-_LOGGER = logging.getLogger(__name__)
 
 SERVICE_ADD_CHILD_SCHEMA = vol.Schema(
     {

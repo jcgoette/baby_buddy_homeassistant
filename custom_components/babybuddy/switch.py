@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import datetime, time
 from typing import Any
 
@@ -20,6 +19,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from . import BabyBuddyCoordinator
 from .client import get_datetime_from_time
 from .const import (
+    _LOGGER,
     ATTR_ACTIVE,
     ATTR_AMOUNT,
     ATTR_CHILD,
@@ -42,8 +42,6 @@ from .const import (
     FEEDING_TYPES,
 )
 from .errors import ValidationError
-
-_LOGGER = logging.getLogger(__name__)
 
 COMMON_FIELDS = {
     vol.Optional(ATTR_TIMER, default=False): cv.boolean,
