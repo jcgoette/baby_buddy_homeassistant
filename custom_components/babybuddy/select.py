@@ -1,4 +1,5 @@
 """Support for babybuddy selects."""
+
 from __future__ import annotations
 
 from homeassistant.components.select import SelectEntity

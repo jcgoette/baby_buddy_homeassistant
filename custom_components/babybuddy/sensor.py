@@ -183,9 +183,9 @@ def update_items(
                     coordinator.data[1][child[ATTR_ID]].get(description.key)
                     and f"{child[ATTR_ID]}_{description.key}" not in tracked
                 ):
-                    tracked[
-                        f"{child[ATTR_ID]}_{description.key}"
-                    ] = BabyBuddyChildDataSensor(coordinator, child, description)
+                    tracked[f"{child[ATTR_ID]}_{description.key}"] = (
+                        BabyBuddyChildDataSensor(coordinator, child, description)
+                    )
                     new_entities.append(tracked[f"{child[ATTR_ID]}_{description.key}"])
         if new_entities:
             async_add_entities(new_entities)
