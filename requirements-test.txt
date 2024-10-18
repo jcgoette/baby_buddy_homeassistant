@@ -1,0 +1,5 @@
+-r requirements.txt
+
+colorlog
+pytest
+pytest-homeassistant-custom-component

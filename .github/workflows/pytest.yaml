@@ -1,0 +1,74 @@
+name: pytest
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  pytest:
+    name: pytest
+    runs-on: ubuntu-latest
+
+    services:
+      babybuddy:
+        image: linuxserver/babybuddy
+        ports:
+          - 8000:8000
+        options: >- # Set health checks to wait until babybuddy has started
+          --health-cmd "curl --fail http://localhost:8000"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Retrieve API Key
+        run: |
+          # Retrieve CSRF token
+          csrf_token=$(curl -s -c cookies.txt 'http://localhost:8000/login/' | grep -oP 'name="csrfmiddlewaretoken" value="\K[^"]+')
+          if [ -z "$csrf_token" ]; then
+            echo "Failed to retrieve CSRF Token."
+            exit 1
+          fi
+
+          # Login and get session
+          login_response=$(curl -s 'http://localhost:8000/login/' \
+          -b cookies.txt \
+          -c cookies.txt \
+          --data-raw "csrfmiddlewaretoken=${csrf_token}&username=admin&password=admin&login=")
+
+          # Retrieve API key
+          api_key=$(curl -s 'http://localhost:8000/api/profile' \
+          -b cookies.txt \
+          | jq -r '.api_key')
+
+          if [ -z "$api_key" ]; then
+            echo "Failed to retrieve API Key."
+            exit 1
+          fi
+
+          # Set API key in GitHub environment
+          echo "api_key=$api_key" >> $GITHUB_ENV
+
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          cache: pip
+
+      - name: Install requirements
+        run: python3 -m pip install -r requirements-test.txt
+
+      - name: Run tests
+        env:
+          BABY_BUDDY_HOST: http://localhost
+          BABY_BUDDY_PORT: 8000
+          API_KEY: ${{ env.api_key }}
+        run: |
+          pytest --verbose --maxfail=1
