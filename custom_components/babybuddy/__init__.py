@@ -90,8 +90,9 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
         new = {**config_entry.data}
         new[CONF_PATH] = DEFAULT_PATH
 
-        config_entry.version = CONFIG_FLOW_VERSION
-        hass.config_entries.async_update_entry(config_entry, data=new)
+        hass.config_entries.async_update_entry(
+            config_entry, version=CONFIG_FLOW_VERSION, data=new
+        )
 
     _LOGGER.info(
         f"Migration to ConfigFlow version {config_entry.version} successful.",
