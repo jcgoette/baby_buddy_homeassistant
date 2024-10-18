@@ -1,4 +1,4 @@
-"""Baby buddy client class"""  # pylint: disable=logging-fstring-interpolation
+"""Client class for babybuddy integration"""  # pylint: disable=logging-fstring-interpolation
 
 from __future__ import annotations
 

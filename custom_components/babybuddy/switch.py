@@ -1,4 +1,4 @@
-"""Platform for Baby Buddy binary switch integration."""
+"""Platform for babybuddy binary switch integration."""
 
 from __future__ import annotations
 

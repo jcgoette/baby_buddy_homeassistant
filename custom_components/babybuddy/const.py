@@ -1,4 +1,4 @@
-"""Constants for the babybuddy integration."""
+"""Constants for babybuddy integration."""
 
 from __future__ import annotations
 
