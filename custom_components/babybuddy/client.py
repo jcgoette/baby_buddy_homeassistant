@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
+import asyncio
 from asyncio import TimeoutError as AsyncIOTimeoutError
 from datetime import datetime, time
 from http import HTTPStatus
 from typing import Any
 
-import async_timeout
 import homeassistant.util.dt as dt_util
 from aiohttp.client import ClientSession
 from aiohttp.client_exceptions import ClientError, ClientResponseError
@@ -43,7 +43,7 @@ class BabyBuddyClient:
             url = self.endpoints[endpoint]
             if entry:
                 url = f"{url}{entry}"
-        with async_timeout.timeout(10):
+        async with asyncio.timeout(10):
             _LOGGER.debug(f"GET URL: {url}")
             resp = await self.session.get(
                 url=url,
@@ -60,7 +60,7 @@ class BabyBuddyClient:
         """POST request to babybuddy API."""
         _LOGGER.debug(f"POST data: {data}")
         try:
-            with async_timeout.timeout(10):
+            async with asyncio.timeout(10):
                 resp = await self.session.post(
                     self.endpoints[endpoint],
                     headers=self.headers,
@@ -88,7 +88,7 @@ class BabyBuddyClient:
     ) -> None:
         """PATCH request to babybuddy API."""
         try:
-            with async_timeout.timeout(10):
+            async with asyncio.timeout(10):
                 resp = await self.session.patch(
                     f"{self.endpoints[endpoint]}{entry}/",
                     headers=self.headers,
@@ -104,7 +104,7 @@ class BabyBuddyClient:
     async def async_delete(self, endpoint: str, entry: str) -> None:
         """DELETE request to babybuddy API."""
         try:
-            with async_timeout.timeout(10):
+            async with asyncio.timeout(10):
                 resp = await self.session.delete(
                     f"{self.endpoints[endpoint]}{entry}/",
                     headers=self.headers,
