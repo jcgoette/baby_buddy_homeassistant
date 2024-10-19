@@ -19,6 +19,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .client import BabyBuddyClient
@@ -37,7 +38,7 @@ from .errors import AuthorizationError, ConnectError
 DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST): str,
-        vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
+        vol.Required(CONF_PORT, default=DEFAULT_PORT): cv.port,
         vol.Optional(CONF_PATH, default=DEFAULT_PATH): str,
         vol.Required(CONF_API_KEY): str,
     }
@@ -185,6 +186,6 @@ class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
                 default=self.config_entry.options.get(
                     CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
                 ),
-            ): int,
+            ): cv.positive_int,
         }
         return self.async_show_form(step_id="init", data_schema=vol.Schema(options))
