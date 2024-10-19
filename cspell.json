@@ -6,7 +6,7 @@
       "path": "./homeassistant.txt"
     }
   ],
-  "ignoreWords": ["fstring", "clientsession", "babybuddy"],
+  "ignoreWords": ["babybuddy", "clientsession", "fstring", "reauth"],
   "ignorePaths": [
     ".cspell.json",
     ".gitattributes",
