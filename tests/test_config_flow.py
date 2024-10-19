@@ -28,7 +28,7 @@ async def test_successful_config_flow(hass: HomeAssistant):
 
     # Check that the config flow shows the user form as the first step
     assert result["type"] == FlowResultType.FORM
-    assert result["step_id"] == "user"
+    assert result["step_id"] == ATTR_STEP_ID_USER
 
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], user_input=MOCK_CONFIG

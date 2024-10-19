@@ -1,6 +1,7 @@
 """Constants for babybuddy tests."""
 
 import os
+from typing import Final
 
 from homeassistant.const import (
     CONF_API_KEY,
@@ -20,6 +21,8 @@ from custom_components.babybuddy.const import (
     DEFAULT_PATH,
     DEFAULT_SCAN_INTERVAL,
 )
+
+ATTR_STEP_ID_USER: Final = "user"
 
 BABY_BUDDY_HOST = os.environ.get("BABY_BUDDY_HOST")
 BABY_BUDDY_PORT = int(os.environ.get("BABY_BUDDY_PORT"))
