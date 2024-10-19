@@ -9,13 +9,18 @@ from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.babybuddy.const import (
-    _LOGGER,
     CONFIG_FLOW_VERSION,
     DEFAULT_NAME,
     DOMAIN,
 )
 
-from .const import MOCK_CONFIG, MOCK_OPTIONS
+from .const import (
+    ATTR_STEP_ID_USER,
+    INVALID_CONFIG_AUTHORIZATIONERROR,
+    INVALID_CONFIG_CONNECTERROR,
+    MOCK_CONFIG,
+    MOCK_OPTIONS,
+)
 
 
 async def test_successful_config_flow(hass: HomeAssistant):
@@ -38,7 +43,6 @@ async def test_successful_config_flow(hass: HomeAssistant):
     assert result["data"] == MOCK_CONFIG
     assert result["handler"] == DOMAIN
     assert result["options"] == {}
-    assert result["result"]
     assert result["result"].state is ConfigEntryState.LOADED
     assert (
         result["result"].unique_id
@@ -49,10 +53,52 @@ async def test_successful_config_flow(hass: HomeAssistant):
     assert result["version"] == CONFIG_FLOW_VERSION
 
 
+async def test_unsuccessful_config_flow_authorization_error(hass: HomeAssistant):
+    """Test an unsuccessful config flow due to authorization error."""
+
+    # Initialize a config flow
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+
+    # Check that the config flow shows the user form as the first step
+    assert result["type"] == FlowResultType.FORM
+    assert result["step_id"] == ATTR_STEP_ID_USER
+
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], user_input=INVALID_CONFIG_AUTHORIZATIONERROR
+    )
+
+    # Check that the config flow is complete and a new entry is created with the input data
+    assert result["errors"] == {"api_key": "invalid_auth"}
+    assert result["type"] == FlowResultType.FORM
+
+
+async def test_unsuccessful_config_flow_connect_error(hass: HomeAssistant):
+    """Test an unsuccessful config flow due to connect error."""
+
+    # Initialize a config flow
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+
+    # Check that the config flow shows the user form as the first step
+    assert result["type"] == FlowResultType.FORM
+    assert result["step_id"] == ATTR_STEP_ID_USER
+
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], user_input=INVALID_CONFIG_CONNECTERROR
+    )
+
+    assert result["errors"] == {"base": "cannot_connect"}
+    assert result["type"] == FlowResultType.FORM
+
+
 async def test_options_flow(
     hass: HomeAssistant, setup_baby_buddy_entry_live: MockConfigEntry
 ):
     """Test an options flow."""
+
     # Go through options flow
     result = await hass.config_entries.options.async_init(
         setup_baby_buddy_entry_live.entry_id
@@ -67,8 +113,6 @@ async def test_options_flow(
         result["flow_id"],
         user_input=MOCK_OPTIONS,
     )
-
-    _LOGGER.debug(f"test_options_flow result = {result}")
 
     # Verify that the flow finishes
     assert result["type"] == FlowResultType.CREATE_ENTRY
