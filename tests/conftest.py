@@ -5,10 +5,11 @@ from __future__ import annotations
 from unittest.mock import patch
 
 import pytest
-from custom_components.babybuddy.const import _LOGGER, DOMAIN
+from pytest_socket import enable_socket
+
+from custom_components.babybuddy.const import DOMAIN
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
-from pytest_socket import enable_socket
 
 from .const import MOCK_CONFIG
 
@@ -17,6 +18,7 @@ pytest_plugins = "pytest_homeassistant_custom_component"
 
 @pytest.fixture(autouse=True)
 def enable_socket_fixture():
+    """Enable sockets."""
     enable_socket()
 
 
@@ -24,7 +26,7 @@ def enable_socket_fixture():
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(enable_custom_integrations):
     """Enable loading custom integrations."""
-    yield
+    return
 
 
 @pytest.fixture(name="skip_notifications", autouse=True)
@@ -37,7 +39,7 @@ def skip_notifications_fixture():
         yield
 
 
-@pytest.fixture()
+@pytest.fixture
 async def setup_baby_buddy_entry_live(hass: HomeAssistant):
     """Test a successful config flow."""
     # Initialize a config flow
@@ -48,8 +50,5 @@ async def setup_baby_buddy_entry_live(hass: HomeAssistant):
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], user_input=MOCK_CONFIG
     )
-
-    _LOGGER.debug(f"setup_baby_buddy_entry_live result = {result}")
-    _LOGGER.debug(f"setup_baby_buddy_entry_live result['result'] = {result['result']}")
 
     return result["result"]

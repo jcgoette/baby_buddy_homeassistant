@@ -5,16 +5,16 @@ from __future__ import annotations
 from datetime import datetime, time
 from typing import Any
 
-import homeassistant.util.dt as dt_util
 import voluptuous as vol
+
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ID, ATTR_NAME, CONF_API_KEY
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers import entity_platform
+from homeassistant.helpers import config_validation as cv, entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+import homeassistant.util.dt as dt_util
 
 from . import BabyBuddyCoordinator
 from .client import get_datetime_from_time

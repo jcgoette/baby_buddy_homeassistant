@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import logging
 from collections.abc import Callable
 from dataclasses import dataclass
+import logging
 from typing import Final
 
-import homeassistant.util.dt as dt_util
 from homeassistant.components.select import SelectEntityDescription
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -16,6 +15,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.components.switch import SwitchEntityDescription
 from homeassistant.const import ATTR_TIME, UnitOfTime
+import homeassistant.util.dt as dt_util
 
 _LOGGER = logging.getLogger(__package__)
 

@@ -1,18 +1,13 @@
 """Test babybuddy config flow."""
 
-import pytest
+from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from custom_components.babybuddy.const import CONFIG_FLOW_VERSION, DEFAULT_NAME, DOMAIN
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import CONF_API_KEY, CONF_HOST
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
-from pytest_homeassistant_custom_component.common import MockConfigEntry
-
-from custom_components.babybuddy.const import (
-    CONFIG_FLOW_VERSION,
-    DEFAULT_NAME,
-    DOMAIN,
-)
 
 from .const import (
     ATTR_STEP_ID_USER,
