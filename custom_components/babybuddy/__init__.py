@@ -30,6 +30,7 @@ import homeassistant.util.dt as dt_util
 from .client import BabyBuddyClient
 from .const import (
     _LOGGER,
+    ATTR_ACTION_ADD_CHILD,
     ATTR_BIRTH_DATE,
     ATTR_CHILDREN,
     ATTR_COUNT,
@@ -77,7 +78,7 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> 
     if unload_ok:
         hass.data[DOMAIN].pop(config_entry.entry_id)
     if not hass.data[DOMAIN]:
-        hass.services.async_remove(DOMAIN, "add_child")
+        hass.services.async_remove(DOMAIN, ATTR_ACTION_ADD_CHILD)
 
     return unload_ok
 
@@ -163,7 +164,10 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
             await self.async_request_refresh()
 
         self.hass.services.async_register(
-            DOMAIN, "add_child", async_add_child, schema=SERVICE_ADD_CHILD_SCHEMA
+            DOMAIN,
+            ATTR_ACTION_ADD_CHILD,
+            async_add_child,
+            schema=SERVICE_ADD_CHILD_SCHEMA,
         )
 
         self.config_entry.async_on_unload(

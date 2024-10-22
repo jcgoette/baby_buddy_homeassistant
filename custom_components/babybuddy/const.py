@@ -67,6 +67,7 @@ ATTR_TUMMY_TIMES: Final = "tummy-times"
 ATTR_TYPE: Final = "type"
 ATTR_WEIGHT: Final = "weight"
 ATTR_WET: Final = "wet"
+ATTR_ACTION_ADD_CHILD: Final = "add_child"
 
 DEFAULT_DIAPER_TYPE: Final = ATTR_WET
 DIAPER_COLOR: Final = "diaper_color"
