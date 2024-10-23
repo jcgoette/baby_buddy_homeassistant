@@ -26,6 +26,7 @@ from .const import (
     ATTR_END,
     ATTR_FEEDINGS,
     ATTR_FIRST_NAME,
+    ATTR_ICON_TIMER_SAND,
     ATTR_LAST_NAME,
     ATTR_METHOD,
     ATTR_MILESTONE,
@@ -146,7 +147,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
             f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} {ATTR_TIMER}"
         )
         self._attr_unique_id = f"{self.coordinator.config_entry.data[CONF_API_KEY]}-{child[ATTR_ID]}-{ATTR_TIMER}"
-        self._attr_icon = "mdi:timer-sand"
+        self._attr_icon = ATTR_ICON_TIMER_SAND
         self._attr_device_info = {
             "identifiers": {(DOMAIN, child[ATTR_ID])},
             "name": f"{child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]}",

@@ -42,6 +42,7 @@ from .const import (
     ATTR_HEAD_CIRCUMFERENCE_DASH,
     ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
     ATTR_HEIGHT,
+    ATTR_ICON_CHILD_SENSOR,
     ATTR_LAST_NAME,
     ATTR_NOTE,
     ATTR_NOTES,
@@ -441,7 +442,7 @@ class BabyBuddyChildSensor(BabyBuddySensor):
             f"{coordinator.config_entry.data[CONF_API_KEY]}-{child[ATTR_ID]}"
         )
         self._attr_native_value = child[ATTR_BIRTH_DATE]
-        self._attr_icon = "mdi:baby-face-outline"
+        self._attr_icon = ATTR_ICON_CHILD_SENSOR
         self._attr_device_class = ATTR_TIMESTAMP
         self._attr_device_class = "babybuddy_child"
 

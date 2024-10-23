@@ -31,43 +31,18 @@ DEFAULT_SCAN_INTERVAL: Final = 60
 
 CONFIG_FLOW_VERSION: Final = 2
 
-ATTR_ACTIVE: Final = "active"
-ATTR_AMOUNT: Final = "amount"
-ATTR_BIRTH_DATE: Final = "birth_date"
-ATTR_BMI: Final = "bmi"
-ATTR_CHANGES: Final = "changes"
-ATTR_CHILD: Final = "child"
-ATTR_CHILDREN: Final = "children"
-ATTR_COLOR: Final = "color"
-ATTR_COUNT: Final = "count"
-ATTR_DESCRIPTIVE: Final = "descriptive"
-ATTR_DURATION: Final = "duration"
-ATTR_END: Final = "end"
-ATTR_FEEDINGS: Final = "feedings"
-ATTR_FIRST_NAME: Final = "first_name"
-ATTR_HEAD_CIRCUMFERENCE_DASH: Final = "head-circumference"
-ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE: Final = "head_circumference"
-ATTR_HEIGHT: Final = "height"
-ATTR_LAST_NAME: Final = "last_name"
-ATTR_METHOD: Final = "method"
-ATTR_MILESTONE: Final = "milestone"
-ATTR_NOTE: Final = "note"
-ATTR_NAP: Final = "nap"
-ATTR_NOTES: Final = "notes"
-ATTR_PICTURE: Final = "picture"
-ATTR_PUMPING: Final = "pumping"
-ATTR_RESULTS: Final = "results"
-ATTR_SLEEP: Final = "sleep"
-ATTR_SLUG: Final = "slug"
-ATTR_SOLID: Final = "solid"
-ATTR_START: Final = "start"
-ATTR_TIMER: Final = "timer"
-ATTR_TIMERS: Final = "timers"
-ATTR_TUMMY_TIMES: Final = "tummy-times"
-ATTR_TYPE: Final = "type"
-ATTR_WEIGHT: Final = "weight"
-ATTR_WET: Final = "wet"
-ATTR_ACTION_ADD_CHILD: Final = "add_child"
+ATTR_ICON_BABY_BOTTLE: Final[str] = "mdi:baby-bottle-outline"
+ATTR_ICON_BABY: Final[str] = "mdi:baby"
+ATTR_ICON_CHILD_SENSOR: Final[str] = "mdi:baby-face-outline"
+ATTR_ICON_HEAD: Final[str] = "mdi:head-outline"
+ATTR_ICON_HEIGHT: Final[str] = "mdi:human-male-height"
+ATTR_ICON_MOTHER_NURSE: Final[str] = "mdi:mother-nurse"
+ATTR_ICON_NOTE: Final[str] = "mdi:note-multiple-outline"
+ATTR_ICON_PAPER_ROLL: Final[str] = "mdi:paper-roll-outline"
+ATTR_ICON_SCALE: Final[str] = "mdi:scale-bathroom"
+ATTR_ICON_SLEEP: Final[str] = "mdi:sleep"
+ATTR_ICON_THERMOMETER: Final[str] = "mdi:thermometer"
+ATTR_ICON_TIMER_SAND: Final[str] = "mdi:timer-sand"
 
 DEFAULT_DIAPER_TYPE: Final = ATTR_WET
 DIAPER_COLOR: Final = "diaper_color"
@@ -100,49 +75,49 @@ class BabyBuddyEntityDescription(SensorEntityDescription, SwitchEntityDescriptio
 
 SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
     BabyBuddyEntityDescription(
-        icon="mdi:scale-bathroom",
+        icon=ATTR_ICON_SCALE,
         key=ATTR_BMI,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_BMI,
     ),
     BabyBuddyEntityDescription(
         device_class=SensorDeviceClass.TIMESTAMP,
-        icon="mdi:paper-roll-outline",
+        icon=ATTR_ICON_PAPER_ROLL,
         key=ATTR_CHANGES,
         state_key=ATTR_TIME,
     ),
     BabyBuddyEntityDescription(
-        icon="mdi:baby-bottle-outline",
+        icon=ATTR_ICON_BABY_BOTTLE,
         key=ATTR_FEEDINGS,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_AMOUNT,
     ),
     BabyBuddyEntityDescription(
-        icon="mdi:head-outline",
+        icon=ATTR_ICON_HEAD,
         key=ATTR_HEAD_CIRCUMFERENCE_DASH,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
     ),
     BabyBuddyEntityDescription(
-        icon="mdi:human-male-height",
+        icon=ATTR_ICON_HEIGHT,
         key=ATTR_HEIGHT,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_HEIGHT,
     ),
     BabyBuddyEntityDescription(
         device_class=SensorDeviceClass.TIMESTAMP,
-        icon="mdi:note-multiple-outline",
+        icon=ATTR_ICON_NOTE,
         key=ATTR_NOTES,
         state_key=ATTR_TIME,
     ),
     BabyBuddyEntityDescription(
-        icon="mdi:mother-nurse",
+        icon=ATTR_ICON_MOTHER_NURSE,
         key=ATTR_PUMPING,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_AMOUNT,
     ),
     BabyBuddyEntityDescription(
-        icon="mdi:sleep",
+        icon=ATTR_ICON_SLEEP,
         key=ATTR_SLEEP,
         native_unit_of_measurement=UnitOfTime.MINUTES,
         state_class=SensorStateClass.MEASUREMENT,
@@ -152,19 +127,19 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
     ),
     BabyBuddyEntityDescription(
         device_class=SensorDeviceClass.TEMPERATURE,
-        icon="mdi:thermometer",
+        icon=ATTR_ICON_THERMOMETER,
         key=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=SensorDeviceClass.TEMPERATURE,
     ),
     BabyBuddyEntityDescription(
         device_class=SensorDeviceClass.TIMESTAMP,
-        icon="mdi:timer-sand",
+        icon=ATTR_ICON_TIMER_SAND,
         key=ATTR_TIMERS,
         state_key=ATTR_START,
     ),
     BabyBuddyEntityDescription(
-        icon="mdi:baby",
+        icon=ATTR_ICON_BABY,
         key=ATTR_TUMMY_TIMES,
         native_unit_of_measurement=UnitOfTime.MINUTES,
         state_class=SensorStateClass.MEASUREMENT,
@@ -173,7 +148,7 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         ),
     ),
     BabyBuddyEntityDescription(
-        icon="mdi:scale-bathroom",
+        icon=ATTR_ICON_SCALE,
         key=ATTR_WEIGHT,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_WEIGHT,
@@ -188,25 +163,25 @@ class BabyBuddySelectDescription(SelectEntityDescription):
 
 SELECTOR_TYPES: tuple[BabyBuddySelectDescription, ...] = (
     BabyBuddySelectDescription(
-        icon="mdi:paper-roll-outline",
+        icon=ATTR_ICON_PAPER_ROLL,
         key=DIAPER_COLOR,
         name=f"{DEFAULT_NAME} Diaper color",
         options=DIAPER_COLORS,
     ),
     BabyBuddySelectDescription(
-        icon="mdi:paper-roll-outline",
+        icon=ATTR_ICON_PAPER_ROLL,
         key=DIAPER_TYPE,
         name=f"{DEFAULT_NAME} Diaper type",
         options=DIAPER_TYPES,
     ),
     BabyBuddySelectDescription(
-        icon="mdi:baby-bottle-outline",
+        icon=ATTR_ICON_BABY_BOTTLE,
         key=FEEDING_METHOD,
         name=f"{DEFAULT_NAME} Feeding method",
         options=FEEDING_METHODS,
     ),
     BabyBuddySelectDescription(
-        icon="mdi:baby-bottle-outline",
+        icon=ATTR_ICON_BABY_BOTTLE,
         key=FEEDING_TYPE,
         name=f"{DEFAULT_NAME} Feeding type",
         options=FEEDING_TYPES,
