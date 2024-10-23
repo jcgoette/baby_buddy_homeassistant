@@ -145,12 +145,14 @@ This service adds a note entry for your child.
 
 This service adds a pumping entry for your child.
 
-| Service data attribute | Optional | Description                                                                   |
-| ---------------------- | :------: | ----------------------------------------------------------------------------- |
-| entity_id              |    no    | entity_id for the child sensor                                                |
-| amount                 |    no    | Specify amount of pumping as an integer                                       |
-| time                   |   yes    | Specify pumping recording time (must be in the past, else now() will be used) |
-| notes                  |   yes    | Add notes text to entry                                                       |
+| Service data attribute | Optional | Description                                                                                              |
+| ---------------------- | :------: | -------------------------------------------------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the child sensor                                                                           |
+| amount                 |    no    | Specify amount of pumping as an integer                                                                  |
+| timer                  |   yes    | Set to True to use the currently active timer                                                            |
+| start                  |   yes    | Specify start time (must be in the past, else now() will be used). This can be ignored if timer is used. |
+| end                    |   yes    | Specify end time (must be in the past, else now() will be used). This can be ignored if timer is used.   |
+| notes                  |   yes    | Add notes text to entry                                                                                  |
 
 ### SERVICE ADD_SLEEP
 

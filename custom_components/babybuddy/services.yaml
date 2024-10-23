@@ -280,9 +280,26 @@ add_pumping:
   target:
     entity:
       integration: babybuddy
-      domain: sensor
-      device_class: babybuddy_child
+      domain: switch
   fields:
+    timer:
+      name: Use timer
+      description: Use active timer to assign child/start/end
+      example: false
+      selector:
+        boolean:
+    start:
+      name: Sleep start time
+      description: Sleep start time
+      example: "15:00:00"
+      selector:
+        time:
+    end:
+      name: Sleep end time
+      description: Sleep end time
+      example: "15:10:00"
+      selector:
+        time:
     amount:
       name: Pumping amount
       description: Pumping amount
@@ -294,12 +311,6 @@ add_pumping:
           max: 500.0
           step: 0.1
           mode: box
-    time:
-      name: Pumping time
-      description: Pumping time
-      example: "15:00:00"
-      selector:
-        time:
     notes:
       name: Pumping notes
       description: Pumping notes
