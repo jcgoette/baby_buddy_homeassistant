@@ -1,4 +1,4 @@
-"""Platform for babybuddy sensor integration."""  # pylint: disable=logging-fstring-interpolation
+"""Platform for babybuddy sensor integration."""
 
 from __future__ import annotations
 

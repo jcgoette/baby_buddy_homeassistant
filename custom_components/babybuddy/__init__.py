@@ -1,4 +1,4 @@
-"""Initialization for babybuddy integration."""  # pylint: disable=logging-fstring-interpolation
+"""Initialization for babybuddy integration."""
 
 from __future__ import annotations
 
