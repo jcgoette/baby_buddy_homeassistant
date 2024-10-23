@@ -443,8 +443,7 @@ class BabyBuddyChildSensor(BabyBuddySensor):
         )
         self._attr_native_value = child[ATTR_BIRTH_DATE]
         self._attr_icon = ATTR_ICON_CHILD_SENSOR
-        self._attr_device_class = ATTR_TIMESTAMP
-        self._attr_device_class = "babybuddy_child"
+        self._attr_device_class = ATTR_BABYBUDDY_CHILD
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
