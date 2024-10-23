@@ -19,16 +19,17 @@ import homeassistant.util.dt as dt_util
 
 _LOGGER = logging.getLogger(__package__)
 
-DOMAIN: Final = "babybuddy"
+DOMAIN: Final[str] = "babybuddy"
 
-CONF_FEEDING_UNIT: Final = "feedings"
-CONF_WEIGHT_UNIT: Final = "weight"
+CONF_FEEDING_UNIT: Final[str] = "feedings"
+CONF_WEIGHT_UNIT: Final[str] = "weight"
 
-DEFAULT_NAME: Final = "Baby Buddy"
-DEFAULT_PORT: Final = 8000
-DEFAULT_PATH: Final = ""
-DEFAULT_SCAN_INTERVAL: Final = 60
+DEFAULT_NAME: Final[str] = "Baby Buddy"
+DEFAULT_PORT: Final[int] = 8000
+DEFAULT_PATH: Final[str] = ""
+DEFAULT_SCAN_INTERVAL: Final[int] = 60
 
+CONFIG_FLOW_VERSION: Final[int] = 2
 
 ATTR_ACTIVE: Final[str] = "active"
 ATTR_AMOUNT: Final[str] = "amount"
@@ -96,11 +97,11 @@ ATTR_ACTION_ADD_WEIGHT: Final[str] = "add_weight"
 ATTR_ACTION_DELETE_LAST_ENTRY: Final[str] = "delete_last_entry"
 
 DEFAULT_DIAPER_TYPE: Final = ATTR_WET
-DIAPER_COLOR: Final = "diaper_color"
+DIAPER_COLOR: Final[str] = "diaper_color"
 DIAPER_COLORS: Final = ["Black", "Brown", "Green", "Yellow"]
-DIAPER_TYPE: Final = "change_type"
+DIAPER_TYPE: Final[str] = "change_type"
 DIAPER_TYPES: Final = ["Wet", "Solid", "Wet and Solid"]
-FEEDING_METHOD: Final = "feeding_method"
+FEEDING_METHOD: Final[str] = "feeding_method"
 FEEDING_METHODS: Final = [
     "Bottle",
     "Left breast",
@@ -109,7 +110,7 @@ FEEDING_METHODS: Final = [
     "Parent fed",
     "Self fed",
 ]
-FEEDING_TYPE: Final = "feeding_type"
+FEEDING_TYPE: Final[str] = "feeding_type"
 FEEDING_TYPES: Final = ["Breast milk", "Formula", "Fortified breast milk", "Solid food"]
 
 ERROR_CHILD_SENSOR_SELECT: Final = (
