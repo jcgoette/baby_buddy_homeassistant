@@ -438,10 +438,10 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
     @property
     def name(self) -> str:
         """Return the name of the babybuddy sensor."""
-        type = self.entity_description.key  # pylint: disable=redefined-builtin
-        if type[-1] == "s":
-            type = type[:-1]
-        return f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} last {type}"
+        sensor_type = self.entity_description.key
+        if sensor_type[-1] == "s":
+            sensor_type = sensor_type[:-1]
+        return f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} last {sensor_type}"
 
     @property
     def native_value(self) -> StateType:
