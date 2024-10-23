@@ -248,8 +248,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             try:
                 date_time = get_datetime_from_time(time)
                 data[ATTR_TIME] = date_time
-            except ValidationError as err:
-                _LOGGER.error(err)
+            except ValidationError as error:
+                _LOGGER.error(error)
                 return
         if type:
             data[ATTR_WET] = type == "Wet and Solid" or type.lower() == ATTR_WET
@@ -327,8 +327,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             try:
                 date_time = get_datetime_from_time(time)
                 data[ATTR_TIME] = date_time
-            except ValidationError as err:
-                _LOGGER.error(err)
+            except ValidationError as error:
+                _LOGGER.error(error)
                 return
 
         date_time_now = get_datetime_from_time(dt_util.now())
@@ -381,8 +381,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             try:
                 date_time = get_datetime_from_time(time)
                 data[ATTR_TIME] = date_time
-            except ValidationError as err:
-                _LOGGER.error(err)
+            except ValidationError as error:
+                _LOGGER.error(error)
                 return
         if notes:
             data[ATTR_NOTES] = notes

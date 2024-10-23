@@ -146,10 +146,10 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
 
         try:
             await self.client.async_connect()
-        except AuthorizationError as err:
-            raise ConfigEntryAuthFailed from err
-        except ConnectError as err:
-            raise ConfigEntryNotReady(err) from err
+        except AuthorizationError as error:
+            raise ConfigEntryAuthFailed from error
+        except ConnectError as error:
+            raise ConfigEntryNotReady(error) from error
 
         await self.async_set_children_from_db()
 
@@ -191,11 +191,11 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
 
         try:
             children_list = await self.client.async_get(ATTR_CHILDREN)
-        except ClientResponseError as err:
-            if err.status == HTTPStatus.FORBIDDEN:
-                raise ConfigEntryAuthFailed from err
-        except (AsyncIOTimeoutError, ClientError) as err:
-            raise UpdateFailed(err) from err
+        except ClientResponseError as error:
+            if error.status == HTTPStatus.FORBIDDEN:
+                raise ConfigEntryAuthFailed from error
+        except (AsyncIOTimeoutError, ClientError) as error:
+            raise UpdateFailed(error) from error
 
         if children_list[ATTR_COUNT] < len(self.child_ids):
             self.child_ids = [child[ATTR_ID] for child in children_list[ATTR_RESULTS]]
@@ -213,13 +213,13 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
                     endpoint_data = await self.client.async_get(
                         endpoint.key, f"?child={child[ATTR_ID]}&limit=1"
                     )
-                except ClientResponseError as err:
+                except ClientResponseError as error:
                     _LOGGER.debug(
-                        f"No {endpoint} found for {child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]}. Skipping"
+                        f"No {endpoint} found for {child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]}. Skipping. error: {error}.)"
                     )
                     continue
-                except (AsyncIOTimeoutError, ClientError) as err:
-                    _LOGGER.error(err)
+                except (AsyncIOTimeoutError, ClientError) as error:
+                    _LOGGER.error(error)
                     continue
                 data: list[dict[str, str]] = endpoint_data[ATTR_RESULTS]
                 child_data[child[ATTR_ID]][endpoint.key] = data[0] if data else {}

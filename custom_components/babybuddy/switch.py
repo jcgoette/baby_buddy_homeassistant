@@ -188,8 +188,8 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         data: dict[str, Any] = {ATTR_CHILD: self.child[ATTR_ID]}
         try:
             data[ATTR_START] = get_datetime_from_time(start or dt_util.now())
-        except ValidationError as err:
-            _LOGGER.error(err)
+        except ValidationError as error:
+            _LOGGER.error(error)
             return
         if name:
             data[ATTR_NAME] = name
@@ -210,8 +210,8 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         """Add a feeding entry."""
         try:
             data = self.set_common_fields(timer, start, end)
-        except ValidationError as err:
-            _LOGGER.error(err)
+        except ValidationError as error:
+            _LOGGER.error(error)
             return
 
         data.update(
@@ -240,8 +240,8 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         """Add a sleep entry."""
         try:
             data = self.set_common_fields(timer, start, end)
-        except ValidationError as err:
-            _LOGGER.error(err)
+        except ValidationError as error:
+            _LOGGER.error(error)
             return
 
         if nap is not None:
@@ -262,8 +262,8 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         """Add a tummy time entry."""
         try:
             data = self.set_common_fields(timer, start, end)
-        except ValidationError as err:
-            _LOGGER.error(err)
+        except ValidationError as error:
+            _LOGGER.error(error)
             return
         if milestone:
             data[ATTR_MILESTONE] = milestone

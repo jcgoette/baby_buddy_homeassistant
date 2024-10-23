@@ -67,8 +67,8 @@ class BabyBuddyClient:
                     headers=self.headers,
                     data=data,
                 )
-        except (AsyncIOTimeoutError, ClientError) as err:
-            _LOGGER.error(err)
+        except (AsyncIOTimeoutError, ClientError) as error:
+            _LOGGER.error(error)
 
         if resp.status != HTTPStatus.CREATED:
             error = await resp.json()
@@ -95,8 +95,8 @@ class BabyBuddyClient:
                     headers=self.headers,
                     data=data,
                 )
-        except (AsyncIOTimeoutError, ClientError) as err:
-            _LOGGER.error(err)
+        except (AsyncIOTimeoutError, ClientError) as error:
+            _LOGGER.error(error)
 
         if resp.status != HTTPStatus.OK:
             error = await resp.json()
@@ -110,8 +110,8 @@ class BabyBuddyClient:
                     f"{self.endpoints[endpoint]}{entry}/",
                     headers=self.headers,
                 )
-        except (AsyncIOTimeoutError, ClientError) as err:
-            _LOGGER.error(err)
+        except (AsyncIOTimeoutError, ClientError) as error:
+            _LOGGER.error(error)
 
         if resp.status != 204:
             error = await resp.json()
@@ -122,10 +122,10 @@ class BabyBuddyClient:
         try:
             self.endpoints = await self.async_get()
             _LOGGER.debug(f"Endpoints: {self.endpoints}")
-        except ClientResponseError as err:
-            raise AuthorizationError from err
-        except (TimeoutError, ClientError) as err:
-            raise ConnectError(err) from err
+        except ClientResponseError as error:
+            raise AuthorizationError from error
+        except (TimeoutError, ClientError) as error:
+            raise ConnectError(error) from error
 
 
 def get_datetime_from_time(value: datetime | time) -> datetime:
