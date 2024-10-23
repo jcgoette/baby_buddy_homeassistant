@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import patch
-
+# from unittest.mock import patch
 import pytest
 from pytest_socket import enable_socket
 
@@ -27,16 +26,6 @@ def enable_socket_fixture():
 def auto_enable_custom_integrations(enable_custom_integrations):
     """Enable loading custom integrations."""
     return
-
-
-@pytest.fixture(name="skip_notifications", autouse=True)
-def skip_notifications_fixture():
-    """Skip notification calls."""
-    with (
-        patch("homeassistant.components.persistent_notification.async_create"),
-        patch("homeassistant.components.persistent_notification.async_dismiss"),
-    ):
-        yield
 
 
 @pytest.fixture
