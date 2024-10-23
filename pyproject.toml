@@ -62,27 +62,6 @@ class-const-naming-style = "any"
 # consider-using-namedtuple-or-dataclass - too opinionated
 # consider-using-assignment-expr - decision to use := better left to devs
 disable = [
-    "format",
-    "abstract-method",
-    "cyclic-import",
-    "duplicate-code",
-    "inconsistent-return-statements",
-    "locally-disabled",
-    "not-context-manager",
-    "too-few-public-methods",
-    "too-many-ancestors",
-    "too-many-arguments",
-    "too-many-instance-attributes",
-    "too-many-lines",
-    "too-many-locals",
-    "too-many-public-methods",
-    "too-many-boolean-expressions",
-    "too-many-positional-arguments",
-    "wrong-import-order",
-    "consider-using-namedtuple-or-dataclass",
-    "consider-using-assignment-expr",
-    "possibly-used-before-assignment",
-
     # Handled by ruff
     # Ref: <https://github.com/astral-sh/ruff/issues/970>
     "await-outside-async", # PLE1142
