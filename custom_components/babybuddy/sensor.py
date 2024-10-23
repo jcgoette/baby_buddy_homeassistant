@@ -30,7 +30,16 @@ from . import BabyBuddyCoordinator
 from .client import get_datetime_from_time
 from .const import (
     _LOGGER,
+    ATTR_ACTION_ADD_BMI,
+    ATTR_ACTION_ADD_DIAPER_CHANGE,
+    ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE,
+    ATTR_ACTION_ADD_HEIGHT,
+    ATTR_ACTION_ADD_NOTE,
+    ATTR_ACTION_ADD_TEMPERATURE,
+    ATTR_ACTION_ADD_WEIGHT,
+    ATTR_ACTION_DELETE_LAST_ENTRY,
     ATTR_AMOUNT,
+    ATTR_BABYBUDDY_CHILD,
     ATTR_BIRTH_DATE,
     ATTR_BMI,
     ATTR_CHANGES,
@@ -85,16 +94,16 @@ async def async_setup_entry(
 
     platform = entity_platform.async_get_current_platform()
     platform.async_register_entity_service(
-        "add_bmi",
+        ATTR_ACTION_ADD_BMI,
         {
             vol.Required(ATTR_BMI): cv.positive_float,
             vol.Optional(ATTR_DATE): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
-        "async_add_bmi",
+        f"async_{ATTR_ACTION_ADD_BMI}",
     )
     platform.async_register_entity_service(
-        "add_diaper_change",
+        ATTR_ACTION_ADD_DIAPER_CHANGE,
         {
             vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
             vol.Optional(ATTR_TYPE): vol.In(DIAPER_TYPES),
@@ -102,33 +111,33 @@ async def async_setup_entry(
             vol.Optional(ATTR_AMOUNT): cv.positive_float,
             vol.Optional(ATTR_NOTES): cv.string,
         },
-        "async_add_diaper_change",
+        f"async_{ATTR_ACTION_ADD_DIAPER_CHANGE}",
     )
     platform.async_register_entity_service(
-        "add_head_circumference",
+        ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE,
         {
             vol.Required(ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE): cv.positive_float,
             vol.Optional(ATTR_DATE): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
-        "async_add_head_circumference",
+        f"async_{ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE}",
     )
     platform.async_register_entity_service(
-        "add_height",
+        ATTR_ACTION_ADD_HEIGHT,
         {
             vol.Required(ATTR_HEIGHT): cv.positive_float,
             vol.Optional(ATTR_DATE): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
-        "async_add_height",
+        f"async_{ATTR_ACTION_ADD_HEIGHT}",
     )
     platform.async_register_entity_service(
-        "add_note",
+        ATTR_ACTION_ADD_NOTE,
         {
             vol.Required(ATTR_NOTE): cv.string,
             vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
         },
-        "async_add_note",
+        f"async_{ATTR_ACTION_ADD_NOTE}",
     )
     platform.async_register_entity_service(
         ATTR_ACTION_ADD_TEMPERATURE,
@@ -137,21 +146,21 @@ async def async_setup_entry(
             vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
             vol.Optional(ATTR_NOTES): cv.string,
         },
-        "async_add_temperature",
+        f"async_{ATTR_ACTION_ADD_TEMPERATURE}",
     )
     platform.async_register_entity_service(
-        "add_weight",
+        ATTR_ACTION_ADD_WEIGHT,
         {
             vol.Required(ATTR_WEIGHT): cv.positive_float,
             vol.Optional(ATTR_DATE): cv.date,
             vol.Optional(ATTR_NOTES): cv.string,
         },
-        "async_add_weight",
+        f"async_{ATTR_ACTION_ADD_WEIGHT}",
     )
     platform.async_register_entity_service(
-        "delete_last_entry",
+        ATTR_ACTION_DELETE_LAST_ENTRY,
         {},
-        "async_delete_last_entry",
+        f"async_{ATTR_ACTION_DELETE_LAST_ENTRY}",
     )
 
 

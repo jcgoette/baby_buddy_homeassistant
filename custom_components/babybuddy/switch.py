@@ -20,6 +20,10 @@ from . import BabyBuddyCoordinator
 from .client import get_datetime_from_time
 from .const import (
     _LOGGER,
+    ATTR_ACTION_ADD_FEEDING,
+    ATTR_ACTION_ADD_PUMPING,
+    ATTR_ACTION_ADD_SLEEP,
+    ATTR_ACTION_ADD_TUMMY_TIME,
     ATTR_ACTIVE,
     ATTR_AMOUNT,
     ATTR_CHILD,
@@ -32,6 +36,7 @@ from .const import (
     ATTR_MILESTONE,
     ATTR_NAP,
     ATTR_NOTES,
+    ATTR_PUMPING,
     ATTR_SLEEP,
     ATTR_START,
     ATTR_TIMER,
@@ -84,7 +89,7 @@ async def async_setup_entry(
     )
 
     platform.async_register_entity_service(
-        "add_feeding",
+        ATTR_ACTION_ADD_FEEDING,
         {
             vol.Required(ATTR_TYPE): vol.In(FEEDING_TYPES),
             vol.Required(ATTR_METHOD): vol.In(FEEDING_METHODS),
@@ -92,6 +97,8 @@ async def async_setup_entry(
             vol.Optional(ATTR_AMOUNT): cv.positive_float,
             vol.Optional(ATTR_NOTES): cv.string,
         },
+        f"async_{ATTR_ACTION_ADD_FEEDING}",
+    )
     platform.async_register_entity_service(
         ATTR_ACTION_ADD_PUMPING,
         {
@@ -102,21 +109,21 @@ async def async_setup_entry(
         f"async_{ATTR_ACTION_ADD_PUMPING}",
     )
     platform.async_register_entity_service(
-        "add_sleep",
+        ATTR_ACTION_ADD_SLEEP,
         {
             **COMMON_FIELDS,
             vol.Optional(ATTR_NAP): cv.boolean,
             vol.Optional(ATTR_NOTES): cv.string,
         },
-        "async_add_sleep",
+        f"async_{ATTR_ACTION_ADD_SLEEP}",
     )
     platform.async_register_entity_service(
-        "add_tummy_time",
+        ATTR_ACTION_ADD_TUMMY_TIME,
         {
             **COMMON_FIELDS,
             vol.Optional(ATTR_MILESTONE): cv.string,
         },
-        "async_add_tummy_time",
+        f"async_{ATTR_ACTION_ADD_TUMMY_TIME}",
     )
 
 
