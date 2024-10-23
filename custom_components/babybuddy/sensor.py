@@ -7,7 +7,6 @@ from typing import Any
 
 import voluptuous as vol
 
-from homeassistant.components.input_datetime import ATTR_TIMESTAMP
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -47,7 +46,6 @@ from .const import (
     ATTR_NOTE,
     ATTR_NOTES,
     ATTR_PICTURE,
-    ATTR_PUMPING,
     ATTR_SLUG,
     ATTR_SOLID,
     ATTR_TYPE,
