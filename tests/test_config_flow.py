@@ -90,7 +90,8 @@ async def test_unsuccessful_config_flow_connect_error(hass: HomeAssistant):
 
 
 async def test_options_flow(
-    hass: HomeAssistant, setup_baby_buddy_entry_live: MockConfigEntry
+    hass: HomeAssistant,
+    setup_baby_buddy_entry_live: MockConfigEntry,
 ):
     """Test an options flow."""
 

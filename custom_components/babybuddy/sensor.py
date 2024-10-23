@@ -497,6 +497,7 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
             return self.entity_description.state_key(data)
         if self.entity_description.device_class == SensorDeviceClass.TIMESTAMP:
             return dt_util.parse_datetime(data[self.entity_description.state_key])
+
         return data[self.entity_description.state_key]
 
     @property
