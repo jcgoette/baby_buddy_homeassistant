@@ -1,0 +1,39 @@
+{
+    "name": "Python 3",
+    "image": "mcr.microsoft.com/devcontainers/python:3",
+    "postCreateCommand": "pip3 install -r requirements-test.txt",
+    "customizations": { // Customization for VSCode-specific settings and extensions.
+        "vscode": {
+            "extensions": [
+                "charliermarsh.ruff", // Linter/formatter for Python.
+                "ms-python.pylint", // Pylint for Python linting.
+                "ms-python.vscode-pylance", // Pylance for Python language support and intellisense.
+                "visualstudioexptteam.vscodeintellicode", // IntelliCode for AI-assisted code suggestions.
+                "redhat.vscode-yaml", // YAML file support.
+                "esbenp.prettier-vscode", // Prettier for code formatting.
+                "GitHub.vscode-pull-request-github", // GitHub Pull Request extension.
+                "njpwerner.autodocstring", // Extension for automatically generating Python docstrings.
+                "usernamehw.errorlens" // Highlights errors and warnings inline within the editor.
+            ],
+            "settings": {
+                "pylint.importStrategy": "fromEnvironment", // Uses the Pylint available in the environment.
+                "editor.formatOnPaste": false, // Disable auto-formatting on paste.
+                "editor.formatOnSave": true, // Enable auto-formatting on save.
+                "editor.formatOnType": true, // Enable auto-formatting while typing.
+                "files.trimTrailingWhitespace": true, // Automatically remove trailing whitespace when saving files.
+                "yaml.customTags": [ // YAML-specific tags, useful for Home Assistant configuration files.
+                    "!input scalar", // YAML tag used to define input variables in Home Assistant configurations, allowing user input for component configuration.
+                    "!secret scalar", // YAML tag used to reference sensitive data stored in secrets.yaml, ensuring that sensitive information is not exposed in the main configuration files.
+                    "!include_dir_named scalar", // Custom tag that allows including all YAML files in a specified directory as named imports, useful for organizing configuration files by component or domain.
+                    "!include_dir_list scalar", // Custom tag for including a list of YAML files from a specified directory, typically used for grouping configurations of similar components.
+                    "!include_dir_merge_list scalar", // Custom tag for merging lists from multiple YAML files in a directory, useful for combining configurations without duplicating code.
+                    "!include_dir_merge_named scalar" // Custom tag for merging named imports from multiple YAML files, allowing more structured and organized configurations.
+                ],
+                "[python]": {
+                    "editor.defaultFormatter": "charliermarsh.ruff" // Specifies the default formatter for Python code as 'ruff'.
+                }
+            }
+        }
+    },
+    "remoteUser": "root"
+}
