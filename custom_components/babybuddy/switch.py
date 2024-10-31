@@ -50,8 +50,10 @@ from .const import (
 from .errors import ValidationError
 
 COMMON_FIELDS = {
-    vol.Optional(ATTR_TIMER, default=False): cv.boolean,
-    vol.Optional(ATTR_START): vol.Any(cv.datetime, cv.time),
+    vol.Exclusive(ATTR_TIMER, group_of_exclusion="timer_or_start"): cv.boolean,
+    vol.Exclusive(ATTR_START, group_of_exclusion="timer_or_start"): vol.Any(
+        cv.datetime, cv.time
+    ),
     vol.Optional(ATTR_END): vol.Any(cv.datetime, cv.time),
 }
 
@@ -216,7 +218,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         self,
         type: str,  # pylint: disable=redefined-builtin
         method: str,
-        timer: bool,
+        timer: bool | None = None,
         start: datetime | time | None = None,
         end: datetime | time | None = None,
         amount: int | None = None,
@@ -246,8 +248,8 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
 
     async def async_add_pumping(
         self,
-        timer: bool,
         amount: int,
+        timer: bool | None = None,
         start: datetime | time | None = None,
         end: datetime | time | None = None,
         notes: str | None = None,
@@ -269,7 +271,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
 
     async def async_add_sleep(
         self,
-        timer: bool,
+        timer: bool | None = None,
         start: datetime | time | None = None,
         end: datetime | time | None = None,
         nap: bool | None = None,
@@ -292,7 +294,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
 
     async def async_add_tummy_time(
         self,
-        timer: bool,
+        timer: bool | None = None,
         start: datetime | time | None = None,
         end: datetime | time | None = None,
         milestone: str | None = None,
