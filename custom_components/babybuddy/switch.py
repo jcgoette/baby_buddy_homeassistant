@@ -39,6 +39,7 @@ from .const import (
     ATTR_PUMPING,
     ATTR_SLEEP,
     ATTR_START,
+    ATTR_TAGS,
     ATTR_TIMER,
     ATTR_TIMERS,
     ATTR_TUMMY_TIMES,
@@ -55,6 +56,7 @@ COMMON_FIELDS = {
         cv.datetime, cv.time
     ),
     vol.Optional(ATTR_END): vol.Any(cv.datetime, cv.time),
+    vol.Optional(ATTR_TAGS): vol.All(cv.ensure_list, [str]),
 }
 
 
@@ -93,9 +95,9 @@ async def async_setup_entry(
     platform.async_register_entity_service(
         ATTR_ACTION_ADD_FEEDING,
         {
+            **COMMON_FIELDS,
             vol.Required(ATTR_TYPE): vol.In(FEEDING_TYPES),
             vol.Required(ATTR_METHOD): vol.In(FEEDING_METHODS),
-            **COMMON_FIELDS,
             vol.Optional(ATTR_AMOUNT): cv.positive_float,
             vol.Optional(ATTR_NOTES): cv.string,
         },
@@ -223,10 +225,11 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         end: datetime | time | None = None,
         amount: int | None = None,
         notes: str | None = None,
+        tags: str | None = None,
     ) -> None:
         """Add a feeding entry."""
         try:
-            data = self.set_common_fields(timer, start, end)
+            data = self.set_common_fields(timer, start, end, tags)
         except ValidationError as error:
             _LOGGER.error(error)
             return
@@ -253,10 +256,11 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         start: datetime | time | None = None,
         end: datetime | time | None = None,
         notes: str | None = None,
+        tags: str | None = None,
     ) -> None:
         """Add a pumping entry."""
         try:
-            data = self.set_common_fields(timer, start, end)
+            data = self.set_common_fields(timer, start, end, tags)
         except ValidationError as error:
             _LOGGER.error(error)
             return
@@ -276,10 +280,11 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         end: datetime | time | None = None,
         nap: bool | None = None,
         notes: str | None = None,
+        tags: str | None = None,
     ) -> None:
         """Add a sleep entry."""
         try:
-            data = self.set_common_fields(timer, start, end)
+            data = self.set_common_fields(timer, start, end, tags)
         except ValidationError as error:
             _LOGGER.error(error)
             return
@@ -298,10 +303,11 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         start: datetime | time | None = None,
         end: datetime | time | None = None,
         milestone: str | None = None,
+        tags: str | None = None,
     ) -> None:
         """Add a tummy time entry."""
         try:
-            data = self.set_common_fields(timer, start, end)
+            data = self.set_common_fields(timer, start, end, tags)
         except ValidationError as error:
             _LOGGER.error(error)
             return
@@ -313,9 +319,10 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
 
     def set_common_fields(
         self,
-        timer: bool,
+        timer: bool | None = None,
         start: datetime | time | None = None,
         end: datetime | time | None = None,
+        tags: str | None = None,
     ) -> dict[str, Any]:
         """Set data common fields."""
         data: dict[str, Any] = {}
@@ -329,5 +336,6 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
             data[ATTR_CHILD] = self.child[ATTR_ID]
             data[ATTR_START] = get_datetime_from_time(start or dt_util.now())
             data[ATTR_END] = get_datetime_from_time(end or dt_util.now())
-
+        if tags:
+            data[ATTR_TAGS] = tags
         return data

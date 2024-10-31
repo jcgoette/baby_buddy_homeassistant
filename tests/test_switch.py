@@ -19,6 +19,7 @@ from custom_components.babybuddy.const import (
     ATTR_ICON_TIMER_SAND,
     ATTR_MILESTONE,
     ATTR_NOTES,
+    ATTR_TAGS,
     DOMAIN,
 )
 from homeassistant.components.sensor import SensorStateClass
@@ -101,6 +102,7 @@ async def test_service_add_feeding_start_stop(
         state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_FEEDING_START_STOP[ATTR_NOTES]
     )
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_FEEDING_START_STOP[ATTR_TAGS]
     assert state.state == str(MOCK_SERVICE_ADD_FEEDING_START_STOP[ATTR_AMOUNT])
 
 
@@ -127,6 +129,7 @@ async def test_service_add_feeding_timer(
     assert state.attributes[ATTR_ICON] == ATTR_ICON_BABY_BOTTLE
     assert state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_FEEDING_TIMER[ATTR_NOTES]
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_FEEDING_TIMER[ATTR_TAGS]
     assert state.state == str(MOCK_SERVICE_ADD_FEEDING_TIMER[ATTR_AMOUNT])
 
 
@@ -152,6 +155,7 @@ async def test_service_add_pumping_start_stop(
         state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_PUMPING_START_STOP[ATTR_NOTES]
     )
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_PUMPING_START_STOP[ATTR_TAGS]
     assert state.state == str(MOCK_SERVICE_ADD_PUMPING_START_STOP[ATTR_AMOUNT])
 
 
@@ -178,6 +182,7 @@ async def test_service_add_pumping_timer(
     assert state.attributes[ATTR_ICON] == ATTR_ICON_MOTHER_NURSE
     assert state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_PUMPING_TIMER[ATTR_NOTES]
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_PUMPING_TIMER[ATTR_TAGS]
     assert state.state == str(MOCK_SERVICE_ADD_PUMPING_TIMER[ATTR_AMOUNT])
 
 
@@ -201,6 +206,7 @@ async def test_service_add_sleep_start_stop(
     assert state.attributes[ATTR_ICON] == ATTR_ICON_SLEEP
     assert state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_SLEEP_START_STOP[ATTR_NOTES]
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_SLEEP_START_STOP[ATTR_TAGS]
     assert state.state == str(int(MOCK_DURATION.total_seconds() / 60))
 
 
@@ -227,6 +233,7 @@ async def test_service_add_sleep_timer(
     assert state.attributes[ATTR_ICON] == ATTR_ICON_SLEEP
     assert state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_SLEEP_TIMER[ATTR_NOTES]
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_SLEEP_TIMER[ATTR_TAGS]
     assert state.state == "0"  # int() on ~10 sec == 0
 
 
@@ -253,6 +260,9 @@ async def test_service_add_tummy_time_start_stop(
         == MOCK_SERVICE_ADD_TUMMY_TIME_START_STOP[ATTR_MILESTONE]
     )
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert (
+        state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_TUMMY_TIME_START_STOP[ATTR_TAGS]
+    )
     assert state.state == str(int(MOCK_DURATION.total_seconds() / 60))
 
 
@@ -282,4 +292,5 @@ async def test_service_add_tummy_time_timer(
         == MOCK_SERVICE_ADD_TUMMY_TIME_TIMER[ATTR_MILESTONE]
     )
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_TUMMY_TIME_TIMER[ATTR_TAGS]
     assert state.state == "0"  # int() on ~10 sec == 0

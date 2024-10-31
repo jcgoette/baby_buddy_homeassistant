@@ -57,6 +57,7 @@ from .const import (
     ATTR_PICTURE,
     ATTR_SLUG,
     ATTR_SOLID,
+    ATTR_TAGS,
     ATTR_TYPE,
     ATTR_WEIGHT,
     ATTR_WET,
@@ -68,6 +69,11 @@ from .const import (
     BabyBuddyEntityDescription,
 )
 from .errors import ValidationError
+
+COMMON_FIELDS = {
+    vol.Optional(ATTR_NOTES): cv.string,
+    vol.Optional(ATTR_TAGS): vol.All(cv.ensure_list, [str]),
+}
 
 
 async def async_setup_entry(
@@ -98,36 +104,36 @@ async def async_setup_entry(
         {
             vol.Required(ATTR_BMI): cv.positive_float,
             vol.Optional(ATTR_DATE): cv.date,
-            vol.Optional(ATTR_NOTES): cv.string,
+            **COMMON_FIELDS,
         },
         f"async_{ATTR_ACTION_ADD_BMI}",
     )
     platform.async_register_entity_service(
         ATTR_ACTION_ADD_DIAPER_CHANGE,
         {
+            **COMMON_FIELDS,
             vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
             vol.Optional(ATTR_TYPE): vol.In(DIAPER_TYPES),
             vol.Optional(ATTR_COLOR): vol.In(DIAPER_COLORS),
             vol.Optional(ATTR_AMOUNT): cv.positive_float,
-            vol.Optional(ATTR_NOTES): cv.string,
         },
         f"async_{ATTR_ACTION_ADD_DIAPER_CHANGE}",
     )
     platform.async_register_entity_service(
         ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE,
         {
+            **COMMON_FIELDS,
             vol.Required(ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE): cv.positive_float,
             vol.Optional(ATTR_DATE): cv.date,
-            vol.Optional(ATTR_NOTES): cv.string,
         },
         f"async_{ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE}",
     )
     platform.async_register_entity_service(
         ATTR_ACTION_ADD_HEIGHT,
         {
+            **COMMON_FIELDS,
             vol.Required(ATTR_HEIGHT): cv.positive_float,
             vol.Optional(ATTR_DATE): cv.date,
-            vol.Optional(ATTR_NOTES): cv.string,
         },
         f"async_{ATTR_ACTION_ADD_HEIGHT}",
     )
@@ -136,24 +142,25 @@ async def async_setup_entry(
         {
             vol.Required(ATTR_NOTE): cv.string,
             vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
+            vol.Optional(ATTR_TAGS): vol.All(cv.ensure_list, [str]),
         },
         f"async_{ATTR_ACTION_ADD_NOTE}",
     )
     platform.async_register_entity_service(
         ATTR_ACTION_ADD_TEMPERATURE,
         {
+            **COMMON_FIELDS,
             vol.Required(ATTR_TEMPERATURE): cv.positive_float,
             vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
-            vol.Optional(ATTR_NOTES): cv.string,
         },
         f"async_{ATTR_ACTION_ADD_TEMPERATURE}",
     )
     platform.async_register_entity_service(
         ATTR_ACTION_ADD_WEIGHT,
         {
+            **COMMON_FIELDS,
             vol.Required(ATTR_WEIGHT): cv.positive_float,
             vol.Optional(ATTR_DATE): cv.date,
-            vol.Optional(ATTR_NOTES): cv.string,
         },
         f"async_{ATTR_ACTION_ADD_WEIGHT}",
     )
@@ -210,6 +217,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         bmi: float,
         date: date | None = None,  # pylint: disable=redefined-outer-name
         notes: str | None = None,
+        tags: str | None = None,
     ) -> None:
         """Add BMI entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -223,6 +231,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             data[ATTR_DATE] = date
         if notes:
             data[ATTR_NOTES] = notes
+        if tags:
+            data[ATTR_TAGS] = tags
 
         date_now = dt_util.now().date()
         await self.coordinator.client.async_post(ATTR_BMI, data, date_now)
@@ -235,6 +245,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         color: str | None = None,
         amount: float | None = None,
         notes: str | None = None,
+        tags: str | None = None,
     ) -> None:
         """Add diaper change entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -259,6 +270,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             data[ATTR_AMOUNT] = amount
         if notes:
             data[ATTR_NOTES] = notes
+        if tags:
+            data[ATTR_TAGS] = tags
 
         date_time_now = get_datetime_from_time(dt_util.now())
         await self.coordinator.client.async_post(ATTR_CHANGES, data, date_time_now)
@@ -269,6 +282,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         head_circumference: float,
         date: date | None = None,  # pylint: disable=redefined-outer-name
         notes: str | None = None,
+        tags: str | None = None,
     ) -> None:
         """Add head circumference entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -282,6 +296,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             data[ATTR_DATE] = date
         if notes:
             data[ATTR_NOTES] = notes
+        if tags:
+            data[ATTR_TAGS] = tags
 
         date_now = dt_util.now().date()
         await self.coordinator.client.async_post(
@@ -294,6 +310,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         height: float,
         date: date | None = None,  # pylint: disable=redefined-outer-name
         notes: str | None = None,
+        tags: str | None = None,
     ) -> None:
         """Add height entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -307,6 +324,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             data[ATTR_DATE] = date
         if notes:
             data[ATTR_NOTES] = notes
+        if tags:
+            data[ATTR_TAGS] = tags
 
         date_now = dt_util.now().date()
         await self.coordinator.client.async_post(ATTR_HEIGHT, data, date_now)
@@ -316,6 +335,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         self,
         note: str,
         time: datetime | time | None = None,  # pylint: disable=redefined-outer-name
+        tags: str | None = None,
     ) -> None:
         """Add note entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -329,6 +349,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             except ValidationError as error:
                 _LOGGER.error(error)
                 return
+        if tags:
+            data[ATTR_TAGS] = tags
 
         date_time_now = get_datetime_from_time(dt_util.now())
         await self.coordinator.client.async_post(ATTR_NOTES, data, date_time_now)
@@ -339,6 +361,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         temperature: float,
         time: datetime | time | None = None,  # pylint: disable=redefined-outer-name
         notes: str | None = None,
+        tags: str | None = None,
     ) -> None:
         """Add a temperature entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -357,6 +380,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
                 return
         if notes:
             data[ATTR_NOTES] = notes
+        if tags:
+            data[ATTR_TAGS] = tags
 
         date_time_now = get_datetime_from_time(dt_util.now())
         await self.coordinator.client.async_post(ATTR_TEMPERATURE, data, date_time_now)
@@ -367,6 +392,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
         weight: float,
         date: date | None = None,  # pylint: disable=redefined-outer-name
         notes: str | None = None,
+        tags: str | None = None,
     ) -> None:
         """Add weight entry."""
         if not isinstance(self, BabyBuddyChildSensor):
@@ -380,6 +406,8 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             data[ATTR_DATE] = date
         if notes:
             data[ATTR_NOTES] = notes
+        if tags:
+            data[ATTR_TAGS] = tags
 
         date_now = dt_util.now().date()
         await self.coordinator.client.async_post(ATTR_WEIGHT, data, date_now)

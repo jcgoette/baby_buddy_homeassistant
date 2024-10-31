@@ -80,6 +80,7 @@ This service adds a BMI entry for your child.
 | BMI                    |    no    | Specify BMI value (float)                                                 |
 | date                   |   yes    | Specify BMI recording date (YYYY-MM-DD format, else today() will be used) |
 | notes                  |   yes    | Add notes text to entry                                                   |
+| tags                   |   yes    | Add tag(s) to entry                                                       |
 
 ### SERVICE ADD_DIAPER_CHANGE
 
@@ -93,6 +94,7 @@ This service adds a diaper change entry for your child.
 | color                  |   yes    | Specify diaper color. This can be `Black`, `Brown` , `Green`, or `Yellow`. |
 | amount                 |   yes    | Add number of diapers                                                      |
 | notes                  |   yes    | Add notes text to entry                                                    |
+| tags                   |   yes    | Add tag(s) to entry                                                        |
 
 ### SERVICE ADD_FEEDING
 
@@ -108,6 +110,7 @@ This service adds a feeding entry for your child. Feeding start/end/child fields
 | end                    |   yes    | Specify end time (must be in the past, else now() will be used). This can be ignored if timer is used.                         |
 | amount                 |   yes    | Specify amount of feeding as an integer                                                                                        |
 | notes                  |   yes    | Add notes text to entry                                                                                                        |
+| tags                   |   yes    | Add tag(s) to entry                                                                                                            |
 
 ### SERVICE ADD_HEAD_CIRCUMFERENCE
 
@@ -119,6 +122,7 @@ This service adds a head circumference entry for your child.
 | head_circumference     |    no    | Specify head circumference value (float)                                                 |
 | date                   |   yes    | Specify head circumference recording date (YYYY-MM-DD format, else today() will be used) |
 | notes                  |   yes    | Add notes text to entry                                                                  |
+| tags                   |   yes    | Add tag(s) to entry                                                                      |
 
 ### SERVICE ADD_HEIGHT
 
@@ -130,6 +134,7 @@ This service adds a height entry for your child.
 | height                 |    no    | Specify height value (float)                                                 |
 | date                   |   yes    | Specify height recording date (YYYY-MM-DD format, else today() will be used) |
 | notes                  |   yes    | Add notes text to entry                                                      |
+| tags                   |   yes    | Add tag(s) to entry                                                          |
 
 ### SERVICE ADD_NOTE
 
@@ -140,6 +145,7 @@ This service adds a note entry for your child.
 | entity_id              |    no    | entity_id for the child sensor                                              |
 | notes                  |   yes    | Add notes text to entry                                                     |
 | time                   |   yes    | Specify notes recording time (must be in the past, else now() will be used) |
+| tags                   |   yes    | Add tag(s) to entry                                                         |
 
 ### SERVICE ADD_PUMPING
 
@@ -153,6 +159,7 @@ This service adds a pumping entry for your child.
 | start                  |   yes    | Specify start time (must be in the past, else now() will be used). This can be ignored if timer is used. |
 | end                    |   yes    | Specify end time (must be in the past, else now() will be used). This can be ignored if timer is used.   |
 | notes                  |   yes    | Add notes text to entry                                                                                  |
+| tags                   |   yes    | Add tag(s) to entry                                                                                      |
 
 ### SERVICE ADD_SLEEP
 
@@ -166,6 +173,7 @@ This service adds a sleep entry for your child. Sleep start/end/child fields can
 | end                    |   yes    | Specify end time (must be in the past, else now() will be used). This can be ignored if timer is used.   |
 | nap                    |   yes    | Set to True to designate as nap.                                                                         |
 | notes                  |   yes    | Add notes text to entry                                                                                  |
+| tags                   |   yes    | Add tag(s) to entry                                                                                      |
 
 ### SERVICE ADD_TEMPERATURE
 
@@ -177,6 +185,7 @@ This service adds a temperature entry for your child.
 | temperature            |    no    | Specify temperature value (float)                                                 |
 | time                   |   yes    | Specify temperature recording time (must be in the past, else now() will be used) |
 | notes                  |   yes    | Add notes text to entry                                                           |
+| tags                   |   yes    | Add tag(s) to entry                                                               |
 
 ### SERVICE ADD_TUMMY_TIME
 
@@ -189,6 +198,7 @@ This service adds a tummy time entry for your child. Tummy time start/end/child 
 | start                  |   yes    | Specify start time (must be in the past, else now() will be used). This can be ignored if timer is used. |
 | end                    |   yes    | Specify end time (must be in the past, else now() will be used). This can be ignored if timer is used.   |
 | milestone              |   yes    | Add milestone text to entry                                                                              |
+| tags                   |   yes    | Add tag(s) to entry                                                                                      |
 
 ### SERVICE ADD_WEIGHT
 
@@ -200,6 +210,7 @@ This service adds a weight entry for your child.
 | weight                 |    no    | Specify weight value (float)                                                 |
 | date                   |   yes    | Specify weight recording date (YYYY-MM-DD format, else today() will be used) |
 | notes                  |   yes    | Add notes text to entry                                                      |
+| tags                   |   yes    | Add tag(s) to entry                                                          |
 
 ### SERVICE DELETE_LAST_ENTRY
 

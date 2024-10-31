@@ -21,6 +21,7 @@ from custom_components.babybuddy.const import (
     ATTR_ICON_THERMOMETER,
     ATTR_NOTE,
     ATTR_NOTES,
+    ATTR_TAGS,
     ATTR_WEIGHT,
     DOMAIN,
 )
@@ -70,6 +71,7 @@ async def test_service_add_bmi(
     assert state.attributes[ATTR_ICON] == ATTR_ICON_SCALE
     assert state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_BMI_SCHEMA[ATTR_NOTES]
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_BMI_SCHEMA[ATTR_TAGS]
     assert state.state == str(MOCK_SERVICE_ADD_BMI_SCHEMA[ATTR_BMI])
 
 
@@ -91,9 +93,10 @@ async def test_service_add_diaper_change(
     state = hass.states.get(entity_id)
 
     assert state
+    assert state.attributes[ATTR_DEVICE_CLASS] == SensorDeviceClass.TIMESTAMP
     assert state.attributes[ATTR_ICON] == ATTR_ICON_PAPER_ROLL
     assert state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_DIAPER_CHANGE[ATTR_NOTES]
-    assert state.attributes[ATTR_DEVICE_CLASS] == SensorDeviceClass.TIMESTAMP
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_DIAPER_CHANGE[ATTR_TAGS]
     assert (
         dt_util.parse_datetime(state.state) == MOCK_SERVICE_ADD_DIAPER_CHANGE[ATTR_TIME]
     )
@@ -122,6 +125,7 @@ async def test_service_add_head_circumference(
         state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_HEAD_CIRCUMFERENCE[ATTR_NOTES]
     )
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_HEAD_CIRCUMFERENCE[ATTR_TAGS]
     assert state.state == str(
         MOCK_SERVICE_ADD_HEAD_CIRCUMFERENCE[ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE]
     )
@@ -148,6 +152,7 @@ async def test_service_add_height(
     assert state.attributes[ATTR_ICON] == ATTR_ICON_HEIGHT
     assert state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_HEIGHT[ATTR_NOTES]
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_HEIGHT[ATTR_TAGS]
     assert state.state == str(MOCK_SERVICE_ADD_HEIGHT[ATTR_HEIGHT])
 
 
@@ -171,6 +176,7 @@ async def test_service_add_note(
     assert state
     assert state.attributes[ATTR_ICON] == ATTR_ICON_NOTE
     assert state.attributes[ATTR_NOTE] == MOCK_SERVICE_ADD_NOTE[ATTR_NOTE]
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_NOTE[ATTR_TAGS]
     assert dt_util.parse_datetime(state.state) == MOCK_SERVICE_ADD_NOTE[ATTR_TIME]
 
 
@@ -195,6 +201,7 @@ async def test_service_add_temperature(
     assert state.attributes[ATTR_ICON] == ATTR_ICON_THERMOMETER
     assert state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_TEMPERATURE[ATTR_NOTES]
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_TEMPERATURE[ATTR_TAGS]
     assert state.state == str(MOCK_SERVICE_ADD_TEMPERATURE[ATTR_TEMPERATURE])
 
 
@@ -219,4 +226,5 @@ async def test_service_add_weight(
     assert state.attributes[ATTR_ICON] == ATTR_ICON_SCALE
     assert state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_WEIGHT[ATTR_NOTES]
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_WEIGHT[ATTR_TAGS]
     assert state.state == str(MOCK_SERVICE_ADD_WEIGHT[ATTR_WEIGHT])
