@@ -214,11 +214,14 @@ This service adds a weight entry for your child.
 
 ### SERVICE DELETE_LAST_ENTRY
 
-This service will delete the last entry for specified child.
+This service will delete the last entry for the specified sensor (last weight, last feeding, etc.).
 
-| Service data attribute | Optional | Description                                              |
-| ---------------------- | :------: | -------------------------------------------------------- |
-| entity_id              |    no    | entity_id for the child who's last entry will be deleted |
+> [!CAUTION]
+> Calling this service on a device, which represents a child, in Home Assistant will call the delete service once for *every* sensor on that child.
+
+| Service data attribute | Optional | Description                                                    |
+| ---------------------- | :------: | -------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the sensor that will have its last entry deleted |
 
 ### SERVICE START_TIMER
 
