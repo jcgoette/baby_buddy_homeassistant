@@ -208,7 +208,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         for child in children_list[ATTR_RESULTS]:
             child_data.setdefault(child[ATTR_ID], {})
             for endpoint in SENSOR_TYPES:
-                endpoint_data: dict = {}
+                endpoint_data: dict[str, Any] = {}
                 try:
                     endpoint_data = await self.client.async_get(
                         endpoint.key, f"?child={child[ATTR_ID]}&limit=1"
