@@ -70,7 +70,7 @@ from .const import (
 )
 from .errors import ValidationError
 
-COMMON_FIELDS = {
+COMMON_FIELDS: dict[vol.Optional, Any] = {
     vol.Optional(ATTR_NOTES): cv.string,
     vol.Optional(ATTR_TAGS): vol.All(cv.ensure_list, [str]),
 }
