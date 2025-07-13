@@ -8,13 +8,12 @@ from datetime import datetime, time
 from http import HTTPStatus
 from typing import Any
 
+import homeassistant.util.dt as dt_util
 from aiohttp.client import ClientSession
 from aiohttp.client_exceptions import ClientError, ClientResponseError
-
 from homeassistant.const import ATTR_DATE, ATTR_TIME
-import homeassistant.util.dt as dt_util
 
-from .const import _LOGGER
+from .const import LOGGER
 from .errors import AuthorizationError, ConnectError, ValidationError
 
 
@@ -25,13 +24,13 @@ class BabyBuddyClient:
         self, host: str, port: int, path: str, api_key: str, session: ClientSession
     ) -> None:
         """Initialize the client."""
-        _LOGGER.debug("Initializing BabyBuddyClient")
+        LOGGER.debug("Initializing BabyBuddyClient")
         self.headers = {"Authorization": f"Token {api_key}"}
-        _LOGGER.debug(
-            f"Client API Token, obfuscated: {api_key[:4]}{'.' * (len(api_key)-8)}{api_key[-4:]}"
+        LOGGER.debug(
+            f"Client API Token, obfuscated: {api_key[:4]}{'.' * (len(api_key) - 8)}{api_key[-4:]}"
         )
         self.url = f"{host}:{port}{path}"
-        _LOGGER.debug(f"Client URL: {host}:{port}{path}")
+        LOGGER.debug(f"Client URL: {host}:{port}{path}")
         self.session = session
         self.endpoints: dict[str, str] = {}
 
@@ -45,21 +44,21 @@ class BabyBuddyClient:
             if entry:
                 url = f"{url}{entry}"
         async with asyncio.timeout(10):
-            _LOGGER.debug(f"GET URL: {url}")
+            LOGGER.debug(f"GET URL: {url}")
             resp = await self.session.get(
                 url=url,
                 headers=self.headers,
                 raise_for_status=True,
             )
 
-        _LOGGER.debug(f"GET response: {await resp.text()}")
+        LOGGER.debug(f"GET response: {await resp.text()}")
         return await resp.json()
 
     async def async_post(
         self, endpoint: str, data: dict[str, Any], call_time: datetime | None = None
     ) -> None:
         """POST request to babybuddy API."""
-        _LOGGER.debug(f"POST data: {data}")
+        LOGGER.debug(f"POST data: {data}")
         try:
             async with asyncio.timeout(10):
                 resp = await self.session.post(
@@ -68,11 +67,11 @@ class BabyBuddyClient:
                     data=data,
                 )
         except (AsyncIOTimeoutError, ClientError) as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
 
         if resp.status != HTTPStatus.CREATED:
             error = await resp.json()
-            _LOGGER.error(
+            LOGGER.error(
                 f"Could not create {endpoint}. error: {error}. Please upgrade to babybuddy v1.11.0. In the meantime, attempting to use 'now()'..."
             )
 
@@ -96,11 +95,11 @@ class BabyBuddyClient:
                     data=data,
                 )
         except (AsyncIOTimeoutError, ClientError) as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
 
         if resp.status != HTTPStatus.OK:
             error = await resp.json()
-            _LOGGER.error(f"Could not update {endpoint}/{entry}. error: {error}")
+            LOGGER.error(f"Could not update {endpoint}/{entry}. error: {error}")
 
     async def async_delete(self, endpoint: str, entry: str) -> None:
         """DELETE request to babybuddy API."""
@@ -111,17 +110,17 @@ class BabyBuddyClient:
                     headers=self.headers,
                 )
         except (AsyncIOTimeoutError, ClientError) as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
 
         if resp.status != 204:
             error = await resp.json()
-            _LOGGER.error(f"Could not delete {endpoint}/{entry}. error: {error}")
+            LOGGER.error(f"Could not delete {endpoint}/{entry}. error: {error}")
 
     async def async_connect(self) -> None:
         """Check connection to babybuddy API."""
         try:
             self.endpoints = await self.async_get()
-            _LOGGER.debug(f"Endpoints: {self.endpoints}")
+            LOGGER.debug(f"Endpoints: {self.endpoints}")
         except ClientResponseError as error:
             raise AuthorizationError from error
         except (TimeoutError, ClientError) as error:

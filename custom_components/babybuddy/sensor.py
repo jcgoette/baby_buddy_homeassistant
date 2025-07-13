@@ -5,8 +5,8 @@ from __future__ import annotations
 from datetime import date, datetime, time
 from typing import Any
 
+import homeassistant.util.dt as dt_util
 import voluptuous as vol
-
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -20,16 +20,15 @@ from homeassistant.const import (
     CONF_PORT,
 )
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers import config_validation as cv, entity_platform
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-import homeassistant.util.dt as dt_util
 
 from . import BabyBuddyCoordinator
 from .client import get_datetime_from_time
 from .const import (
-    _LOGGER,
     ATTR_ACTION_ADD_BMI,
     ATTR_ACTION_ADD_DIAPER_CHANGE,
     ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE,
@@ -65,6 +64,7 @@ from .const import (
     DIAPER_TYPES,
     DOMAIN,
     ERROR_CHILD_SENSOR_SELECT,
+    LOGGER,
     SENSOR_TYPES,
     BabyBuddyEntityDescription,
 )
@@ -221,7 +221,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add BMI entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
+            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -249,7 +249,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add diaper change entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
+            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -259,7 +259,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
                 date_time = get_datetime_from_time(time)
                 data[ATTR_TIME] = date_time
             except ValidationError as error:
-                _LOGGER.error(error)
+                LOGGER.error(error)
                 return
         if type:
             data[ATTR_WET] = type == "Wet and Solid" or type.lower() == ATTR_WET
@@ -286,7 +286,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add head circumference entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
+            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -314,7 +314,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add height entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
+            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -339,7 +339,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add note entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
+            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {ATTR_CHILD: self.child[ATTR_ID], ATTR_NOTE: note}
         if time:
@@ -347,7 +347,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
                 date_time = get_datetime_from_time(time)
                 data[ATTR_TIME] = date_time
             except ValidationError as error:
-                _LOGGER.error(error)
+                LOGGER.error(error)
                 return
         if tags:
             data[ATTR_TAGS] = tags
@@ -365,7 +365,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add a temperature entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
+            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -376,7 +376,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
                 date_time = get_datetime_from_time(time)
                 data[ATTR_TIME] = date_time
             except ValidationError as error:
-                _LOGGER.error(error)
+                LOGGER.error(error)
                 return
         if notes:
             data[ATTR_NOTES] = notes
@@ -396,7 +396,7 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Add weight entry."""
         if not isinstance(self, BabyBuddyChildSensor):
-            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
+            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
         data = {
             ATTR_CHILD: self.child[ATTR_ID],
@@ -416,11 +416,11 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
     async def async_delete_last_entry(self) -> None:
         """Delete last data entry."""
         if not isinstance(self, BabyBuddyChildDataSensor):
-            _LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
+            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
             return
 
         if self.extra_state_attributes.get(ATTR_ID) is None:
-            _LOGGER.error(f"{self.entity_description.key} entry is not available.")
+            LOGGER.error(f"{self.entity_description.key} entry is not available.")
             return
         await self.coordinator.client.async_delete(
             self.entity_description.key, self.extra_state_attributes[ATTR_ID]

@@ -5,21 +5,20 @@ from __future__ import annotations
 from datetime import datetime, time
 from typing import Any
 
+import homeassistant.util.dt as dt_util
 import voluptuous as vol
-
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ID, ATTR_NAME, CONF_API_KEY
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers import config_validation as cv, entity_platform
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_platform
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-import homeassistant.util.dt as dt_util
 
 from . import BabyBuddyCoordinator
 from .client import get_datetime_from_time
 from .const import (
-    _LOGGER,
     ATTR_ACTION_ADD_FEEDING,
     ATTR_ACTION_ADD_PUMPING,
     ATTR_ACTION_ADD_SLEEP,
@@ -47,10 +46,11 @@ from .const import (
     DOMAIN,
     FEEDING_METHODS,
     FEEDING_TYPES,
+    LOGGER,
 )
 from .errors import ValidationError
 
-COMMON_FIELDS = {
+COMMON_FIELDS: dict[vol.Exclusive | vol.Optional, Any] = {
     vol.Exclusive(ATTR_TIMER, group_of_exclusion="timer_or_start"): cv.boolean,
     vol.Exclusive(ATTR_START, group_of_exclusion="timer_or_start"): vol.Any(
         cv.datetime, cv.time
@@ -208,7 +208,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         try:
             data[ATTR_START] = get_datetime_from_time(start or dt_util.now())
         except ValidationError as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
             return
         if name:
             data[ATTR_NAME] = name
@@ -231,7 +231,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         try:
             data = self.set_common_fields(timer, start, end, tags)
         except ValidationError as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
             return
 
         data.update(
@@ -262,7 +262,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         try:
             data = self.set_common_fields(timer, start, end, tags)
         except ValidationError as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
             return
 
         data[ATTR_AMOUNT] = amount
@@ -286,7 +286,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         try:
             data = self.set_common_fields(timer, start, end, tags)
         except ValidationError as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
             return
 
         if nap is not None:
@@ -309,7 +309,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         try:
             data = self.set_common_fields(timer, start, end, tags)
         except ValidationError as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
             return
         if milestone:
             data[ATTR_MILESTONE] = milestone
