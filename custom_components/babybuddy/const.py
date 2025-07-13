@@ -10,10 +10,9 @@ from typing import Final
 import homeassistant.util.dt as dt_util
 from homeassistant.components.select import SelectEntityDescription
 from homeassistant.components.sensor import (
-    SensorDeviceClass,
     SensorEntityDescription,
-    SensorStateClass,
 )
+from homeassistant.components.sensor.const import SensorDeviceClass, SensorStateClass
 from homeassistant.components.switch import SwitchEntityDescription
 from homeassistant.const import ATTR_TIME, UnitOfTime
 
