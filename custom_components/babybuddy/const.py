@@ -139,10 +139,10 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         state_key=ATTR_TIME,
     ),
     BabyBuddyEntityDescription(
+        device_class=SensorDeviceClass.TIMESTAMP,
         icon=ATTR_ICON_BABY_BOTTLE,
         key=ATTR_FEEDINGS,
-        state_class=SensorStateClass.MEASUREMENT,
-        state_key=ATTR_AMOUNT,
+        state_key=ATTR_START,
     ),
     BabyBuddyEntityDescription(
         icon=ATTR_ICON_HEAD,
