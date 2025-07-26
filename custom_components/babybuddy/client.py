@@ -132,9 +132,8 @@ def get_datetime_from_time(value: datetime | time) -> datetime:
     """Return datetime for start/end/time service fields."""
     if isinstance(value, time):
         value = datetime.combine(dt_util.now().date(), value, dt_util.DEFAULT_TIME_ZONE)
-    if isinstance(value, datetime):
-        if value.tzinfo is None:
-            value = value.replace(tzinfo=dt_util.DEFAULT_TIME_ZONE)
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=dt_util.DEFAULT_TIME_ZONE)
     if value > dt_util.now():
         raise ValidationError("Time cannot be in the future.")
     return value
