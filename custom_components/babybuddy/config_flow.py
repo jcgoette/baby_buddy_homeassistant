@@ -67,7 +67,7 @@ class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Handle a flow initialized by the user."""
-        errors = {}
+        errors: dict[str, str] = {}
 
         if user_input is not None:
             await self.async_set_unique_id(
@@ -111,7 +111,8 @@ class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Dialog that informs the user that reauth is required."""
-        errors = {}
+        errors: dict[str, str] = {}
+
         existing_entry = await self.async_set_unique_id(self._reauth_unique_id)
         if user_input is not None and existing_entry is not None:
             user_input[CONF_HOST] = existing_entry.data[CONF_HOST]
@@ -162,7 +163,7 @@ class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        options = {
+        options: dict[vol.Optional, Any] = {
             vol.Optional(
                 TEMPERATURE,
                 default=self.config_entry.options.get(TEMPERATURE, None),

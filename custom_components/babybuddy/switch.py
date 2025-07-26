@@ -50,7 +50,7 @@ from .const import (
 )
 from .errors import ValidationError
 
-COMMON_FIELDS = {
+COMMON_FIELDS: dict[vol.Optional | vol.Exclusive, Any] = {
     vol.Exclusive(ATTR_TIMER, group_of_exclusion="timer_or_start"): cv.boolean,
     vol.Exclusive(ATTR_START, group_of_exclusion="timer_or_start"): vol.Any(
         cv.datetime, cv.time
