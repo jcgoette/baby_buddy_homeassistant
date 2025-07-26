@@ -19,7 +19,6 @@ import homeassistant.util.dt as dt_util
 from . import BabyBuddyCoordinator
 from .client import get_datetime_from_time
 from .const import (
-    _LOGGER,
     ATTR_ACTION_ADD_FEEDING,
     ATTR_ACTION_ADD_PUMPING,
     ATTR_ACTION_ADD_SLEEP,
@@ -47,6 +46,7 @@ from .const import (
     DOMAIN,
     FEEDING_METHODS,
     FEEDING_TYPES,
+    LOGGER,
 )
 from .errors import ValidationError
 
@@ -208,7 +208,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         try:
             data[ATTR_START] = get_datetime_from_time(start or dt_util.now())
         except ValidationError as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
             return
         if name:
             data[ATTR_NAME] = name
@@ -231,7 +231,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         try:
             data = self.set_common_fields(timer, start, end, tags)
         except ValidationError as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
             return
 
         data.update(
@@ -262,7 +262,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         try:
             data = self.set_common_fields(timer, start, end, tags)
         except ValidationError as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
             return
 
         data[ATTR_AMOUNT] = amount
@@ -286,7 +286,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         try:
             data = self.set_common_fields(timer, start, end, tags)
         except ValidationError as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
             return
 
         if nap is not None:
@@ -309,7 +309,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         try:
             data = self.set_common_fields(timer, start, end, tags)
         except ValidationError as error:
-            _LOGGER.error(error)
+            LOGGER.error(error)
             return
         if milestone:
             data[ATTR_MILESTONE] = milestone

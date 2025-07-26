@@ -17,7 +17,7 @@ from homeassistant.components.switch import SwitchEntityDescription
 from homeassistant.const import ATTR_TIME, UnitOfTime
 import homeassistant.util.dt as dt_util
 
-_LOGGER = logging.getLogger(__package__)
+LOGGER = logging.getLogger(__package__)
 
 DOMAIN: Final[str] = "babybuddy"
 

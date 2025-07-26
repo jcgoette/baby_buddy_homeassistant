@@ -29,7 +29,6 @@ import homeassistant.util.dt as dt_util
 
 from .client import BabyBuddyClient
 from .const import (
-    _LOGGER,
     ATTR_ACTION_ADD_CHILD,
     ATTR_BIRTH_DATE,
     ATTR_CHILDREN,
@@ -41,6 +40,7 @@ from .const import (
     DEFAULT_PATH,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    LOGGER,
     PLATFORMS,
     SENSOR_TYPES,
 )
@@ -86,7 +86,7 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Handle migration of config entries."""
 
-    _LOGGER.debug(f"Migrating from ConfigFlow version {config_entry.version}.")
+    LOGGER.debug(f"Migrating from ConfigFlow version {config_entry.version}.")
 
     if config_entry.version == 1:
         new = {**config_entry.data}
@@ -96,7 +96,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
             config_entry, version=CONFIG_FLOW_VERSION, data=new
         )
 
-    _LOGGER.info(
+    LOGGER.info(
         f"Migration to ConfigFlow version {config_entry.version} successful.",
     )
 
@@ -108,10 +108,10 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
         """Initialize the BabyBuddyData object."""
-        _LOGGER.debug("Initializing BabyBuddyCoordinator")
+        LOGGER.debug("Initializing BabyBuddyCoordinator")
         super().__init__(
             hass,
-            _LOGGER,
+            LOGGER,
             name=DOMAIN,
             update_method=self.async_update,
             update_interval=timedelta(
@@ -214,12 +214,12 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
                         endpoint.key, f"?child={child[ATTR_ID]}&limit=1"
                     )
                 except ClientResponseError as error:
-                    _LOGGER.debug(
+                    LOGGER.debug(
                         f"No {endpoint} found for {child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]}. Skipping. error: {error}.)"
                     )
                     continue
                 except (AsyncIOTimeoutError, ClientError) as error:
-                    _LOGGER.error(error)
+                    LOGGER.error(error)
                     continue
                 data: list[dict[str, str]] = endpoint_data[ATTR_RESULTS]
                 child_data[child[ATTR_ID]][endpoint.key] = data[0] if data else {}
