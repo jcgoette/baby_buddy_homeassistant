@@ -67,22 +67,23 @@ class BabyBuddyClient:
                     headers=self.headers,
                     data=data,
                 )
+
+            if resp.status != HTTPStatus.CREATED:
+                error = await resp.json()
+                LOGGER.error(
+                    f"Could not create {endpoint}. error: {error}. Please upgrade to babybuddy v1.11.0. In the meantime, attempting to use 'now()'..."
+                )
+
+                # crude backward compatibility fix for babybuddy < v1.11.0
+                if error == {"time": ["This field is required."]}:
+                    data[ATTR_TIME] = call_time
+                    await self.async_post(endpoint, data)
+                if error == {"date": ["This field is required."]}:
+                    data[ATTR_DATE] = call_time
+                    await self.async_post(endpoint, data)
+
         except (AsyncIOTimeoutError, ClientError) as error:
             LOGGER.error(error)
-
-        if resp.status != HTTPStatus.CREATED:
-            error = await resp.json()
-            LOGGER.error(
-                f"Could not create {endpoint}. error: {error}. Please upgrade to babybuddy v1.11.0. In the meantime, attempting to use 'now()'..."
-            )
-
-            # crude backward compatibility fix for babybuddy < v1.11.0
-            if error == {"time": ["This field is required."]}:
-                data[ATTR_TIME] = call_time
-                await self.async_post(endpoint, data)
-            if error == {"date": ["This field is required."]}:
-                data[ATTR_DATE] = call_time
-                await self.async_post(endpoint, data)
 
     async def async_patch(
         self, endpoint: str, entry: str, data: dict[str, str]
@@ -95,12 +96,13 @@ class BabyBuddyClient:
                     headers=self.headers,
                     data=data,
                 )
+
+            if resp.status != HTTPStatus.OK:
+                error = await resp.json()
+                LOGGER.error(f"Could not update {endpoint}/{entry}. error: {error}")
+
         except (AsyncIOTimeoutError, ClientError) as error:
             LOGGER.error(error)
-
-        if resp.status != HTTPStatus.OK:
-            error = await resp.json()
-            LOGGER.error(f"Could not update {endpoint}/{entry}. error: {error}")
 
     async def async_delete(self, endpoint: str, entry: str) -> None:
         """DELETE request to babybuddy API."""
@@ -110,12 +112,13 @@ class BabyBuddyClient:
                     f"{self.endpoints[endpoint]}{entry}/",
                     headers=self.headers,
                 )
+
+            if resp.status != 204:
+                error = await resp.json()
+                LOGGER.error(f"Could not delete {endpoint}/{entry}. error: {error}")
+
         except (AsyncIOTimeoutError, ClientError) as error:
             LOGGER.error(error)
-
-        if resp.status != 204:
-            error = await resp.json()
-            LOGGER.error(f"Could not delete {endpoint}/{entry}. error: {error}")
 
     async def async_connect(self) -> None:
         """Check connection to babybuddy API."""
