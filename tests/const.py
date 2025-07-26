@@ -3,7 +3,6 @@
 from datetime import datetime, timedelta
 import os
 from typing import Final
-
 from zoneinfo import ZoneInfo
 
 from custom_components.babybuddy.const import (
@@ -29,6 +28,7 @@ from custom_components.babybuddy.const import (
     CONF_FEEDING_UNIT,
     CONF_WEIGHT_UNIT,
     DEFAULT_PATH,
+    DEFAULT_PORT,
     DEFAULT_SCAN_INTERVAL,
 )
 from homeassistant.const import (
@@ -51,7 +51,7 @@ ATTR_INT_10: Final[int] = 10
 ATTR_STEP_ID_USER: Final[str] = "user"
 
 BABY_BUDDY_HOST = os.environ.get("BABY_BUDDY_HOST")
-BABY_BUDDY_PORT = int(os.environ.get("BABY_BUDDY_PORT"))
+BABY_BUDDY_PORT = int(os.environ.get("BABY_BUDDY_PORT", DEFAULT_PORT))
 API_KEY = os.environ.get("API_KEY")
 
 MOCK_CONFIG = {
