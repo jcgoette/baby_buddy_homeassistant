@@ -25,8 +25,11 @@ from custom_components.babybuddy.const import (
     ATTR_WEIGHT,
     DOMAIN,
 )
-from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
-from homeassistant.components.sensor.const import ATTR_STATE_CLASS
+from homeassistant.components.sensor.const import (
+    ATTR_STATE_CLASS,
+    SensorDeviceClass,
+    SensorStateClass,
+)
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_ENTITY_ID,
