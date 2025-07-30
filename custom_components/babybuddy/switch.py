@@ -139,7 +139,7 @@ def update_items(
 ) -> None:
     """Add timer switches to new child."""
     new_entities = []
-    if coordinator.data is not None:
+    if coordinator.data:
         for child in coordinator.data[0]:
             if child[ATTR_ID] not in tracked:
                 tracked[child[ATTR_ID]] = BabyBuddyChildTimerSwitch(coordinator, child)
