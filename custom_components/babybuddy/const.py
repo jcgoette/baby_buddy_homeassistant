@@ -28,7 +28,6 @@ DEFAULT_SCAN_INTERVAL: Final[int] = 60
 
 CONFIG_FLOW_VERSION: Final[int] = 2
 
-ATTR_ACTIVE: Final[str] = "active"
 ATTR_AMOUNT: Final[str] = "amount"
 ATTR_BABYBUDDY_CHILD: Final[str] = "babybuddy_child"
 ATTR_BIRTH_DATE: Final[str] = "birth_date"
@@ -99,7 +98,6 @@ DIAPER_COLOR: Final[str] = "diaper_color"
 DIAPER_COLORS: Final = ["Black", "Brown", "Green", "Yellow"]
 DIAPER_TYPE: Final[str] = "change_type"
 DIAPER_TYPES: Final = ["Wet", "Solid", "Wet and Solid"]
-FEEDING_METHOD: Final[str] = "feeding_method"
 FEEDING_METHODS: Final = [
     "Bottle",
     "Left breast",
@@ -226,7 +224,7 @@ SELECTOR_TYPES: tuple[BabyBuddySelectDescription, ...] = (
     ),
     BabyBuddySelectDescription(
         icon=ATTR_ICON_BABY_BOTTLE,
-        key=FEEDING_METHOD,
+        key="feeding_method",
         name=f"{DEFAULT_NAME} Feeding method",
         options=FEEDING_METHODS,
     ),

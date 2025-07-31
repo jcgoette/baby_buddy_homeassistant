@@ -22,7 +22,6 @@ from .const import (
     ATTR_ACTION_ADD_PUMPING,
     ATTR_ACTION_ADD_SLEEP,
     ATTR_ACTION_ADD_TUMMY_TIME,
-    ATTR_ACTIVE,
     ATTR_AMOUNT,
     ATTR_CHILD,
     ATTR_END,
@@ -179,7 +178,7 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
             # In Babybuddy 2.0 'active' is not in the JSON response, so return
             # True if any timers are returned, as only active timers are
             # returned.
-            return timer_data.get(ATTR_ACTIVE, len(timer_data) > 0)
+            return timer_data.get("active", len(timer_data) > 0)
         return False
 
     @property
