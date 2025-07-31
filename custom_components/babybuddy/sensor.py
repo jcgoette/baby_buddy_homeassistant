@@ -27,7 +27,6 @@ from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 import homeassistant.util.dt as dt_util
 
-from . import BabyBuddyCoordinator
 from .client import get_datetime_from_time
 from .const import (
     ATTR_ACTION_ADD_BMI,
@@ -69,6 +68,7 @@ from .const import (
     SENSOR_TYPES,
     BabyBuddyEntityDescription,
 )
+from .coordinator import BabyBuddyCoordinator
 from .errors import ValidationError
 
 COMMON_FIELDS = {

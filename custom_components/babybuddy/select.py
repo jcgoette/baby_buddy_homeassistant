@@ -10,8 +10,8 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import BabyBuddyCoordinator
 from .const import DOMAIN, SELECTOR_TYPES, BabyBuddySelectDescription
+from .coordinator import BabyBuddyCoordinator
 
 
 async def async_setup_entry(
