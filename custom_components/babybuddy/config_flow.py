@@ -6,8 +6,12 @@ from typing import Any
 
 import voluptuous as vol
 
-from homeassistant import config_entries
-from homeassistant.config_entries import ConfigFlowResult
+from homeassistant.config_entries import (
+    ConfigEntry,
+    ConfigFlow,
+    ConfigFlowResult,
+    OptionsFlow,
+)
 from homeassistant.const import (
     CONF_API_KEY,
     CONF_HOST,
@@ -46,7 +50,7 @@ DATA_SCHEMA = vol.Schema(
 )
 
 
-class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+class BabyBuddyFlowHandler(ConfigFlow, domain=DOMAIN):
     """Handle babybuddy config flow."""
 
     VERSION = CONFIG_FLOW_VERSION
@@ -149,7 +153,7 @@ class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
 
-class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
+class BabyBuddyOptionsFlowHandler(OptionsFlow):
     """Handle babybuddy options."""
 
     def __init__(self, entry: ConfigEntry) -> None:

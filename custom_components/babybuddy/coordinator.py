@@ -8,7 +8,6 @@ from http import HTTPStatus
 from typing import Any
 
 from aiohttp.client_exceptions import ClientError, ClientResponseError
-import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -19,18 +18,14 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_SCAN_INTERVAL,
 )
-from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
-from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.device_registry as dr
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-import homeassistant.util.dt as dt_util
 
 from .client import BabyBuddyClient
 from .const import (
-    ATTR_ACTION_ADD_CHILD,
-    ATTR_BIRTH_DATE,
     ATTR_CHILDREN,
     ATTR_COUNT,
     ATTR_FIRST_NAME,
