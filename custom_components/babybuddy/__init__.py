@@ -28,6 +28,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 # async_setup_entry handles the setup of individual configuration
 # entries created by users via the UI (i.e., Config Entry)
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up the babybuddy component."""
+    coordinator = BabyBuddyCoordinator(hass, entry)
+    entry.runtime_data = coordinator
 
     # Fetch initial data so we have data when entities subscribe
     #
@@ -37,6 +41,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     # If you do not want to retry setup on failure, use
     # coordinator.async_refresh() instead
 
+    await coordinator.async_config_entry_first_refresh()
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
