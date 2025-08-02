@@ -49,8 +49,6 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
             hass,
             LOGGER,
             name=DOMAIN,
-            setup_method=self.async_setup_coordinator,
-            update_method=self.async_update,
             update_interval=timedelta(
                 seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
             ),
@@ -76,7 +74,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
             )
         ]
 
-    async def async_setup_coordinator(self) -> None:
+    async def _async_setup(self) -> None:
         """Set up babybuddy."""
 
         try:
@@ -99,7 +97,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
             if next(iter(device.identifiers))[1] not in self.child_ids:
                 self.device_registry.async_remove_device(device.id)
 
-    async def async_update(
+    async def _async_update_data(
         self,
     ) -> tuple[list[dict[str, str]], dict[int, dict[str, dict[str, str]]]]:
         """Update babybuddy data."""
