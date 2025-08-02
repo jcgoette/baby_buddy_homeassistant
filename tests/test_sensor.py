@@ -38,7 +38,7 @@ from homeassistant.const import (
     ATTR_TIME,
 )
 from homeassistant.core import HomeAssistant
-import homeassistant.util.dt as dt_util
+from homeassistant.util import dt as dt_util
 
 from .const import (
     MOCK_BABY_NAME,

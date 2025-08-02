@@ -45,7 +45,7 @@ from homeassistant.const import (
     UnitOfTemperature,
     UnitOfVolume,
 )
-import homeassistant.util.dt as dt_util
+from homeassistant.util import dt as dt_util
 
 ATTR_INT_10: Final[int] = 10
 ATTR_STEP_ID_USER: Final[str] = "user"

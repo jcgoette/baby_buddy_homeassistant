@@ -12,7 +12,7 @@ from aiohttp.client import ClientSession
 from aiohttp.client_exceptions import ClientError, ClientResponseError
 
 from homeassistant.const import ATTR_DATE, ATTR_TIME
-import homeassistant.util.dt as dt_util
+from homeassistant.util import dt as dt_util
 
 from .const import LOGGER
 from .errors import AuthorizationError, ConnectError, ValidationError

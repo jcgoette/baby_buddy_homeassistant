@@ -12,7 +12,7 @@ from homeassistant.components.sensor import SensorEntityDescription
 from homeassistant.components.sensor.const import SensorDeviceClass, SensorStateClass
 from homeassistant.components.switch import SwitchEntityDescription
 from homeassistant.const import ATTR_TIME, UnitOfTime
-import homeassistant.util.dt as dt_util
+from homeassistant.util import dt as dt_util
 
 LOGGER = logging.getLogger(__package__)
 
