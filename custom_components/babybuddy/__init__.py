@@ -15,11 +15,16 @@ from .const import (
     PLATFORMS,
 )
 from .coordinator import BabyBuddyCoordinator
+from .services import async_setup_services
 
 
 # async_setup is for the initial setup of the integration itself
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the babybuddy component."""
+    async_setup_services(hass)
+    return True
+
+
 # async_setup_entry handles the setup of individual configuration
 # entries created by users via the UI (i.e., Config Entry)
 
