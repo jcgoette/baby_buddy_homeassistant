@@ -17,14 +17,20 @@ from .const import (
 from .coordinator import BabyBuddyCoordinator
 
 
+# async_setup is for the initial setup of the integration itself
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the babybuddy component."""
+# async_setup_entry handles the setup of individual configuration
+# entries created by users via the UI (i.e., Config Entry)
 
-    coordinator = BabyBuddyCoordinator(hass, config_entry)
-    await coordinator.async_setup_coordinator()
-    await coordinator.async_refresh()
+    # Fetch initial data so we have data when entities subscribe
+    #
+    # If the refresh fails, async_config_entry_first_refresh will
+    # raise ConfigEntryNotReady and setup will try again later
+    #
+    # If you do not want to retry setup on failure, use
+    # coordinator.async_refresh() instead
 
-    hass.data.setdefault(DOMAIN, {})[config_entry.entry_id] = coordinator
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
