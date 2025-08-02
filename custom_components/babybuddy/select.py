@@ -10,7 +10,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, SELECTOR_TYPES, BabyBuddySelectDescription
+from .const import SELECTOR_TYPES, BabyBuddySelectDescription
 from .coordinator import BabyBuddyCoordinator
 
 
