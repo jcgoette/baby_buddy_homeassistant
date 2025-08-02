@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from datetime import date, datetime, time
 from typing import Any
 
 import voluptuous as vol
@@ -10,71 +9,35 @@ import voluptuous as vol
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor.const import SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    ATTR_DATE,
-    ATTR_ID,
-    ATTR_TEMPERATURE,
-    ATTR_TIME,
-    CONF_API_KEY,
-    CONF_HOST,
-    CONF_PATH,
-    CONF_PORT,
-)
+from homeassistant.const import ATTR_ID, CONF_API_KEY, CONF_HOST, CONF_PATH, CONF_PORT
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers import config_validation as cv, entity_platform
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
-from .client import get_datetime_from_time
 from .const import (
-    ATTR_ACTION_ADD_BMI,
-    ATTR_ACTION_ADD_DIAPER_CHANGE,
-    ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE,
-    ATTR_ACTION_ADD_HEIGHT,
-    ATTR_ACTION_ADD_NOTE,
-    ATTR_ACTION_ADD_TEMPERATURE,
-    ATTR_ACTION_ADD_WEIGHT,
-    ATTR_ACTION_DELETE_LAST_ENTRY,
-    ATTR_AMOUNT,
     ATTR_BABYBUDDY_CHILD,
     ATTR_BIRTH_DATE,
-    ATTR_BMI,
     ATTR_CHANGES,
     ATTR_CHILD,
-    ATTR_COLOR,
     ATTR_DESCRIPTIVE,
     ATTR_FIRST_NAME,
-    ATTR_HEAD_CIRCUMFERENCE_DASH,
-    ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
-    ATTR_HEIGHT,
     ATTR_ICON_CHILD_SENSOR,
     ATTR_LAST_NAME,
-    ATTR_NOTE,
     ATTR_NOTES,
     ATTR_PICTURE,
     ATTR_SLUG,
     ATTR_SOLID,
     ATTR_TAGS,
-    ATTR_TYPE,
-    ATTR_WEIGHT,
     ATTR_WET,
-    DIAPER_COLORS,
     DIAPER_TYPES,
     DOMAIN,
-    ERROR_CHILD_SENSOR_SELECT,
-    LOGGER,
     SENSOR_TYPES,
     BabyBuddyEntityDescription,
 )
 from .coordinator import BabyBuddyCoordinator
-from .errors import ValidationError
-
-COMMON_FIELDS = {
-    vol.Optional(ATTR_NOTES): cv.string,
-    vol.Optional(ATTR_TAGS): vol.All(cv.ensure_list, [str]),
-}
 
 
 # For a platform to support config entries, it will need to add a setup entry function
@@ -95,78 +58,6 @@ async def async_setup_entry(
     entry.async_on_unload(coordinator.async_add_listener(update_entities))
 
     update_entities()
-
-    platform = entity_platform.async_get_current_platform()
-    platform.async_register_entity_service(
-        ATTR_ACTION_ADD_BMI,
-        {
-            vol.Required(ATTR_BMI): cv.positive_float,
-            vol.Optional(ATTR_DATE): cv.date,
-            **COMMON_FIELDS,
-        },
-        f"async_{ATTR_ACTION_ADD_BMI}",
-    )
-    platform.async_register_entity_service(
-        ATTR_ACTION_ADD_DIAPER_CHANGE,
-        {
-            **COMMON_FIELDS,
-            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
-            vol.Optional(ATTR_TYPE): vol.In(DIAPER_TYPES),
-            vol.Optional(ATTR_COLOR): vol.In(DIAPER_COLORS),
-            vol.Optional(ATTR_AMOUNT): cv.positive_float,
-        },
-        f"async_{ATTR_ACTION_ADD_DIAPER_CHANGE}",
-    )
-    platform.async_register_entity_service(
-        ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE,
-        {
-            **COMMON_FIELDS,
-            vol.Required(ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE): cv.positive_float,
-            vol.Optional(ATTR_DATE): cv.date,
-        },
-        f"async_{ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE}",
-    )
-    platform.async_register_entity_service(
-        ATTR_ACTION_ADD_HEIGHT,
-        {
-            **COMMON_FIELDS,
-            vol.Required(ATTR_HEIGHT): cv.positive_float,
-            vol.Optional(ATTR_DATE): cv.date,
-        },
-        f"async_{ATTR_ACTION_ADD_HEIGHT}",
-    )
-    platform.async_register_entity_service(
-        ATTR_ACTION_ADD_NOTE,
-        {
-            vol.Required(ATTR_NOTE): cv.string,
-            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
-            vol.Optional(ATTR_TAGS): vol.All(cv.ensure_list, [str]),
-        },
-        f"async_{ATTR_ACTION_ADD_NOTE}",
-    )
-    platform.async_register_entity_service(
-        ATTR_ACTION_ADD_TEMPERATURE,
-        {
-            **COMMON_FIELDS,
-            vol.Required(ATTR_TEMPERATURE): cv.positive_float,
-            vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
-        },
-        f"async_{ATTR_ACTION_ADD_TEMPERATURE}",
-    )
-    platform.async_register_entity_service(
-        ATTR_ACTION_ADD_WEIGHT,
-        {
-            **COMMON_FIELDS,
-            vol.Required(ATTR_WEIGHT): cv.positive_float,
-            vol.Optional(ATTR_DATE): cv.date,
-        },
-        f"async_{ATTR_ACTION_ADD_WEIGHT}",
-    )
-    platform.async_register_entity_service(
-        ATTR_ACTION_DELETE_LAST_ENTRY,
-        {},
-        f"async_{ATTR_ACTION_DELETE_LAST_ENTRY}",
-    )
 
 
 @callback
@@ -209,221 +100,6 @@ class BabyBuddySensor(CoordinatorEntity, SensorEntity):
             "identifiers": {(DOMAIN, child[ATTR_ID])},
             "name": f"{child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]}",
         }
-
-    async def async_add_bmi(
-        self,
-        bmi: float,
-        date: date | None = None,  # pylint: disable=redefined-outer-name
-        notes: str | None = None,
-        tags: str | None = None,
-    ) -> None:
-        """Add BMI entry."""
-        if not isinstance(self, BabyBuddyChildSensor):
-            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
-            return
-        data = {
-            ATTR_CHILD: self.child[ATTR_ID],
-            ATTR_BMI: bmi,
-        }
-        if date:
-            data[ATTR_DATE] = date
-        if notes:
-            data[ATTR_NOTES] = notes
-        if tags:
-            data[ATTR_TAGS] = tags
-
-        date_now = dt_util.now().date()
-        await self.coordinator.client.async_post(ATTR_BMI, data, date_now)
-        await self.coordinator.async_request_refresh()
-
-    async def async_add_diaper_change(
-        self,
-        type: str | None = None,  # pylint: disable=redefined-builtin
-        time: datetime | time | None = None,  # pylint: disable=redefined-outer-name
-        color: str | None = None,
-        amount: float | None = None,
-        notes: str | None = None,
-        tags: str | None = None,
-    ) -> None:
-        """Add diaper change entry."""
-        if not isinstance(self, BabyBuddyChildSensor):
-            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
-            return
-        data = {
-            ATTR_CHILD: self.child[ATTR_ID],
-        }
-        if time:
-            try:
-                date_time = get_datetime_from_time(time)
-                data[ATTR_TIME] = date_time
-            except ValidationError as error:
-                LOGGER.error(error)
-                return
-        if type:
-            data[ATTR_WET] = type == "Wet and Solid" or type.lower() == ATTR_WET
-            data[ATTR_SOLID] = type == "Wet and Solid" or type.lower() == ATTR_SOLID
-        if color:
-            data[ATTR_COLOR] = color.lower()
-        if amount:
-            data[ATTR_AMOUNT] = amount
-        if notes:
-            data[ATTR_NOTES] = notes
-        if tags:
-            data[ATTR_TAGS] = tags
-
-        date_time_now = get_datetime_from_time(dt_util.now())
-        await self.coordinator.client.async_post(ATTR_CHANGES, data, date_time_now)
-        await self.coordinator.async_request_refresh()
-
-    async def async_add_head_circumference(
-        self,
-        head_circumference: float,
-        date: date | None = None,  # pylint: disable=redefined-outer-name
-        notes: str | None = None,
-        tags: str | None = None,
-    ) -> None:
-        """Add head circumference entry."""
-        if not isinstance(self, BabyBuddyChildSensor):
-            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
-            return
-        data = {
-            ATTR_CHILD: self.child[ATTR_ID],
-            ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE: head_circumference,
-        }
-        if date:
-            data[ATTR_DATE] = date
-        if notes:
-            data[ATTR_NOTES] = notes
-        if tags:
-            data[ATTR_TAGS] = tags
-
-        date_now = dt_util.now().date()
-        await self.coordinator.client.async_post(
-            ATTR_HEAD_CIRCUMFERENCE_DASH, data, date_now
-        )
-        await self.coordinator.async_request_refresh()
-
-    async def async_add_height(
-        self,
-        height: float,
-        date: date | None = None,  # pylint: disable=redefined-outer-name
-        notes: str | None = None,
-        tags: str | None = None,
-    ) -> None:
-        """Add height entry."""
-        if not isinstance(self, BabyBuddyChildSensor):
-            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
-            return
-        data = {
-            ATTR_CHILD: self.child[ATTR_ID],
-            ATTR_HEIGHT: height,
-        }
-        if date:
-            data[ATTR_DATE] = date
-        if notes:
-            data[ATTR_NOTES] = notes
-        if tags:
-            data[ATTR_TAGS] = tags
-
-        date_now = dt_util.now().date()
-        await self.coordinator.client.async_post(ATTR_HEIGHT, data, date_now)
-        await self.coordinator.async_request_refresh()
-
-    async def async_add_note(
-        self,
-        note: str,
-        time: datetime | time | None = None,  # pylint: disable=redefined-outer-name
-        tags: str | None = None,
-    ) -> None:
-        """Add note entry."""
-        if not isinstance(self, BabyBuddyChildSensor):
-            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
-            return
-        data = {ATTR_CHILD: self.child[ATTR_ID], ATTR_NOTE: note}
-        if time:
-            try:
-                date_time = get_datetime_from_time(time)
-                data[ATTR_TIME] = date_time
-            except ValidationError as error:
-                LOGGER.error(error)
-                return
-        if tags:
-            data[ATTR_TAGS] = tags
-
-        date_time_now = get_datetime_from_time(dt_util.now())
-        await self.coordinator.client.async_post(ATTR_NOTES, data, date_time_now)
-        await self.coordinator.async_request_refresh()
-
-    async def async_add_temperature(
-        self,
-        temperature: float,
-        time: datetime | time | None = None,  # pylint: disable=redefined-outer-name
-        notes: str | None = None,
-        tags: str | None = None,
-    ) -> None:
-        """Add a temperature entry."""
-        if not isinstance(self, BabyBuddyChildSensor):
-            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
-            return
-        data = {
-            ATTR_CHILD: self.child[ATTR_ID],
-            ATTR_TEMPERATURE: temperature,
-        }
-        if time:
-            try:
-                date_time = get_datetime_from_time(time)
-                data[ATTR_TIME] = date_time
-            except ValidationError as error:
-                LOGGER.error(error)
-                return
-        if notes:
-            data[ATTR_NOTES] = notes
-        if tags:
-            data[ATTR_TAGS] = tags
-
-        date_time_now = get_datetime_from_time(dt_util.now())
-        await self.coordinator.client.async_post(ATTR_TEMPERATURE, data, date_time_now)
-        await self.coordinator.async_request_refresh()
-
-    async def async_add_weight(
-        self,
-        weight: float,
-        date: date | None = None,  # pylint: disable=redefined-outer-name
-        notes: str | None = None,
-        tags: str | None = None,
-    ) -> None:
-        """Add weight entry."""
-        if not isinstance(self, BabyBuddyChildSensor):
-            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
-            return
-        data = {
-            ATTR_CHILD: self.child[ATTR_ID],
-            ATTR_WEIGHT: weight,
-        }
-        if date:
-            data[ATTR_DATE] = date
-        if notes:
-            data[ATTR_NOTES] = notes
-        if tags:
-            data[ATTR_TAGS] = tags
-
-        date_now = dt_util.now().date()
-        await self.coordinator.client.async_post(ATTR_WEIGHT, data, date_now)
-        await self.coordinator.async_request_refresh()
-
-    async def async_delete_last_entry(self) -> None:
-        """Delete last data entry."""
-        if not isinstance(self, BabyBuddyChildDataSensor):
-            LOGGER.debug(ERROR_CHILD_SENSOR_SELECT)
-            return
-
-        if self.extra_state_attributes.get(ATTR_ID) is None:
-            LOGGER.error(f"{self.entity_description.key} entry is not available.")
-            return
-        await self.coordinator.client.async_delete(
-            self.entity_description.key, self.extra_state_attributes[ATTR_ID]
-        )
-        await self.coordinator.async_request_refresh()
 
 
 class BabyBuddyChildSensor(BabyBuddySensor):

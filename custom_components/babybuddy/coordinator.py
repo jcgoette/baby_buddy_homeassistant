@@ -43,14 +43,6 @@ from .const import (
 )
 from .errors import AuthorizationError, ConnectError
 
-SERVICE_ADD_CHILD_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_BIRTH_DATE, default=dt_util.now().date()): cv.date,
-        vol.Required(ATTR_FIRST_NAME): cv.string,
-        vol.Required(ATTR_LAST_NAME): cv.string,
-    }
-)
-
 
 class BabyBuddyCoordinator(DataUpdateCoordinator):
     """Coordinate retrieving and updating data from babybuddy."""
@@ -101,25 +93,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
 
         await self.async_set_children_from_db()
 
-        async def async_add_child(call: ServiceCall) -> None:
-            """Add new child."""
-            data = {
-                ATTR_FIRST_NAME: call.data[ATTR_FIRST_NAME],
-                ATTR_LAST_NAME: call.data[ATTR_LAST_NAME],
-                ATTR_BIRTH_DATE: call.data[ATTR_BIRTH_DATE],
-            }
-            await self.client.async_post(ATTR_CHILDREN, data)
-            await self.async_request_refresh()
-
-        self.hass.services.async_register(
-            DOMAIN,
-            ATTR_ACTION_ADD_CHILD,
-            async_add_child,
-            schema=SERVICE_ADD_CHILD_SCHEMA,
-        )
-
-        self.config_entry.async_on_unload(
-            self.config_entry.add_update_listener(options_updated_listener)
+        self.entry.async_on_unload(
         )
 
     async def async_remove_deleted_children(self) -> None:
