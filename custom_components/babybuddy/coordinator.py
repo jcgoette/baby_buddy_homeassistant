@@ -24,7 +24,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.device_registry as dr
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .client import BabyBuddyClient
+from .api import BabyBuddyClient
 from .const import (
     ATTR_CHILDREN,
     ATTR_COUNT,

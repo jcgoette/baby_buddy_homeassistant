@@ -14,6 +14,7 @@ from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.util import dt as dt_util, slugify
 
+from .api import get_datetime_from_time
 from .const import (
     ATTR_ACTION_ADD_BMI,
     ATTR_ACTION_ADD_CHILD,

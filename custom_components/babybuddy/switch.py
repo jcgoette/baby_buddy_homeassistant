@@ -16,7 +16,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
-from .client import get_datetime_from_time
+from .api import get_datetime_from_time
 from .const import (
     ATTR_ACTION_ADD_FEEDING,
     ATTR_ACTION_ADD_PUMPING,
