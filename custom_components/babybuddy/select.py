@@ -16,13 +16,11 @@ from .coordinator import BabyBuddyCoordinator
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up babybuddy select entities for feeding and diaper change."""
-    babybuddy_coordinator: BabyBuddyCoordinator = hass.data[DOMAIN][
-        config_entry.entry_id
-    ]
+    babybuddy_coordinator: BabyBuddyCoordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities(
         [BabyBuddySelect(babybuddy_coordinator, entity) for entity in SELECTOR_TYPES]
     )
@@ -42,7 +40,9 @@ class BabyBuddySelect(CoordinatorEntity, SelectEntity, RestoreEntity):
     ) -> None:
         """Initialize the Babybuddy select entity."""
         super().__init__(coordinator)
-        self._attr_unique_id = f"{self.coordinator.config_entry.data[CONF_API_KEY]}-{entity_description.key}"
+        self._attr_unique_id = (
+            f"{self.coordinator.entry.data[CONF_API_KEY]}-{entity_description.key}"
+        )
         self._attr_options = entity_description.options
         self.entity_description = entity_description
         self._attr_current_option = None

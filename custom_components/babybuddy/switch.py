@@ -61,13 +61,11 @@ COMMON_FIELDS: dict[vol.Optional | vol.Exclusive, Any] = {
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the babybuddy switches."""
-    babybuddy_coordinator: BabyBuddyCoordinator = hass.data[DOMAIN][
-        config_entry.entry_id
-    ]
+    babybuddy_coordinator: BabyBuddyCoordinator = hass.data[DOMAIN][entry.entry_id]
     tracked: dict = {}
 
     @callback
@@ -75,9 +73,7 @@ async def async_setup_entry(
         """Update the status of entities."""
         update_items(babybuddy_coordinator, tracked, async_add_entities)
 
-    config_entry.async_on_unload(
-        babybuddy_coordinator.async_add_listener(update_entities)
-    )
+    entry.async_on_unload(babybuddy_coordinator.async_add_listener(update_entities))
 
     update_entities()
 
@@ -163,7 +159,9 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         self._attr_name = (
             f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} {ATTR_TIMER}"
         )
-        self._attr_unique_id = f"{self.coordinator.config_entry.data[CONF_API_KEY]}-{child[ATTR_ID]}-{ATTR_TIMER}"
+        self._attr_unique_id = (
+            f"{self.coordinator.entry.data[CONF_API_KEY]}-{child[ATTR_ID]}-{ATTR_TIMER}"
+        )
         self._attr_icon = ATTR_ICON_TIMER_SAND
         self._attr_device_info = {
             "identifiers": {(DOMAIN, child[ATTR_ID])},

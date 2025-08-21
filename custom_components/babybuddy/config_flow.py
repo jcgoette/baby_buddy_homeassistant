@@ -54,10 +54,10 @@ class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(
-        config_entry: config_entries.ConfigEntry,
+        entry: config_entries.ConfigEntry,
     ) -> BabyBuddyOptionsFlowHandler:
         """Get the options flow for this handler."""
-        return BabyBuddyOptionsFlowHandler(config_entry)
+        return BabyBuddyOptionsFlowHandler(entry)
 
     def __init__(self) -> None:
         """Initiate config flow."""
@@ -152,9 +152,9 @@ class BabyBuddyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
     """Handle babybuddy options."""
 
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+    def __init__(self, entry: config_entries.ConfigEntry) -> None:
         """Init object."""
-        self.config_entry = config_entry
+        self.entry = entry
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
@@ -166,11 +166,11 @@ class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
         options: dict[vol.Optional, Any] = {
             vol.Optional(
                 TEMPERATURE,
-                default=self.config_entry.options.get(TEMPERATURE, None),
+                default=self.entry.options.get(TEMPERATURE, None),
             ): vol.In([UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT]),
             vol.Optional(
                 CONF_WEIGHT_UNIT,
-                default=self.config_entry.options.get(CONF_WEIGHT_UNIT, None),
+                default=self.entry.options.get(CONF_WEIGHT_UNIT, None),
             ): vol.In(
                 [
                     UnitOfMass.KILOGRAMS,
@@ -181,11 +181,11 @@ class BabyBuddyOptionsFlowHandler(config_entries.OptionsFlow):
             ),
             vol.Optional(
                 CONF_FEEDING_UNIT,
-                default=self.config_entry.options.get(CONF_FEEDING_UNIT, None),
+                default=self.entry.options.get(CONF_FEEDING_UNIT, None),
             ): vol.In([UnitOfVolume.MILLILITERS, UnitOfVolume.FLUID_OUNCES]),
             vol.Optional(
                 CONF_SCAN_INTERVAL,
-                default=self.config_entry.options.get(
+                default=self.entry.options.get(
                     CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
                 ),
             ): cv.positive_int,

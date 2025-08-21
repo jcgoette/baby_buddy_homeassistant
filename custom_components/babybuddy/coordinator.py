@@ -55,7 +55,7 @@ SERVICE_ADD_CHILD_SCHEMA = vol.Schema(
 class BabyBuddyCoordinator(DataUpdateCoordinator):
     """Coordinate retrieving and updating data from babybuddy."""
 
-    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry) -> None:
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize the BabyBuddyData object."""
         LOGGER.debug("Initializing BabyBuddyCoordinator")
         super().__init__(
@@ -65,18 +65,16 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
             setup_method=self.async_setup_coordinator,
             update_method=self.async_update,
             update_interval=timedelta(
-                seconds=config_entry.options.get(
-                    CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
-                )
+                seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
             ),
         )
         self.hass = hass
-        self.config_entry: ConfigEntry = config_entry
+        self.entry: ConfigEntry = entry
         self.client: BabyBuddyClient = BabyBuddyClient(
-            config_entry.data[CONF_HOST],
-            config_entry.data[CONF_PORT],
-            config_entry.data[CONF_PATH],
-            config_entry.data[CONF_API_KEY],
+            entry.data[CONF_HOST],
+            entry.data[CONF_PORT],
+            entry.data[CONF_PATH],
+            entry.data[CONF_API_KEY],
             async_get_clientsession(self.hass),
         )
         self.device_registry: dr.DeviceRegistry = dr.async_get(self.hass)
@@ -87,7 +85,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         self.child_ids = [
             next(iter(device.identifiers))[1]
             for device in dr.async_entries_for_config_entry(
-                self.device_registry, self.config_entry.entry_id
+                self.device_registry, self.entry.entry_id
             )
         ]
 
@@ -120,14 +118,14 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
             schema=SERVICE_ADD_CHILD_SCHEMA,
         )
 
-        self.config_entry.async_on_unload(
-            self.config_entry.add_update_listener(options_updated_listener)
+        self.entry.async_on_unload(
+            self.entry.add_update_listener(options_updated_listener)
         )
 
     async def async_remove_deleted_children(self) -> None:
         """Remove child device if child is removed from babybuddy."""
         for device in dr.async_entries_for_config_entry(
-            self.device_registry, self.config_entry.entry_id
+            self.device_registry, self.entry.entry_id
         ):
             if next(iter(device.identifiers))[1] not in self.child_ids:
                 self.device_registry.async_remove_device(device.id)
