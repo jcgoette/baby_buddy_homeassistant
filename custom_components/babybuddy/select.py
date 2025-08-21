@@ -14,6 +14,7 @@ from .const import DOMAIN, SELECTOR_TYPES, BabyBuddySelectDescription
 from .coordinator import BabyBuddyConfigEntry, BabyBuddyCoordinator
 
 
+# For a platform to support config entries, it will need to add a setup entry function
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: BabyBuddyConfigEntry,

@@ -77,6 +77,7 @@ COMMON_FIELDS = {
 }
 
 
+# For a platform to support config entries, it will need to add a setup entry function
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: BabyBuddyConfigEntry,
