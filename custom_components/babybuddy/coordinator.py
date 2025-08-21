@@ -112,23 +112,6 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
 
         await self.async_set_children_from_db()
 
-        async def async_add_child(call: ServiceCall) -> None:
-            """Add new child."""
-            data = {
-                ATTR_FIRST_NAME: call.data[ATTR_FIRST_NAME],
-                ATTR_LAST_NAME: call.data[ATTR_LAST_NAME],
-                ATTR_BIRTH_DATE: call.data[ATTR_BIRTH_DATE],
-            }
-            await self.client.async_post(ATTR_CHILDREN, data)
-            await self.async_request_refresh()
-
-        self.hass.services.async_register(
-            DOMAIN,
-            ATTR_ACTION_ADD_CHILD,
-            async_add_child,
-            schema=SERVICE_ADD_CHILD_SCHEMA,
-        )
-
         self.entry.async_on_unload(
             self.entry.add_update_listener(options_updated_listener)
         )

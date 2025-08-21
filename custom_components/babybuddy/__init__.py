@@ -5,6 +5,7 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PATH
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.typing import ConfigType
 
 from .const import (
     ATTR_ACTION_ADD_CHILD,
@@ -15,8 +16,14 @@ from .const import (
     PLATFORMS,
 )
 from .coordinator import BabyBuddyConfigEntry, BabyBuddyCoordinator, BabyBuddyData
+from .services import async_setup_services
+
 
 # async_setup is for the initial setup of the integration itself
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Set up babybuddy."""
+    async_setup_services(hass)
+    return True
 
 
 # async_setup_entry handles the setup of individual configuration
