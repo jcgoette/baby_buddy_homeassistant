@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from functools import wraps
 from typing import Any
 
 import voluptuous as vol
@@ -19,7 +18,6 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import config_validation as cv, entity_registry as er
-from homeassistant.helpers.typing import ConfigType
 from homeassistant.util import dt as dt_util, slugify
 
 from .client import get_datetime_from_time

@@ -2,98 +2,39 @@
 
 from __future__ import annotations
 
-from datetime import date, datetime, time
 from typing import Any
-
-import voluptuous as vol
 
 from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor.const import SensorDeviceClass
 from homeassistant.components.switch import SwitchEntity
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    ATTR_DATE,
-    ATTR_ID,
-    ATTR_NAME,
-    ATTR_TEMPERATURE,
-    ATTR_TIME,
-    CONF_API_KEY,
-    CONF_HOST,
-    CONF_PATH,
-    CONF_PORT,
-)
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers import config_validation as cv, entity_platform
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.const import ATTR_ID, CONF_API_KEY, CONF_HOST, CONF_PATH, CONF_PORT
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
-from .client import get_datetime_from_time
 from .const import (
-    ATTR_ACTION_ADD_BMI,
-    ATTR_ACTION_ADD_DIAPER_CHANGE,
-    ATTR_ACTION_ADD_FEEDING,
-    ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE,
-    ATTR_ACTION_ADD_HEIGHT,
-    ATTR_ACTION_ADD_NOTE,
-    ATTR_ACTION_ADD_PUMPING,
-    ATTR_ACTION_ADD_SLEEP,
-    ATTR_ACTION_ADD_TEMPERATURE,
-    ATTR_ACTION_ADD_TUMMY_TIME,
-    ATTR_ACTION_ADD_WEIGHT,
-    ATTR_ACTION_DELETE_LAST_ENTRY,
-    ATTR_AMOUNT,
     ATTR_BABYBUDDY_CHILD,
     ATTR_BIRTH_DATE,
-    ATTR_BMI,
     ATTR_CHANGES,
-    ATTR_CHILD,
-    ATTR_COLOR,
     ATTR_DESCRIPTIVE,
-    ATTR_END,
-    ATTR_FEEDINGS,
     ATTR_FIRST_NAME,
-    ATTR_HEAD_CIRCUMFERENCE_DASH,
-    ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
-    ATTR_HEIGHT,
     ATTR_ICON_CHILD_SENSOR,
     ATTR_ICON_TIMER_SAND,
     ATTR_LAST_NAME,
-    ATTR_METHOD,
-    ATTR_MILESTONE,
-    ATTR_NAP,
-    ATTR_NOTE,
-    ATTR_NOTES,
     ATTR_PICTURE,
-    ATTR_PUMPING,
-    ATTR_SLEEP,
     ATTR_SLUG,
     ATTR_SOLID,
-    ATTR_START,
-    ATTR_TAGS,
     ATTR_TIMER,
     ATTR_TIMERS,
-    ATTR_TUMMY_TIMES,
-    ATTR_TYPE,
-    ATTR_WEIGHT,
     ATTR_WET,
-    DIAPER_COLORS,
     DIAPER_TYPES,
     DOMAIN,
-    ERROR_CHILD_SENSOR_SELECT,
-    FEEDING_METHODS,
-    FEEDING_TYPES,
-    LOGGER,
-    SELECTOR_TYPES,
-    SENSOR_TYPES,
     BabyBuddyEntityDescription,
     BabyBuddySelectDescription,
 )
-from .coordinator import BabyBuddyConfigEntry, BabyBuddyCoordinator
-from .errors import ValidationError
+from .coordinator import BabyBuddyCoordinator
 
 
 class BabyBuddySensor(CoordinatorEntity, SensorEntity):
