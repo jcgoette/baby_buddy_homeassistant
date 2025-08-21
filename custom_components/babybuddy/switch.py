@@ -47,6 +47,7 @@ from .const import (
     LOGGER,
 )
 from .coordinator import BabyBuddyConfigEntry, BabyBuddyCoordinator
+from .entity import BabyBuddyChildTimerSwitch
 from .errors import ValidationError
 
 
@@ -85,58 +86,3 @@ def update_items(
                 new_entities.append(tracked[child[ATTR_ID]])
         if new_entities:
             async_add_entities(new_entities)
-
-
-class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
-    """Representation of a babybuddy timer switch."""
-
-    coordinator: BabyBuddyCoordinator
-
-    def __init__(
-        self,
-        coordinator: BabyBuddyCoordinator,
-        child: dict,
-    ) -> None:
-        """Initialize the sensor."""
-        super().__init__(coordinator)
-        self.child = child
-        self._attr_name = (
-            f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} {ATTR_TIMER}"
-        )
-        self._attr_unique_id = (
-            f"{self.coordinator.entry.data[CONF_API_KEY]}-{child[ATTR_ID]}-{ATTR_TIMER}"
-        )
-        self._attr_icon = ATTR_ICON_TIMER_SAND
-        self._attr_device_info = {
-            "identifiers": {(DOMAIN, child[ATTR_ID])},
-            "name": f"{child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]}",
-        }
-
-    @property
-    def is_on(self) -> bool:
-        """Return entity state."""
-        if self.child[ATTR_ID] in self.coordinator.data[1]:
-            timer_data = self.coordinator.data[1][self.child[ATTR_ID]][ATTR_TIMERS]
-            # In Babybuddy 2.0 'active' is not in the JSON response, so return
-            # True if any timers are returned, as only active timers are
-            # returned.
-            return timer_data.get("active", len(timer_data) > 0)
-        return False
-
-    @property
-    def extra_state_attributes(self) -> dict[str, Any]:
-        """Return entity specific state attributes for babybuddy."""
-        attrs: dict[str, Any] = {}
-        if self.is_on:
-            attrs = self.coordinator.data[1][self.child[ATTR_ID]].get(ATTR_TIMERS)
-        return attrs
-
-    async def async_turn_on(self, **kwargs: Any) -> None:
-        """Start a new timer."""
-        await self.async_start_timer()
-
-    async def async_turn_off(self, **kwargs: Any) -> None:
-        """Delete active timer."""
-        timer_id = self.extra_state_attributes[ATTR_ID]
-        await self.coordinator.client.async_delete(ATTR_TIMERS, timer_id)
-        await self.coordinator.async_request_refresh()
