@@ -11,18 +11,18 @@ from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN, SELECTOR_TYPES, BabyBuddySelectDescription
-from .coordinator import BabyBuddyCoordinator
+from .coordinator import BabyBuddyConfigEntry, BabyBuddyCoordinator
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: BabyBuddyConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up babybuddy select entities for feeding and diaper change."""
-    babybuddy_coordinator: BabyBuddyCoordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data.coordinator
     async_add_entities(
-        [BabyBuddySelect(babybuddy_coordinator, entity) for entity in SELECTOR_TYPES]
+        [BabyBuddySelect(coordinator, entity) for entity in SELECTOR_TYPES]
     )
 
 

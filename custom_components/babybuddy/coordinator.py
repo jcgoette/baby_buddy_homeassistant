@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from asyncio import TimeoutError as AsyncIOTimeoutError
+from dataclasses import dataclass
 from datetime import timedelta
 from http import HTTPStatus
 from typing import Any
@@ -50,6 +51,16 @@ SERVICE_ADD_CHILD_SCHEMA = vol.Schema(
         vol.Required(ATTR_LAST_NAME): cv.string,
     }
 )
+
+type BabyBuddyConfigEntry = ConfigEntry[BabyBuddyData]
+
+
+@dataclass
+class BabyBuddyData:
+    """Data retrieved from babybuddy."""
+
+    coordinator: BabyBuddyCoordinator
+    entities: dict[str, str]
 
 
 class BabyBuddyCoordinator(DataUpdateCoordinator):

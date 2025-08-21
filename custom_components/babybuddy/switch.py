@@ -46,7 +46,7 @@ from .const import (
     FEEDING_TYPES,
     LOGGER,
 )
-from .coordinator import BabyBuddyCoordinator
+from .coordinator import BabyBuddyConfigEntry, BabyBuddyCoordinator
 from .errors import ValidationError
 
 COMMON_FIELDS: dict[vol.Optional | vol.Exclusive, Any] = {
@@ -61,19 +61,19 @@ COMMON_FIELDS: dict[vol.Optional | vol.Exclusive, Any] = {
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: BabyBuddyConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the babybuddy switches."""
-    babybuddy_coordinator: BabyBuddyCoordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data.coordinator
     tracked: dict = {}
 
     @callback
     def update_entities() -> None:
         """Update the status of entities."""
-        update_items(babybuddy_coordinator, tracked, async_add_entities)
+        update_items(coordinator, tracked, async_add_entities)
 
-    entry.async_on_unload(babybuddy_coordinator.async_add_listener(update_entities))
+    entry.async_on_unload(coordinator.async_add_listener(update_entities))
 
     update_entities()
 

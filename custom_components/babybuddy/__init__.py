@@ -14,19 +14,17 @@ from .const import (
     LOGGER,
     PLATFORMS,
 )
-from .coordinator import BabyBuddyCoordinator
+from .coordinator import BabyBuddyConfigEntry, BabyBuddyCoordinator, BabyBuddyData
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: BabyBuddyConfigEntry) -> bool:
     """Set up the babybuddy component."""
 
     coordinator = BabyBuddyCoordinator(hass, entry)
+    entry.runtime_data = BabyBuddyData(coordinator=coordinator, entities={})
+
     await coordinator.async_setup_coordinator()
     await coordinator.async_refresh()
-
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
-
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     return True
 
