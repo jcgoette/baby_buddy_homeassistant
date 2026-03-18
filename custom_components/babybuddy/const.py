@@ -7,14 +7,18 @@ from dataclasses import dataclass
 import logging
 from typing import Final
 
+from homeassistant.components.button import ButtonEntityDescription
 from homeassistant.components.select import SelectEntityDescription
-from homeassistant.components.sensor import SensorEntityDescription
-from homeassistant.components.sensor.const import SensorDeviceClass, SensorStateClass
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntityDescription,
+    SensorStateClass,
+)
 from homeassistant.components.switch import SwitchEntityDescription
 from homeassistant.const import ATTR_TIME, UnitOfTime
-from homeassistant.util import dt as dt_util
+import homeassistant.util.dt as dt_util
 
-LOGGER = logging.getLogger(__package__)
+_LOGGER = logging.getLogger(__package__)
 
 DOMAIN: Final[str] = "babybuddy"
 
@@ -28,6 +32,7 @@ DEFAULT_SCAN_INTERVAL: Final[int] = 60
 
 CONFIG_FLOW_VERSION: Final[int] = 2
 
+ATTR_ACTIVE: Final[str] = "active"
 ATTR_AMOUNT: Final[str] = "amount"
 ATTR_BABYBUDDY_CHILD: Final[str] = "babybuddy_child"
 ATTR_BIRTH_DATE: Final[str] = "birth_date"
@@ -35,6 +40,7 @@ ATTR_BMI: Final[str] = "bmi"
 ATTR_CHANGES: Final[str] = "changes"
 ATTR_CHILD: Final[str] = "child"
 ATTR_CHILDREN: Final[str] = "children"
+ATTR_TIMER_FOR_CHILD: Final[str] = "timer_for_child"
 ATTR_COLOR: Final[str] = "color"
 ATTR_COUNT: Final[str] = "count"
 ATTR_DESCRIPTIVE: Final[str] = "descriptive"
@@ -66,8 +72,10 @@ ATTR_TYPE: Final[str] = "type"
 ATTR_WEIGHT: Final[str] = "weight"
 ATTR_WET: Final[str] = "wet"
 
+ATTR_START_FEEDING_TIMER: Final[str] = "start_feeding_timer"
+ATTR_START_SLEEPING_TIMER: Final[str] = "start_sleeping_timer"
 ATTR_ICON_BABY_BOTTLE: Final[str] = "mdi:baby-bottle-outline"
-ATTR_ICON_BABY: Final[str] = "mdi:baby"
+ATTR_ICON_BABY: Final[str] = "mdi:baby-face-outline"
 ATTR_ICON_CHILD_SENSOR: Final[str] = "mdi:baby-face-outline"
 ATTR_ICON_HEAD: Final[str] = "mdi:head-outline"
 ATTR_ICON_HEIGHT: Final[str] = "mdi:human-male-height"
@@ -98,6 +106,7 @@ DIAPER_COLOR: Final[str] = "diaper_color"
 DIAPER_COLORS: Final = ["Black", "Brown", "Green", "Yellow"]
 DIAPER_TYPE: Final[str] = "change_type"
 DIAPER_TYPES: Final = ["Wet", "Solid", "Wet and Solid"]
+FEEDING_METHOD: Final[str] = "feeding_method"
 FEEDING_METHODS: Final = [
     "Bottle",
     "Left breast",
@@ -135,18 +144,21 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         state_key=ATTR_TIME,
     ),
     BabyBuddyEntityDescription(
+        device_class=SensorDeviceClass.VOLUME,
         icon=ATTR_ICON_BABY_BOTTLE,
         key=ATTR_FEEDINGS,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_AMOUNT,
     ),
     BabyBuddyEntityDescription(
+        device_class=SensorDeviceClass.DISTANCE,
         icon=ATTR_ICON_HEAD,
         key=ATTR_HEAD_CIRCUMFERENCE_DASH,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
     ),
     BabyBuddyEntityDescription(
+        device_class=SensorDeviceClass.DISTANCE,
         icon=ATTR_ICON_HEIGHT,
         key=ATTR_HEIGHT,
         state_class=SensorStateClass.MEASUREMENT,
@@ -159,12 +171,14 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         state_key=ATTR_TIME,
     ),
     BabyBuddyEntityDescription(
+        device_class=SensorDeviceClass.VOLUME,
         icon=ATTR_ICON_MOTHER_NURSE,
         key=ATTR_PUMPING,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_AMOUNT,
     ),
     BabyBuddyEntityDescription(
+        device_class=SensorDeviceClass.DURATION,
         icon=ATTR_ICON_SLEEP,
         key=ATTR_SLEEP,
         native_unit_of_measurement=UnitOfTime.MINUTES,
@@ -187,6 +201,7 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         state_key=ATTR_START,
     ),
     BabyBuddyEntityDescription(
+        device_class=SensorDeviceClass.DURATION,
         icon=ATTR_ICON_BABY,
         key=ATTR_TUMMY_TIMES,
         native_unit_of_measurement=UnitOfTime.MINUTES,
@@ -196,10 +211,30 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         ),
     ),
     BabyBuddyEntityDescription(
+        device_class=SensorDeviceClass.WEIGHT,
         icon=ATTR_ICON_SCALE,
         key=ATTR_WEIGHT,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_WEIGHT,
+    ),
+)
+
+
+@dataclass
+class BabyBuddyButtonDescription(ButtonEntityDescription):
+    """Describe Baby Buddy button entity."""
+
+
+BUTTON_TYPES: tuple[BabyBuddyButtonDescription, ...] = (
+    BabyBuddyButtonDescription(
+        icon=ATTR_ICON_BABY_BOTTLE,
+        key=ATTR_START_FEEDING_TIMER,
+        name=f"{DEFAULT_NAME} Start Feeding Timer",
+    ),
+    BabyBuddyButtonDescription(
+        icon=ATTR_ICON_SLEEP,
+        key=ATTR_START_SLEEPING_TIMER,
+        name=f"{DEFAULT_NAME} Start Sleeping Timer",
     ),
 )
 
@@ -224,7 +259,7 @@ SELECTOR_TYPES: tuple[BabyBuddySelectDescription, ...] = (
     ),
     BabyBuddySelectDescription(
         icon=ATTR_ICON_BABY_BOTTLE,
-        key="feeding_method",
+        key=FEEDING_METHOD,
         name=f"{DEFAULT_NAME} Feeding method",
         options=FEEDING_METHODS,
     ),
@@ -236,4 +271,4 @@ SELECTOR_TYPES: tuple[BabyBuddySelectDescription, ...] = (
     ),
 )
 
-PLATFORMS: Final = ["sensor", "select", "switch"]
+PLATFORMS: Final = ["sensor", "select", "switch", "button"]
