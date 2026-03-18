@@ -1,17 +1,12 @@
 add_bmi:
   name: Add BMI
   description: Adds a BMI entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy_child
   fields:
-    child:
-      name: Child
-      description: Baby Buddy child entity
-      example: "sensor.baby_lorem_ipsum"
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: sensor
-          device_class: babybuddy_child
     bmi:
       name: BMI
       description: BMI value
@@ -73,15 +68,12 @@ add_child:
 add_diaper_change:
   name: Add diaper change
   description: Adds a diaper change entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy_child
   fields:
-    child:
-      name: Child
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: sensor
-          device_class: babybuddy_child
     time:
       name: Change time
       description: Change time
@@ -137,14 +129,11 @@ add_diaper_change:
 add_feeding:
   name: Add feeding
   description: Adds a feeding entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: switch
   fields:
-    child:
-      name: Child
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: switch
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
@@ -217,15 +206,12 @@ add_feeding:
 add_head_circumference:
   name: Add Head Circumference
   description: Adds a head circumference entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy_child
   fields:
-    child:
-      name: Child
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: sensor
-          device_class: babybuddy_child
     head_circumference:
       name: Head Circumference
       description: Head circumference value
@@ -261,15 +247,12 @@ add_head_circumference:
 add_height:
   name: Add Height
   description: Adds a height entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy_child
   fields:
-    child:
-      name: Child
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: sensor
-          device_class: babybuddy_child
     height:
       name: Height
       description: Height value
@@ -305,15 +288,12 @@ add_height:
 add_note:
   name: Add note
   description: Adds a note entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy_child
   fields:
-    child:
-      name: Child
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: sensor
-          device_class: babybuddy_child
     note:
       name: Note
       description: Note text
@@ -339,14 +319,11 @@ add_note:
 add_pumping:
   name: Add pumping
   description: Adds a pumping entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: switch
   fields:
-    child:
-      name: Child
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: switch
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
@@ -354,14 +331,14 @@ add_pumping:
       selector:
         boolean:
     start:
-      name: Pumping start time
-      description: Pumping start time
+      name: Sleep start time
+      description: Sleep start time
       example: "15:00:00"
       selector:
         time:
     end:
-      name: Pumping end time
-      description: Pumping end time
+      name: Sleep end time
+      description: Sleep end time
       example: "15:10:00"
       selector:
         time:
@@ -394,14 +371,11 @@ add_pumping:
 add_sleep:
   name: Add sleep
   description: Adds sleep entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: switch
   fields:
-    child:
-      name: Child
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: switch
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
@@ -444,15 +418,12 @@ add_sleep:
 add_temperature:
   name: Add temperature
   description: Adds a temperature entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy_child
   fields:
-    child:
-      name: Child
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: sensor
-          device_class: babybuddy_child
     temperature:
       name: Temperature
       description: Temperature
@@ -488,14 +459,11 @@ add_temperature:
 add_tummy_time:
   name: Add tummy time
   description: Adds tummy time entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: switch
   fields:
-    child:
-      name: Child
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: switch
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
@@ -532,15 +500,12 @@ add_tummy_time:
 add_weight:
   name: Add weight
   description: Adds a weight entry
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
+      device_class: babybuddy_child
   fields:
-    child:
-      name: Child
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: sensor
-          device_class: babybuddy_child
     weight:
       name: Weight
       description: Weight value
@@ -575,26 +540,19 @@ add_weight:
 delete_last_entry:
   name: Delete last entry
   description: Delete the last sensor entry
-  fields:
-    entity_id:
-      name: Entity
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: sensor
+  target:
+    entity:
+      integration: babybuddy
+      domain: sensor
 
 start_timer:
   name: Start timer
   description: Start a new timer
+  target:
+    entity:
+      integration: babybuddy
+      domain: switch
   fields:
-    switch:
-      name: Switch
-      required: true
-      selector:
-        entity:
-          integration: babybuddy
-          domain: switch
     start:
       name: Timer start time
       description: Leave blank for a quick start
