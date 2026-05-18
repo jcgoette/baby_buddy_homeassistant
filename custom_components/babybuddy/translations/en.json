@@ -1,4 +1,9 @@
 {
+  "exceptions": {
+    "entry_not_loaded": {
+      "message": "Baby Buddy is not loaded or available."
+    }
+  },
   "config": {
     "step": {
       "user": {

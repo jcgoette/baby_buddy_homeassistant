@@ -2,6 +2,8 @@
 
 import asyncio
 from datetime import timedelta
+from types import SimpleNamespace
+from unittest.mock import AsyncMock
 
 import pytest
 
@@ -14,20 +16,24 @@ from custom_components.babybuddy.const import (
     ATTR_DURATION,
     ATTR_ICON_BABY,
     ATTR_ICON_BABY_BOTTLE,
+    ATTR_ID,
     ATTR_ICON_MOTHER_NURSE,
     ATTR_ICON_SLEEP,
     ATTR_ICON_TIMER_SAND,
     ATTR_MILESTONE,
     ATTR_NOTES,
     ATTR_TAGS,
+    ATTR_TIMERS,
     DOMAIN,
 )
+from custom_components.babybuddy.entity import BabyBuddyChildTimerSwitch
 from homeassistant.components.sensor import SensorStateClass
 from homeassistant.components.sensor.const import ATTR_STATE_CLASS
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.const import (
     ATTR_ENTITY_ID,
     ATTR_ICON,
+    CONF_API_KEY,
     SERVICE_TURN_ON,
     STATE_OFF,
     STATE_ON,
@@ -104,6 +110,48 @@ async def test_service_add_feeding_start_stop(
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
     assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_FEEDING_START_STOP[ATTR_TAGS]
     assert state.state == str(MOCK_SERVICE_ADD_FEEDING_START_STOP[ATTR_AMOUNT])
+
+
+def test_timer_switch_attributes_include_all_running_timers() -> None:
+    """Test timer attributes include all active timers."""
+    timers = [{ATTR_ID: 1, "name": "first"}, {ATTR_ID: 2, "name": "second"}]
+    switch = BabyBuddyChildTimerSwitch.__new__(BabyBuddyChildTimerSwitch)
+    switch.child = {ATTR_ID: 10}
+    switch.coordinator = SimpleNamespace(
+        data=([], {10: {ATTR_TIMERS: timers}}),
+        entry=SimpleNamespace(data={CONF_API_KEY: "api-key"}),
+    )
+
+    assert switch.is_on is True
+    assert switch.extra_state_attributes == {
+        ATTR_TIMERS: timers,
+        "active": True,
+        "count": 2,
+        ATTR_ID: 2,
+    }
+
+
+async def test_timer_switch_turn_off_deletes_all_running_timers() -> None:
+    """Test turning off the timer switch deletes each active timer."""
+    timers = [{ATTR_ID: 1, "name": "first"}, {ATTR_ID: 2, "name": "second"}]
+    async_delete = AsyncMock()
+    async_request_refresh = AsyncMock()
+    switch = BabyBuddyChildTimerSwitch.__new__(BabyBuddyChildTimerSwitch)
+    switch.child = {ATTR_ID: 10}
+    switch.coordinator = SimpleNamespace(
+        data=([], {10: {ATTR_TIMERS: timers}}),
+        client=SimpleNamespace(async_delete=async_delete),
+        async_request_refresh=async_request_refresh,
+        entry=SimpleNamespace(data={CONF_API_KEY: "api-key"}),
+    )
+
+    await switch.async_turn_off()
+
+    assert async_delete.await_args_list == [
+        ((ATTR_TIMERS, 1), {}),
+        ((ATTR_TIMERS, 2), {}),
+    ]
+    async_request_refresh.assert_awaited_once()
 
 
 @pytest.mark.usefixtures("setup_baby_buddy_entry_live", "test_timer")

@@ -92,6 +92,8 @@ ATTR_ACTION_ADD_TEMPERATURE: Final[str] = "add_temperature"
 ATTR_ACTION_ADD_TUMMY_TIME: Final[str] = "add_tummy_time"
 ATTR_ACTION_ADD_WEIGHT: Final[str] = "add_weight"
 ATTR_ACTION_DELETE_LAST_ENTRY: Final[str] = "delete_last_entry"
+ATTR_ACTION_START_TIMER: Final[str] = "start_timer"
+ATTR_ACTION_STOP_TIMER: Final[str] = "stop_timer"
 
 DEFAULT_DIAPER_TYPE: Final = ATTR_WET
 DIAPER_COLOR: Final[str] = "diaper_color"
@@ -179,12 +181,6 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         key=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=SensorDeviceClass.TEMPERATURE,
-    ),
-    BabyBuddyEntityDescription(
-        device_class=SensorDeviceClass.TIMESTAMP,
-        icon=ATTR_ICON_TIMER_SAND,
-        key=ATTR_TIMERS,
-        state_key=ATTR_START,
     ),
     BabyBuddyEntityDescription(
         icon=ATTR_ICON_BABY,

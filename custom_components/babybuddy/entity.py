@@ -12,7 +12,7 @@ from homeassistant.const import ATTR_ID, CONF_API_KEY, CONF_HOST, CONF_PATH, CON
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.util import dt as dt_util
+from homeassistant.util import dt as dt_util, slugify
 
 from .const import (
     ATTR_BABYBUDDY_CHILD,
@@ -26,6 +26,7 @@ from .const import (
     ATTR_PICTURE,
     ATTR_SLUG,
     ATTR_SOLID,
+    ATTR_START,
     ATTR_TIMER,
     ATTR_TIMERS,
     ATTR_WET,
@@ -186,30 +187,91 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
     def is_on(self) -> bool:
         """Return entity state."""
         if self.child[ATTR_ID] in self.coordinator.data[1]:
-            timer_data = self.coordinator.data[1][self.child[ATTR_ID]][ATTR_TIMERS]
-            # In Babybuddy 2.0 'active' is not in the JSON response, so return
-            # True if any timers are returned, as only active timers are
-            # returned.
-            return timer_data.get("active", len(timer_data) > 0)
+            timers = self.coordinator.data[1][self.child[ATTR_ID]].get(ATTR_TIMERS, [])
+            return len(timers) > 0
         return False
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
-        """Return entity specific state attributes for babybuddy."""
-        attrs: dict[str, Any] = {}
-        if self.is_on:
-            attrs = self.coordinator.data[1][self.child[ATTR_ID]].get(ATTR_TIMERS)
+        """Return first active timer's attributes plus a count of all running timers."""
+        if not self.is_on:
+            return {}
+        timers = self.coordinator.data[1][self.child[ATTR_ID]].get(ATTR_TIMERS, [])
+        attrs: dict[str, Any] = dict(timers[0]) if timers else {}
+        attrs["timer_count"] = len(timers)
         return attrs
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Start a new timer."""
-        await self.async_start_timer()
+        await self.coordinator.client.async_post(
+            ATTR_TIMERS,
+            {"child": self.child[ATTR_ID], "start": dt_util.now().isoformat()},
+        )
+        await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
-        """Delete active timer."""
-        timer_id = self.extra_state_attributes[ATTR_ID]
-        await self.coordinator.client.async_delete(ATTR_TIMERS, timer_id)
+        """Delete the most recently started active timer."""
+        timers = self.coordinator.data[1][self.child[ATTR_ID]].get(ATTR_TIMERS, [])
+        if timers:
+            await self.coordinator.client.async_delete(ATTR_TIMERS, timers[0][ATTR_ID])
         await self.coordinator.async_request_refresh()
+
+
+class BabyBuddyTimerSensor(BabyBuddySensor):
+    """Representation of a single running babybuddy timer."""
+
+    def __init__(
+        self,
+        coordinator: BabyBuddyCoordinator,
+        child: dict,
+        timer_id: int,
+    ) -> None:
+        """Initialize the timer sensor."""
+        super().__init__(coordinator, child)
+        self._timer_id = timer_id
+        self._attr_unique_id = (
+            f"{coordinator.entry.data[CONF_API_KEY]}-{child[ATTR_ID]}-timer-{timer_id}"
+        )
+        self._attr_device_class = SensorDeviceClass.TIMESTAMP
+        self._attr_icon = ATTR_ICON_TIMER_SAND
+        child_slug = slugify(f"{child[ATTR_FIRST_NAME]}_{child[ATTR_LAST_NAME]}")
+        self.entity_id = f"sensor.{child_slug}_timer_{timer_id}"
+
+    def _get_timer(self) -> dict | None:
+        if not self.coordinator.data:
+            return None
+        if self.child[ATTR_ID] not in self.coordinator.data[1]:
+            return None
+        for t in self.coordinator.data[1][self.child[ATTR_ID]].get(ATTR_TIMERS, []):
+            if t[ATTR_ID] == self._timer_id:
+                return t
+        return None
+
+    @property
+    def name(self) -> str:
+        """Return name using the timer's own name when available."""
+        timer = self._get_timer()
+        timer_name = timer.get("name") if timer else None
+        suffix = timer_name if timer_name else str(self._timer_id)
+        return f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} timer {suffix}"
+
+    @property
+    def available(self) -> bool:
+        """Return True only while the timer is still running."""
+        return self._get_timer() is not None
+
+    @property
+    def native_value(self) -> Any:
+        """Return the timer start time as the sensor state."""
+        timer = self._get_timer()
+        if not timer:
+            return None
+        return dt_util.parse_datetime(timer[ATTR_START])
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return all timer fields as attributes."""
+        return self._get_timer() or {}
 
 
 class BabyBuddySelect(CoordinatorEntity, SelectEntity, RestoreEntity):

@@ -35,6 +35,8 @@ from .const import (
     ATTR_ACTION_ADD_TUMMY_TIME,
     ATTR_ACTION_ADD_WEIGHT,
     ATTR_ACTION_DELETE_LAST_ENTRY,
+    ATTR_ACTION_START_TIMER,
+    ATTR_ACTION_STOP_TIMER,
     ATTR_AMOUNT,
     ATTR_BIRTH_DATE,
     ATTR_BMI,
@@ -100,24 +102,13 @@ COMMON_FIELDS_TIMER: dict[vol.Required | vol.Optional | vol.Exclusive, Any] = {
 
 async def __async_extract_entry_coordinator(call: ServiceCall) -> BabyBuddyCoordinator:
     """Extract coordinator from a service call."""
-    hass: HomeAssistant = call.hass
-    entry: BabyBuddyConfigEntry = hass.config_entries.async_loaded_entries(DOMAIN)[0]
-    entry = er.async_get(hass).async_get(call.data.get(ATTR_CHILD))
-
-    entry = None
-    for entry in call.hass.config_entries.async_loaded_entries(DOMAIN):
-        if entry.state is not ConfigEntryState.LOADED:
-            raise ServiceValidationError(
-                translation_domain=DOMAIN,
-                translation_key="entry_not_loaded",
-            )
-    if not entry:
-        raise ServiceValidationError(
-            translation_domain=DOMAIN,
-            translation_key="entry_not_loaded",
-        )
-    coordinator = entry.runtime_data.coordinator
-    return coordinator
+    for entry in call.hass.config_entries.async_entries(DOMAIN):
+        if entry.state is ConfigEntryState.LOADED:
+            return entry.runtime_data.coordinator
+    raise ServiceValidationError(
+        translation_domain=DOMAIN,
+        translation_key="entry_not_loaded",
+    )
 
 
 async def __setup_service_data(
@@ -126,36 +117,29 @@ async def __setup_service_data(
     """Extract data with child ID from a service call."""
     data = call.data.copy()
 
-    if (
-        data.get(ATTR_CHILD)
-        and isinstance(data[ATTR_CHILD], str)
-        and data[ATTR_CHILD].startswith("switch.")
-    ):
-        data[ATTR_CHILD] = [
-            child[ATTR_ID]
-            for child in coordinator.data[0]
-            if (
-                f"switch.{slugify(f'{child["first_name"]} {child["last_name"]} Timer')}"
-                == call.data[ATTR_CHILD]
-            )
-        ][0]
-
-    if (
-        data.get(ATTR_CHILD)
-        and isinstance(data[ATTR_CHILD], str)
-        and data[ATTR_CHILD].startswith("sensor.")
-    ):
-        data[ATTR_CHILD] = [
-            child[ATTR_ID]
-            for child in coordinator.data[0]
-            if (
-                f"sensor.{slugify(f'Baby {child["first_name"]} {child["last_name"]}')}"
-                == call.data[ATTR_CHILD]
-            )
-        ][0]
+    child_entity_id = data.get(ATTR_CHILD)
+    if child_entity_id and isinstance(child_entity_id, str):
+        # Primary: read child ID from entity state attributes
+        state = call.hass.states.get(child_entity_id)
+        if state and state.attributes.get(ATTR_ID) is not None:
+            data[ATTR_CHILD] = state.attributes[ATTR_ID]
+        else:
+            # Fallback: match against known entity_id patterns
+            matched_child_id = None
+            for child in coordinator.data[0]:
+                if (
+                    f"sensor.{slugify(f'Baby {child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]}')}" == child_entity_id
+                    or f"switch.{slugify(f'{child[ATTR_FIRST_NAME]} {child[ATTR_LAST_NAME]} {ATTR_TIMER}')}" == child_entity_id
+                ):
+                    matched_child_id = child[ATTR_ID]
+                    break
+            if matched_child_id is not None:
+                data[ATTR_CHILD] = matched_child_id
+            else:
+                LOGGER.error("Could not resolve child for entity %s", child_entity_id)
 
     if call.data.get(ATTR_ENTITY_ID):
-        data[ATTR_CHILD] = [
+        matched = [
             child[ATTR_ID]
             for child in coordinator.data[0]
             if (
@@ -164,50 +148,36 @@ async def __setup_service_data(
                 and child["last_name"].lower()
                 == call.data[ATTR_ENTITY_ID].split(".")[1].split("_")[1]
             )
-        ][0]
+        ]
+        if matched:
+            data[ATTR_CHILD] = matched[0]
 
-    if not data.get(ATTR_CHILD):
-        data[ATTR_CHILD] = [
-            child[ATTR_ID]
-            for child in coordinator.data[0]
-            if (
-                f"sensor.{slugify(f'Baby {child["first_name"]} {child["last_name"]}')}"
-                == call.data[ATTR_CHILD]
-                or f"switch.{slugify(f'{child["first_name"]} {child["last_name"]} Timer')}"
-                == call.data[ATTR_CHILD]
-            )
-        ][0]
-
-    # might have a timer...
+    # If timer=True, look up the active timer ID for this child
     if data.get(ATTR_TIMER):
-        for child in coordinator.data[0]:
-            if (
-                f"sensor.{slugify(f'Baby {child["first_name"]} {child["last_name"]}')}"
-                == call.data[ATTR_CHILD]
-                or f"switch.{slugify(f'{child["first_name"]} {child["last_name"]} Timer')}"
-                == call.data[ATTR_CHILD]
-            ):
-                # do we actually have a timer?
-                if child.get(ATTR_TIMERS):
-                    data[ATTR_TIMER] = [
-                        child[ATTR_TIMERS]["id"] for child in coordinator.data[0]
-                    ]
-            # if not, let's delete that key
+        child_id = data.get(ATTR_CHILD)
+        if isinstance(child_id, int):
+            timers = coordinator.data[1].get(child_id, {}).get(ATTR_TIMERS, [])
+            if timers:
+                data[ATTR_TIMER] = timers[0][ATTR_ID]
             else:
                 del data[ATTR_TIMER]
+        else:
+            del data[ATTR_TIMER]
 
     return data
 
 
 async def __set_common_fields(
-    call: ServiceCall, data: dict[str, Any]
+    call: ServiceCall, data: dict[str, Any], coordinator: BabyBuddyCoordinator
 ) -> dict[str, Any]:
     """Set data common fields."""
 
     if data.get(ATTR_TIMER):
-        if not self.is_on:
-            raise ValidationError("Timer not found or stopped. Timer must be active.")
-        data[ATTR_TIMER] = self.extra_state_attributes[ATTR_ID]
+        child_id = data[ATTR_CHILD]
+        timers = coordinator.data[1].get(child_id, {}).get(ATTR_TIMERS, [])
+        if not timers:
+            raise ValidationError("No active timer found for this child.")
+        data[ATTR_TIMER] = timers[0][ATTR_ID]
     else:
         data[ATTR_START] = get_datetime_from_time(
             call.data.get(ATTR_START) or dt_util.now()
@@ -404,13 +374,45 @@ async def async_start_timer(call: ServiceCall) -> None:
     await coordinator.async_request_refresh()
 
 
+async def async_stop_timer(call: ServiceCall) -> None:
+    """Stop (delete) a running timer for a child."""
+    coordinator = await __async_extract_entry_coordinator(call)
+
+    child_entity_id = call.data[ATTR_CHILD]
+    child_state = call.hass.states.get(child_entity_id)
+    if not child_state:
+        LOGGER.error("Child entity %s not found", child_entity_id)
+        return
+
+    child_id = child_state.attributes.get(ATTR_ID)
+    if child_id is None:
+        LOGGER.error("Could not extract child ID from %s", child_entity_id)
+        return
+
+    timers = coordinator.data[1].get(child_id, {}).get(ATTR_TIMERS, [])
+
+    timer_id = call.data.get("timer_id")
+    if timer_id is not None:
+        if not any(t[ATTR_ID] == timer_id for t in timers):
+            LOGGER.error("Timer %s not active for child %s", timer_id, child_id)
+            return
+    elif timers:
+        timer_id = timers[0][ATTR_ID]
+    else:
+        LOGGER.error("No active timers for child %s", child_id)
+        return
+
+    await coordinator.client.async_delete(ATTR_TIMERS, str(timer_id))
+    await coordinator.async_request_refresh()
+
+
 async def async_add_feeding(call: ServiceCall) -> None:
     """Add a feeding entry."""
     coordinator = await __async_extract_entry_coordinator(call)
     data = await __setup_service_data(call, coordinator)
 
     try:
-        data = await __set_common_fields(call, data)
+        data = await __set_common_fields(call, data, coordinator)
     except ValidationError as error:
         LOGGER.error(error)
         return
@@ -437,7 +439,7 @@ async def async_add_pumping(call: ServiceCall) -> None:
     data = await __setup_service_data(call, coordinator)
 
     try:
-        data = await __set_common_fields(call, data)
+        data = await __set_common_fields(call, data, coordinator)
     except ValidationError as error:
         LOGGER.error(error)
         return
@@ -457,7 +459,7 @@ async def async_add_sleep(call: ServiceCall) -> None:
     data = await __setup_service_data(call, coordinator)
 
     try:
-        data = await __set_common_fields(call, data)
+        data = await __set_common_fields(call, data, coordinator)
     except ValidationError as error:
         LOGGER.error(error)
         return
@@ -477,7 +479,7 @@ async def async_add_tummy_time(call: ServiceCall) -> None:
     data = await __setup_service_data(call, coordinator)
 
     try:
-        data = await __set_common_fields(call, data)
+        data = await __set_common_fields(call, data, coordinator)
     except ValidationError as error:
         LOGGER.error(error)
         return
@@ -598,12 +600,24 @@ def async_setup_services(hass: HomeAssistant) -> None:
     )
     hass.services.async_register(
         DOMAIN,
-        "start_timer",
+        ATTR_ACTION_START_TIMER,
         async_start_timer,
         vol.Schema(
             {
+                vol.Required(ATTR_CHILD): cv.entity_id,
                 vol.Optional(ATTR_START): vol.Any(cv.datetime, cv.time),
                 vol.Optional(ATTR_NAME): cv.string,
+            }
+        ),
+    )
+    hass.services.async_register(
+        DOMAIN,
+        ATTR_ACTION_STOP_TIMER,
+        async_stop_timer,
+        vol.Schema(
+            {
+                vol.Required(ATTR_CHILD): cv.entity_id,
+                vol.Optional("timer_id"): cv.positive_int,
             }
         ),
     )
@@ -614,7 +628,7 @@ def async_setup_services(hass: HomeAssistant) -> None:
         async_add_feeding,
         vol.Schema(
             {
-                **COMMON_FIELDS,
+                **COMMON_FIELDS_TIMER,
                 vol.Required(ATTR_TYPE): vol.In(FEEDING_TYPES),
                 vol.Required(ATTR_METHOD): vol.In(FEEDING_METHODS),
                 vol.Optional(ATTR_AMOUNT): cv.positive_float,
@@ -628,7 +642,7 @@ def async_setup_services(hass: HomeAssistant) -> None:
         async_add_pumping,
         vol.Schema(
             {
-                **COMMON_FIELDS,
+                **COMMON_FIELDS_TIMER,
                 vol.Required(ATTR_AMOUNT): cv.positive_float,
                 vol.Optional(ATTR_NOTES): cv.string,
             }
@@ -640,7 +654,7 @@ def async_setup_services(hass: HomeAssistant) -> None:
         async_add_sleep,
         vol.Schema(
             {
-                **COMMON_FIELDS,
+                **COMMON_FIELDS_TIMER,
                 vol.Optional(ATTR_NAP): cv.boolean,
                 vol.Optional(ATTR_NOTES): cv.string,
             }
@@ -652,7 +666,7 @@ def async_setup_services(hass: HomeAssistant) -> None:
         async_add_tummy_time,
         vol.Schema(
             {
-                **COMMON_FIELDS,
+                **COMMON_FIELDS_TIMER,
                 vol.Optional(ATTR_MILESTONE): cv.string,
             }
         ),

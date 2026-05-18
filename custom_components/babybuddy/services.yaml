@@ -144,7 +144,8 @@ add_feeding:
       selector:
         entity:
           integration: babybuddy
-          domain: switch
+          domain: sensor
+          device_class: babybuddy_child
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
@@ -346,7 +347,8 @@ add_pumping:
       selector:
         entity:
           integration: babybuddy
-          domain: switch
+          domain: sensor
+          device_class: babybuddy_child
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
@@ -401,7 +403,8 @@ add_sleep:
       selector:
         entity:
           integration: babybuddy
-          domain: switch
+          domain: sensor
+          device_class: babybuddy_child
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
@@ -495,7 +498,8 @@ add_tummy_time:
       selector:
         entity:
           integration: babybuddy
-          domain: switch
+          domain: sensor
+          device_class: babybuddy_child
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
@@ -586,24 +590,48 @@ delete_last_entry:
 
 start_timer:
   name: Start timer
-  description: Start a new timer
+  description: Start a new timer for a child
   fields:
-    switch:
-      name: Switch
+    child:
+      name: Child
+      description: Baby Buddy child entity
       required: true
       selector:
         entity:
           integration: babybuddy
-          domain: switch
+          domain: sensor
+          device_class: babybuddy_child
     start:
       name: Timer start time
-      description: Leave blank for a quick start
+      description: Leave blank to use the current time
       example: "15:00:00"
       selector:
         time:
     name:
       name: Timer name
-      description: Specify optional timer name
-      example: Timer name
+      description: Optional name for the timer
+      example: Feeding
       selector:
         text:
+
+stop_timer:
+  name: Stop timer
+  description: Stop (delete) a running timer for a child
+  fields:
+    child:
+      name: Child
+      description: Baby Buddy child entity
+      required: true
+      selector:
+        entity:
+          integration: babybuddy
+          domain: sensor
+          device_class: babybuddy_child
+    timer_id:
+      name: Timer ID
+      description: ID of the specific timer to stop. Leave blank to stop the most recently started timer.
+      example: 1
+      selector:
+        number:
+          min: 1
+          mode: box
