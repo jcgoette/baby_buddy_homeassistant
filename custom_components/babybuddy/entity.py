@@ -8,7 +8,14 @@ from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor.const import SensorDeviceClass
 from homeassistant.components.switch import SwitchEntity
-from homeassistant.const import ATTR_ID, CONF_API_KEY, CONF_HOST, CONF_PATH, CONF_PORT
+from homeassistant.const import (
+    ATTR_ID,
+    ATTR_TIME,
+    CONF_API_KEY,
+    CONF_HOST,
+    CONF_PATH,
+    CONF_PORT,
+)
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -25,6 +32,10 @@ from .const import (
     ATTR_ICON_CHILD_SENSOR,
     ATTR_ICON_TIMER_SAND,
     ATTR_LAST_NAME,
+    ATTR_MEDICATION,
+    ATTR_NEXT_DOSE_INTERVAL,
+    ATTR_NEXT_DOSE_READY,
+    ATTR_NEXT_DOSE_TIME,
     ATTR_PICTURE,
     ATTR_SLUG,
     ATTR_SOLID,
@@ -151,6 +162,17 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
                     attrs[ATTR_DESCRIPTIVE] = DIAPER_TYPES[1]
                 if wet_and_solid == (True, True):
                     attrs[ATTR_DESCRIPTIVE] = DIAPER_TYPES[2]
+            if self.entity_description.key == ATTR_MEDICATION and attrs.get(
+                ATTR_NEXT_DOSE_INTERVAL
+            ):
+                # next_dose_time/next_dose_ready are model properties not
+                # exposed by the babybuddy API, so compute them here.
+                time = dt_util.parse_datetime(attrs.get(ATTR_TIME) or "")
+                interval = dt_util.parse_duration(attrs[ATTR_NEXT_DOSE_INTERVAL])
+                if time is not None and interval is not None:
+                    next_dose_time = time + interval
+                    attrs[ATTR_NEXT_DOSE_TIME] = next_dose_time
+                    attrs[ATTR_NEXT_DOSE_READY] = dt_util.now() >= next_dose_time
 
         return attrs
 

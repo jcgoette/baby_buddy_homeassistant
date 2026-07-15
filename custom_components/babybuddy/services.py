@@ -28,6 +28,7 @@ from .const import (
     ATTR_ACTION_ADD_FEEDING,
     ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE,
     ATTR_ACTION_ADD_HEIGHT,
+    ATTR_ACTION_ADD_MEDICATION,
     ATTR_ACTION_ADD_NOTE,
     ATTR_ACTION_ADD_PUMPING,
     ATTR_ACTION_ADD_SLEEP,
@@ -42,6 +43,8 @@ from .const import (
     ATTR_CHILD,
     ATTR_CHILDREN,
     ATTR_COLOR,
+    ATTR_DOSAGE,
+    ATTR_DOSAGE_UNIT,
     ATTR_END,
     ATTR_FEEDINGS,
     ATTR_FIRST_NAME,
@@ -49,9 +52,11 @@ from .const import (
     ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
     ATTR_HEIGHT,
     ATTR_LAST_NAME,
+    ATTR_MEDICATION,
     ATTR_METHOD,
     ATTR_MILESTONE,
     ATTR_NAP,
+    ATTR_NEXT_DOSE_INTERVAL,
     ATTR_NOTE,
     ATTR_NOTES,
     ATTR_PUMPING,
@@ -71,6 +76,7 @@ from .const import (
     FEEDING_METHODS,
     FEEDING_TYPES,
     LOGGER,
+    MEDICATION_DOSAGE_UNITS,
 )
 from .coordinator import BabyBuddyConfigEntry, BabyBuddyCoordinator
 from .errors import ValidationError
@@ -293,6 +299,30 @@ async def async_add_height(call: ServiceCall) -> None:
     # date_now = dt_util.now().date()
     date_time_now = get_datetime_from_time(dt_util.now())
     await coordinator.client.async_post(ATTR_HEIGHT, data, date_time_now)
+    await coordinator.async_request_refresh()
+
+
+async def async_add_medication(call: ServiceCall) -> None:
+    """Add a medication entry."""
+    coordinator = await __async_extract_entry_coordinator(call)
+    data = await __setup_service_data(call)
+
+    if call.data.get(ATTR_TIME):
+        try:
+            date_time = get_datetime_from_time(call.data.get(ATTR_TIME))
+            data[ATTR_TIME] = date_time
+        except ValidationError as error:
+            LOGGER.error(error)
+            return
+    if call.data.get(ATTR_NEXT_DOSE_INTERVAL):
+        data[ATTR_NEXT_DOSE_INTERVAL] = str(call.data[ATTR_NEXT_DOSE_INTERVAL])
+    if call.data.get(ATTR_NOTES):
+        data[ATTR_NOTES] = call.data.get(ATTR_NOTES)
+    if call.data.get(ATTR_TAGS):
+        data[ATTR_TAGS] = call.data.get(ATTR_TAGS)
+
+    date_time_now = get_datetime_from_time(dt_util.now())
+    await coordinator.client.async_post(ATTR_MEDICATION, data, date_time_now)
     await coordinator.async_request_refresh()
 
 
@@ -540,6 +570,21 @@ def async_setup_services(hass: HomeAssistant) -> None:
                 **COMMON_FIELDS,
                 vol.Required(ATTR_HEIGHT): cv.positive_float,
                 vol.Optional(ATTR_DATE): cv.date,
+            }
+        ),
+    )
+    hass.services.async_register(
+        DOMAIN,
+        ATTR_ACTION_ADD_MEDICATION,
+        async_add_medication,
+        vol.Schema(
+            {
+                **COMMON_FIELDS,
+                vol.Required(ATTR_NAME): cv.string,
+                vol.Optional(ATTR_DOSAGE): cv.positive_float,
+                vol.Optional(ATTR_DOSAGE_UNIT): vol.In(MEDICATION_DOSAGE_UNITS),
+                vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
+                vol.Optional(ATTR_NEXT_DOSE_INTERVAL): cv.time_period,
             }
         ),
     )

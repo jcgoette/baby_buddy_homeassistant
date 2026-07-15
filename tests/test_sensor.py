@@ -7,19 +7,26 @@ from custom_components.babybuddy.const import (
     ATTR_ACTION_ADD_DIAPER_CHANGE,
     ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE,
     ATTR_ACTION_ADD_HEIGHT,
+    ATTR_ACTION_ADD_MEDICATION,
     ATTR_ACTION_ADD_NOTE,
     ATTR_ACTION_ADD_TEMPERATURE,
     ATTR_ACTION_ADD_WEIGHT,
     ATTR_BMI,
     ATTR_CHILD,
+    ATTR_DOSAGE,
+    ATTR_DOSAGE_UNIT,
     ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
     ATTR_HEIGHT,
     ATTR_ICON_HEAD,
     ATTR_ICON_HEIGHT,
+    ATTR_ICON_MEDICATION,
     ATTR_ICON_NOTE,
     ATTR_ICON_PAPER_ROLL,
     ATTR_ICON_SCALE,
     ATTR_ICON_THERMOMETER,
+    ATTR_NEXT_DOSE_INTERVAL,
+    ATTR_NEXT_DOSE_READY,
+    ATTR_NEXT_DOSE_TIME,
     ATTR_NOTE,
     ATTR_NOTES,
     ATTR_TAGS,
@@ -35,6 +42,7 @@ from homeassistant.const import (
     ATTR_DEVICE_CLASS,
     ATTR_ENTITY_ID,
     ATTR_ICON,
+    ATTR_NAME,
     ATTR_TEMPERATURE,
     ATTR_TIME,
 )
@@ -48,6 +56,7 @@ from .const import (
     MOCK_SERVICE_ADD_DIAPER_CHANGE,
     MOCK_SERVICE_ADD_HEAD_CIRCUMFERENCE,
     MOCK_SERVICE_ADD_HEIGHT,
+    MOCK_SERVICE_ADD_MEDICATION,
     MOCK_SERVICE_ADD_NOTE,
     MOCK_SERVICE_ADD_TEMPERATURE,
     MOCK_SERVICE_ADD_WEIGHT,
@@ -174,6 +183,42 @@ async def test_service_add_height(
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
     assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_HEIGHT[ATTR_TAGS]
     assert state.state == str(MOCK_SERVICE_ADD_HEIGHT[ATTR_HEIGHT])
+
+
+@pytest.mark.usefixtures("setup_baby_buddy_entry_live")
+async def test_service_add_medication(
+    hass: HomeAssistant,
+) -> None:
+    """Test the "add medication" service call."""
+
+    baby_entity_id = MOCK_BABY_SENSOR_ID
+    entity_id = f"sensor.{MOCK_BABY_NAME}_last_medication"
+    await hass.services.async_call(
+        DOMAIN,
+        ATTR_ACTION_ADD_MEDICATION,
+        {ATTR_CHILD: baby_entity_id, **MOCK_SERVICE_ADD_MEDICATION},
+        blocking=True,
+    )
+    state = hass.states.get(entity_id)
+
+    assert state
+    assert state.attributes[ATTR_DEVICE_CLASS] == SensorDeviceClass.TIMESTAMP
+    assert state.attributes[ATTR_ICON] == ATTR_ICON_MEDICATION
+    assert state.attributes[ATTR_NAME] == MOCK_SERVICE_ADD_MEDICATION[ATTR_NAME]
+    assert state.attributes[ATTR_DOSAGE] == MOCK_SERVICE_ADD_MEDICATION[ATTR_DOSAGE]
+    assert (
+        state.attributes[ATTR_DOSAGE_UNIT]
+        == MOCK_SERVICE_ADD_MEDICATION[ATTR_DOSAGE_UNIT]
+    )
+    assert state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_MEDICATION[ATTR_NOTES]
+    assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_MEDICATION[ATTR_TAGS]
+    assert (
+        state.attributes[ATTR_NEXT_DOSE_TIME]
+        == MOCK_SERVICE_ADD_MEDICATION[ATTR_TIME]
+        + MOCK_SERVICE_ADD_MEDICATION[ATTR_NEXT_DOSE_INTERVAL]
+    )
+    assert state.attributes[ATTR_NEXT_DOSE_READY] is True
+    assert dt_util.parse_datetime(state.state) == MOCK_SERVICE_ADD_MEDICATION[ATTR_TIME]
 
 
 @pytest.mark.usefixtures("setup_baby_buddy_entry_live")

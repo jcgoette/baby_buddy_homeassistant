@@ -48,7 +48,9 @@ This integration provides the following entities.
 
 - A sensor for each child, with date of birth returned as state.
 
-- A sensor for each **last** data entry, including `diaper_change`, `feeding`, `notes`, `sleep`, `temperature`, `tummy_time`, `temperature`, and `weight`.
+- A sensor for each **last** data entry, including `diaper_change`, `feeding`, `medication`, `notes`, `sleep`, `temperature`, `tummy_time`, `temperature`, and `weight`.
+
+- The `medication` sensor requires Baby Buddy v2.9.0 or later; on older servers it is simply not created. If a `next_dose_interval` is set on the last entry, the sensor exposes computed `next_dose_time` and `next_dose_ready` attributes.
 
 ### Switches
 
@@ -135,6 +137,21 @@ This service adds a height entry for your child.
 | date                   |   yes    | Specify height recording date (YYYY-MM-DD format, else today() will be used) |
 | notes                  |   yes    | Add notes text to entry                                                      |
 | tags                   |   yes    | Add tag(s) to entry                                                          |
+
+### SERVICE ADD_MEDICATION
+
+This service adds a medication entry for your child. Requires Baby Buddy v2.9.0 or later.
+
+| Service data attribute | Optional | Description                                                                      |
+| ---------------------- | :------: | --------------------------------------------------------------------------------- |
+| entity_id              |    no    | entity_id for the child sensor                                                   |
+| name                   |    no    | Name of the medication administered                                              |
+| dosage                 |   yes    | Specify amount of medication given (float)                                       |
+| dosage_unit            |   yes    | Specify dosage unit. This can be `mg`, `ml`, `tablets`, or `drops`.              |
+| time                   |   yes    | Specify medication time (must be in the past, else now() will be used)           |
+| next_dose_interval     |   yes    | Specify time until the next dose can be given (e.g. `04:00:00`)                  |
+| notes                  |   yes    | Add notes text to entry                                                          |
+| tags                   |   yes    | Add tag(s) to entry                                                              |
 
 ### SERVICE ADD_NOTE
 

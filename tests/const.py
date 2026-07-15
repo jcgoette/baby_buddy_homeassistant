@@ -10,6 +10,8 @@ from custom_components.babybuddy.const import (
     ATTR_BIRTH_DATE,
     ATTR_BMI,
     ATTR_COLOR,
+    ATTR_DOSAGE,
+    ATTR_DOSAGE_UNIT,
     ATTR_END,
     ATTR_FIRST_NAME,
     ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
@@ -18,6 +20,7 @@ from custom_components.babybuddy.const import (
     ATTR_METHOD,
     ATTR_MILESTONE,
     ATTR_NAP,
+    ATTR_NEXT_DOSE_INTERVAL,
     ATTR_NOTE,
     ATTR_NOTES,
     ATTR_START,
@@ -33,6 +36,7 @@ from custom_components.babybuddy.const import (
 )
 from homeassistant.const import (
     ATTR_DATE,
+    ATTR_NAME,
     ATTR_TEMPERATURE,
     ATTR_TIME,
     CONF_API_KEY,
@@ -109,6 +113,15 @@ MOCK_SERVICE_ADD_HEAD_CIRCUMFERENCE = {
 MOCK_SERVICE_ADD_HEIGHT = {
     ATTR_HEIGHT: MOCK_NUMBER,
     ATTR_DATE: MOCK_DATE_NOW,
+    ATTR_NOTES: MOCK_TEXT,
+    ATTR_TAGS: [MOCK_TEXT],
+}
+MOCK_SERVICE_ADD_MEDICATION = {
+    ATTR_NAME: "Test Medication",
+    ATTR_DOSAGE: MOCK_NUMBER,
+    ATTR_DOSAGE_UNIT: "ml",
+    ATTR_TIME: MOCK_DATETIME_NOW,
+    ATTR_NEXT_DOSE_INTERVAL: timedelta(hours=4),
     ATTR_NOTES: MOCK_TEXT,
     ATTR_TAGS: [MOCK_TEXT],
 }
