@@ -302,6 +302,73 @@ add_height:
         text:
           multiple: true
 
+add_medication:
+  name: Add medication
+  description: Adds a medication entry
+  fields:
+    child:
+      name: Child
+      required: true
+      selector:
+        entity:
+          integration: babybuddy
+          domain: sensor
+          device_class: babybuddy_child
+    name:
+      name: Medication name
+      description: Name of the medication administered
+      example: Tylenol
+      required: true
+      selector:
+        text:
+    dosage:
+      name: Dosage
+      description: Amount of medication given
+      example: 5.0
+      selector:
+        number:
+          min: 0.1
+          max: 1000.0
+          step: 0.1
+          mode: box
+    dosage_unit:
+      name: Dosage unit
+      description: Unit for the dosage amount
+      example: ml
+      selector:
+        select:
+          options:
+            - mg
+            - ml
+            - tablets
+            - drops
+    time:
+      name: Medication time
+      description: Medication time
+      example: "15:00:00"
+      selector:
+        time:
+    next_dose_interval:
+      name: Next dose interval
+      description: Time until the next dose can be given
+      example: "04:00:00"
+      selector:
+        duration:
+    notes:
+      name: Medication notes
+      description: Medication notes
+      example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et blandit elit. Duis in varius eros. Morbi eleifend, nulla a.
+      selector:
+        text:
+          multiline: true
+    tags:
+      name: Tag(s)
+      description: Tag(s) to apply
+      example: '["Tag 1", "Tag 2", "Tag 3"]'
+      selector:
+        text:
+          multiple: true
+
 add_note:
   name: Add note
   description: Adds a note entry

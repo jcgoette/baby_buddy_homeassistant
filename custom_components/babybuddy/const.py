@@ -38,6 +38,8 @@ ATTR_CHILDREN: Final[str] = "children"
 ATTR_COLOR: Final[str] = "color"
 ATTR_COUNT: Final[str] = "count"
 ATTR_DESCRIPTIVE: Final[str] = "descriptive"
+ATTR_DOSAGE: Final[str] = "dosage"
+ATTR_DOSAGE_UNIT: Final[str] = "dosage_unit"
 ATTR_DURATION: Final[str] = "duration"
 ATTR_END: Final[str] = "end"
 ATTR_FEEDINGS: Final[str] = "feedings"
@@ -46,9 +48,13 @@ ATTR_HEAD_CIRCUMFERENCE_DASH: Final[str] = "head-circumference"
 ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE: Final[str] = "head_circumference"
 ATTR_HEIGHT: Final[str] = "height"
 ATTR_LAST_NAME: Final[str] = "last_name"
+ATTR_MEDICATION: Final[str] = "medication"
 ATTR_METHOD: Final[str] = "method"
 ATTR_MILESTONE: Final[str] = "milestone"
 ATTR_NAP: Final[str] = "nap"
+ATTR_NEXT_DOSE_INTERVAL: Final[str] = "next_dose_interval"
+ATTR_NEXT_DOSE_READY: Final[str] = "next_dose_ready"
+ATTR_NEXT_DOSE_TIME: Final[str] = "next_dose_time"
 ATTR_NOTE: Final[str] = "note"
 ATTR_NOTES: Final[str] = "notes"
 ATTR_PICTURE: Final[str] = "picture"
@@ -71,6 +77,7 @@ ATTR_ICON_BABY: Final[str] = "mdi:baby"
 ATTR_ICON_CHILD_SENSOR: Final[str] = "mdi:baby-face-outline"
 ATTR_ICON_HEAD: Final[str] = "mdi:head-outline"
 ATTR_ICON_HEIGHT: Final[str] = "mdi:human-male-height"
+ATTR_ICON_MEDICATION: Final[str] = "mdi:pill"
 ATTR_ICON_MOTHER_NURSE: Final[str] = "mdi:mother-nurse"
 ATTR_ICON_NOTE: Final[str] = "mdi:note-multiple-outline"
 ATTR_ICON_PAPER_ROLL: Final[str] = "mdi:paper-roll-outline"
@@ -85,6 +92,7 @@ ATTR_ACTION_ADD_DIAPER_CHANGE: Final[str] = "add_diaper_change"
 ATTR_ACTION_ADD_FEEDING: Final[str] = "add_feeding"
 ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE: Final[str] = "add_head_circumference"
 ATTR_ACTION_ADD_HEIGHT: Final[str] = "add_height"
+ATTR_ACTION_ADD_MEDICATION: Final[str] = "add_medication"
 ATTR_ACTION_ADD_NOTE: Final[str] = "add_note"
 ATTR_ACTION_ADD_PUMPING: Final[str] = "add_pumping"
 ATTR_ACTION_ADD_SLEEP: Final[str] = "add_sleep"
@@ -108,6 +116,7 @@ FEEDING_METHODS: Final = [
 ]
 FEEDING_TYPE: Final[str] = "feeding_type"
 FEEDING_TYPES: Final = ["Breast milk", "Formula", "Fortified breast milk", "Solid food"]
+MEDICATION_DOSAGE_UNITS: Final = ["mg", "ml", "tablets", "drops"]
 
 ERROR_CHILD_SENSOR_SELECT: Final = (
     "Babybuddy child sensor should be selected - ignoring"
@@ -151,6 +160,12 @@ SENSOR_TYPES: tuple[BabyBuddyEntityDescription, ...] = (
         key=ATTR_HEIGHT,
         state_class=SensorStateClass.MEASUREMENT,
         state_key=ATTR_HEIGHT,
+    ),
+    BabyBuddyEntityDescription(
+        device_class=SensorDeviceClass.TIMESTAMP,
+        icon=ATTR_ICON_MEDICATION,
+        key=ATTR_MEDICATION,
+        state_key=ATTR_TIME,
     ),
     BabyBuddyEntityDescription(
         device_class=SensorDeviceClass.TIMESTAMP,

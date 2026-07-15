@@ -149,6 +149,11 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         for child in children_list[ATTR_RESULTS]:
             child_data.setdefault(child[ATTR_ID], {})
             for endpoint in SENSOR_TYPES:
+                if endpoint.key not in self.client.endpoints:
+                    LOGGER.debug(
+                        f"Endpoint {endpoint.key} is not available on this babybuddy instance. Skipping."
+                    )
+                    continue
                 endpoint_data: dict = {}
                 try:
                     endpoint_data = await self.client.async_get(
