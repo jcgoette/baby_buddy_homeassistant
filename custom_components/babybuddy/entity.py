@@ -14,10 +14,12 @@ from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt as dt_util
 
+from .client import get_datetime_from_time
 from .const import (
     ATTR_BABYBUDDY_CHILD,
     ATTR_BIRTH_DATE,
     ATTR_CHANGES,
+    ATTR_CHILD,
     ATTR_DESCRIPTIVE,
     ATTR_FIRST_NAME,
     ATTR_ICON_CHILD_SENSOR,
@@ -26,6 +28,7 @@ from .const import (
     ATTR_PICTURE,
     ATTR_SLUG,
     ATTR_SOLID,
+    ATTR_START,
     ATTR_TIMER,
     ATTR_TIMERS,
     ATTR_WET,
@@ -203,7 +206,12 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Start a new timer."""
-        await self.async_start_timer()
+        data: dict[str, Any] = {
+            ATTR_CHILD: self.child[ATTR_ID],
+            ATTR_START: get_datetime_from_time(dt_util.now()),
+        }
+        await self.coordinator.client.async_post(ATTR_TIMERS, data)
+        await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Delete active timer."""
