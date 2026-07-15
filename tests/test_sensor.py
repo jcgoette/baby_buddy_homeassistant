@@ -11,6 +11,7 @@ from custom_components.babybuddy.const import (
     ATTR_ACTION_ADD_TEMPERATURE,
     ATTR_ACTION_ADD_WEIGHT,
     ATTR_BMI,
+    ATTR_CHILD,
     ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE,
     ATTR_HEIGHT,
     ATTR_ICON_HEAD,
@@ -32,7 +33,6 @@ from homeassistant.components.sensor.const import (
 )
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
-    ATTR_ENTITY_ID,
     ATTR_ICON,
     ATTR_TEMPERATURE,
     ATTR_TIME,
@@ -64,8 +64,7 @@ async def test_service_add_bmi(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_BMI,
-        MOCK_SERVICE_ADD_BMI_SCHEMA,
-        target={ATTR_ENTITY_ID: baby_entity_id},
+        {ATTR_CHILD: baby_entity_id, **MOCK_SERVICE_ADD_BMI_SCHEMA},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -89,8 +88,7 @@ async def test_service_add_diaper_change(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_DIAPER_CHANGE,
-        MOCK_SERVICE_ADD_DIAPER_CHANGE,
-        target={ATTR_ENTITY_ID: baby_entity_id},
+        {ATTR_CHILD: baby_entity_id, **MOCK_SERVICE_ADD_DIAPER_CHANGE},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -116,8 +114,7 @@ async def test_service_add_head_circumference(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_HEAD_CIRCUMFERENCE,
-        MOCK_SERVICE_ADD_HEAD_CIRCUMFERENCE,
-        target={ATTR_ENTITY_ID: baby_entity_id},
+        {ATTR_CHILD: baby_entity_id, **MOCK_SERVICE_ADD_HEAD_CIRCUMFERENCE},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -145,8 +142,7 @@ async def test_service_add_height(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_HEIGHT,
-        MOCK_SERVICE_ADD_HEIGHT,
-        target={ATTR_ENTITY_ID: baby_entity_id},
+        {ATTR_CHILD: baby_entity_id, **MOCK_SERVICE_ADD_HEIGHT},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -170,8 +166,7 @@ async def test_service_add_note(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_NOTE,
-        MOCK_SERVICE_ADD_NOTE,
-        target={ATTR_ENTITY_ID: baby_entity_id},
+        {ATTR_CHILD: baby_entity_id, **MOCK_SERVICE_ADD_NOTE},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -194,8 +189,7 @@ async def test_service_add_temperature(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_TEMPERATURE,
-        MOCK_SERVICE_ADD_TEMPERATURE,
-        target={ATTR_ENTITY_ID: baby_entity_id},
+        {ATTR_CHILD: baby_entity_id, **MOCK_SERVICE_ADD_TEMPERATURE},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -219,8 +213,7 @@ async def test_service_add_weight(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_WEIGHT,
-        MOCK_SERVICE_ADD_WEIGHT,
-        target={ATTR_ENTITY_ID: baby_entity_id},
+        {ATTR_CHILD: baby_entity_id, **MOCK_SERVICE_ADD_WEIGHT},
         blocking=True,
     )
     state = hass.states.get(entity_id)

@@ -11,6 +11,7 @@ from custom_components.babybuddy.const import (
     ATTR_ACTION_ADD_SLEEP,
     ATTR_ACTION_ADD_TUMMY_TIME,
     ATTR_AMOUNT,
+    ATTR_CHILD,
     ATTR_DURATION,
     ATTR_ICON_BABY,
     ATTR_ICON_BABY_BOTTLE,
@@ -90,8 +91,7 @@ async def test_service_add_feeding_start_stop(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_FEEDING,
-        MOCK_SERVICE_ADD_FEEDING_START_STOP,
-        target={ATTR_ENTITY_ID: MOCK_BABY_SWITCH_ID},
+        {ATTR_CHILD: MOCK_BABY_SWITCH_ID, **MOCK_SERVICE_ADD_FEEDING_START_STOP},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -116,8 +116,7 @@ async def test_service_add_feeding_timer(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_FEEDING,
-        MOCK_SERVICE_ADD_FEEDING_TIMER,
-        target={ATTR_ENTITY_ID: MOCK_BABY_SWITCH_ID},
+        {ATTR_CHILD: MOCK_BABY_SWITCH_ID, **MOCK_SERVICE_ADD_FEEDING_TIMER},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -143,8 +142,7 @@ async def test_service_add_pumping_start_stop(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_PUMPING,
-        MOCK_SERVICE_ADD_PUMPING_START_STOP,
-        target={ATTR_ENTITY_ID: MOCK_BABY_SWITCH_ID},
+        {ATTR_CHILD: MOCK_BABY_SWITCH_ID, **MOCK_SERVICE_ADD_PUMPING_START_STOP},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -169,8 +167,7 @@ async def test_service_add_pumping_timer(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_PUMPING,
-        MOCK_SERVICE_ADD_PUMPING_TIMER,
-        target={ATTR_ENTITY_ID: MOCK_BABY_SWITCH_ID},
+        {ATTR_CHILD: MOCK_BABY_SWITCH_ID, **MOCK_SERVICE_ADD_PUMPING_TIMER},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -196,8 +193,7 @@ async def test_service_add_sleep_start_stop(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_SLEEP,
-        MOCK_SERVICE_ADD_SLEEP_START_STOP,
-        target={ATTR_ENTITY_ID: MOCK_BABY_SWITCH_ID},
+        {ATTR_CHILD: MOCK_BABY_SWITCH_ID, **MOCK_SERVICE_ADD_SLEEP_START_STOP},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -220,8 +216,7 @@ async def test_service_add_sleep_timer(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_SLEEP,
-        MOCK_SERVICE_ADD_SLEEP_TIMER,
-        target={ATTR_ENTITY_ID: MOCK_BABY_SWITCH_ID},
+        {ATTR_CHILD: MOCK_BABY_SWITCH_ID, **MOCK_SERVICE_ADD_SLEEP_TIMER},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -247,8 +242,7 @@ async def test_service_add_tummy_time_start_stop(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_TUMMY_TIME,
-        MOCK_SERVICE_ADD_TUMMY_TIME_START_STOP,
-        target={ATTR_ENTITY_ID: MOCK_BABY_SWITCH_ID},
+        {ATTR_CHILD: MOCK_BABY_SWITCH_ID, **MOCK_SERVICE_ADD_TUMMY_TIME_START_STOP},
         blocking=True,
     )
     state = hass.states.get(entity_id)
@@ -276,8 +270,7 @@ async def test_service_add_tummy_time_timer(
     await hass.services.async_call(
         DOMAIN,
         ATTR_ACTION_ADD_TUMMY_TIME,
-        MOCK_SERVICE_ADD_TUMMY_TIME_TIMER,
-        target={ATTR_ENTITY_ID: MOCK_BABY_SWITCH_ID},
+        {ATTR_CHILD: MOCK_BABY_SWITCH_ID, **MOCK_SERVICE_ADD_TUMMY_TIME_TIMER},
         blocking=True,
     )
     state = hass.states.get(entity_id)

@@ -588,8 +588,9 @@ start_timer:
   name: Start timer
   description: Start a new timer
   fields:
-    switch:
-      name: Switch
+    child:
+      name: Child
+      description: Timer switch of the child to start a timer for
       required: true
       selector:
         entity:

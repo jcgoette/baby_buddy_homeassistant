@@ -61,7 +61,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          # Keep in sync with the Python versions supported by Home Assistant;
+          # '3.x' resolves to 3.14, which homeassistant does not support yet.
+          python-version: '3.13'
           cache: pip
 
       - name: Install requirements

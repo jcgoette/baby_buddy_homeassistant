@@ -168,9 +168,10 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         return (children_list[ATTR_RESULTS], child_data)
 
 
-async def options_updated_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
+async def options_updated_listener(
+    hass: HomeAssistant, entry: BabyBuddyConfigEntry
+) -> None:
     """Handle options update."""
-    hass.data[DOMAIN][entry.entry_id].update_interval = timedelta(
-        seconds=entry.options[CONF_SCAN_INTERVAL]
-    )
-    await hass.data[DOMAIN][entry.entry_id].async_request_refresh()
+    coordinator = entry.runtime_data.coordinator
+    coordinator.update_interval = timedelta(seconds=entry.options[CONF_SCAN_INTERVAL])
+    await coordinator.async_request_refresh()
