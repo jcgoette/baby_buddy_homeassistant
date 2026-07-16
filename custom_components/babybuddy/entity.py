@@ -63,7 +63,10 @@ class BabyBuddyChildSensor(BabyBuddySensor):
         """Initialize the sensor."""
         super().__init__(coordinator, child)
 
-        self._attr_name = f"Baby {child['first_name']} {child['last_name']}"
+        # HA prefixes the device (child) name, registering the sensor as
+        # sensor.<first>_<last>_baby.
+        self._attr_has_entity_name = True
+        self._attr_name = "Baby"
         self._attr_unique_id = (
             f"{coordinator.entry.data[CONF_API_KEY]}-{child[ATTR_ID]}"
         )

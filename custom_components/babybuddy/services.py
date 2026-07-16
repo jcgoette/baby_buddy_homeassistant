@@ -18,7 +18,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import config_validation as cv, entity_registry as er
-from homeassistant.util import dt as dt_util, slugify
+from homeassistant.util import dt as dt_util
 
 from .client import get_datetime_from_time
 from .const import (
@@ -120,9 +120,29 @@ async def __async_extract_entry_coordinator(call: ServiceCall) -> BabyBuddyCoord
     return coordinator
 
 
-async def __setup_service_data(
-    call: ServiceCall, coordinator: BabyBuddyCoordinator
-) -> dict[str, Any]:
+def _resolve_child_id(hass: HomeAssistant, entity_id: str) -> int:
+    """Resolve a babybuddy child id from an entity's registry entry.
+
+    The child id is the segment after the api key in the unique_id
+    ("{api_key}-{child_id}" for the child sensor,
+    "{api_key}-{child_id}-timer" for the timer switch,
+    "{api_key}-{child_id}-{endpoint}" for the data sensors); the api key
+    is a hyphen-free token, so index [1] holds the id in all cases.
+    """
+    entity_entry = er.async_get(hass).async_get(entity_id)
+    if entity_entry is not None:
+        try:
+            return int(entity_entry.unique_id.split("-")[1])
+        except (IndexError, ValueError):
+            pass
+    raise ServiceValidationError(
+        translation_domain=DOMAIN,
+        translation_key="child_not_found",
+        translation_placeholders={"entity_id": entity_id},
+    )
+
+
+async def __setup_service_data(call: ServiceCall) -> dict[str, Any]:
     """Extract data with child ID from a service call."""
     data = call.data.copy()
 
@@ -134,43 +154,10 @@ async def __setup_service_data(
         # Resolve the child id from the entity registry rather than
         # reconstructing the entity_id from the child's name. Entity ids are
         # sticky in the registry, so a name-derived slug can drift from the
-        # real id (e.g. the child sensor is registered device-prefixed as
-        # sensor.austin_bond_baby_austin_bond, not sensor.baby_austin_bond).
-        # The child id is the segment after the api key in the unique_id
-        # ("{api_key}-{child_id}" for the child sensor,
-        # "{api_key}-{child_id}-timer" for the timer switch); the api key is
-        # a hyphen-free token, so index [1] holds the id in both cases.
-        entity_entry = er.async_get(call.hass).async_get(data[ATTR_CHILD])
-        if entity_entry is None:
-            raise ServiceValidationError(
-                translation_domain=DOMAIN,
-                translation_key="entry_not_loaded",
-            )
-        data[ATTR_CHILD] = int(entity_entry.unique_id.split("-")[1])
-
-    if call.data.get(ATTR_ENTITY_ID):
-        data[ATTR_CHILD] = [
-            child[ATTR_ID]
-            for child in coordinator.data[0]
-            if (
-                child["first_name"].lower()
-                == call.data[ATTR_ENTITY_ID].split(".")[1].split("_")[0]
-                and child["last_name"].lower()
-                == call.data[ATTR_ENTITY_ID].split(".")[1].split("_")[1]
-            )
-        ][0]
-
-    if not data.get(ATTR_CHILD):
-        data[ATTR_CHILD] = [
-            child[ATTR_ID]
-            for child in coordinator.data[0]
-            if (
-                f"sensor.{slugify(f'Baby {child["first_name"]} {child["last_name"]}')}"
-                == call.data[ATTR_CHILD]
-                or f"switch.{slugify(f'{child["first_name"]} {child["last_name"]} Timer')}"
-                == call.data[ATTR_CHILD]
-            )
-        ][0]
+        # real id (e.g. the child sensor used to register device-prefixed as
+        # sensor.<first>_<last>_baby_<first>_<last>, not
+        # sensor.baby_<first>_<last>).
+        data[ATTR_CHILD] = _resolve_child_id(call.hass, data[ATTR_CHILD])
 
     return data
 
@@ -217,7 +204,7 @@ async def async_add_child(call: ServiceCall) -> None:
 async def async_add_bmi(call: ServiceCall) -> None:
     """Add BMI entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
+    data = await __setup_service_data(call)
 
     # date_now = dt_util.now().date()
     date_time_now = get_datetime_from_time(dt_util.now())
@@ -228,7 +215,7 @@ async def async_add_bmi(call: ServiceCall) -> None:
 async def async_add_diaper_change(call: ServiceCall) -> None:
     """Add diaper change entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
+    data = await __setup_service_data(call)
 
     if call.data.get(ATTR_TIME):
         try:
@@ -263,7 +250,7 @@ async def async_add_diaper_change(call: ServiceCall) -> None:
 async def async_add_head_circumference(call: ServiceCall) -> None:
     """Add head circumference entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
+    data = await __setup_service_data(call)
 
     if call.data.get(ATTR_DATE):
         data[ATTR_DATE] = call.data.get(ATTR_DATE)
@@ -283,7 +270,7 @@ async def async_add_head_circumference(call: ServiceCall) -> None:
 async def async_add_height(call: ServiceCall) -> None:
     """Add height entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
+    data = await __setup_service_data(call)
 
     if call.data.get(ATTR_DATE):
         data[ATTR_DATE] = call.data.get(ATTR_DATE)
@@ -301,7 +288,7 @@ async def async_add_height(call: ServiceCall) -> None:
 async def async_add_note(call: ServiceCall) -> None:
     """Add note entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
+    data = await __setup_service_data(call)
 
     if call.data.get(ATTR_TIME):
         try:
@@ -321,7 +308,7 @@ async def async_add_note(call: ServiceCall) -> None:
 async def async_add_temperature(call: ServiceCall) -> None:
     """Add a temperature entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
+    data = await __setup_service_data(call)
 
     if call.data.get(ATTR_TIME):
         try:
@@ -343,7 +330,7 @@ async def async_add_temperature(call: ServiceCall) -> None:
 async def async_add_weight(call: ServiceCall) -> None:
     """Add weight entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
+    data = await __setup_service_data(call)
 
     if call.data.get(ATTR_DATE):
         data[ATTR_DATE] = call.data.get(ATTR_DATE)
@@ -361,18 +348,30 @@ async def async_add_weight(call: ServiceCall) -> None:
 async def async_delete_last_entry(call: ServiceCall) -> None:
     """Delete last data entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
-    entity = call.hass.states.get(call.data.get(ATTR_ENTITY_ID))
-    key = call.data[ATTR_ENTITY_ID].split(".")[1].split("_")[3]
+    entity_id = call.data[ATTR_ENTITY_ID]
+    entity = call.hass.states.get(entity_id)
+    entity_entry = er.async_get(call.hass).async_get(entity_id)
+    # The API endpoint is the last segment of the data sensor's unique_id
+    # ("{api_key}-{child_id}-{endpoint}"); the endpoint itself may contain
+    # hyphens (e.g. head-circumference), so split at most twice. Deriving it
+    # from the entity_id instead would break on multi-word endpoints and on
+    # renamed entities.
+    parts = entity_entry.unique_id.split("-", 2) if entity_entry else []
+    if entity is None or len(parts) < 3 or parts[2] == ATTR_TIMER:
+        raise ServiceValidationError(
+            translation_domain=DOMAIN,
+            translation_key="invalid_delete_target",
+            translation_placeholders={"entity_id": entity_id},
+        )
 
-    await coordinator.client.async_delete(key, entity.attributes.get(ATTR_ID))
+    await coordinator.client.async_delete(parts[2], entity.attributes.get(ATTR_ID))
     await coordinator.async_request_refresh()
 
 
 async def async_start_timer(call: ServiceCall) -> None:
     """Start a new timer for child."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
+    data = await __setup_service_data(call)
 
     try:
         data[ATTR_START] = get_datetime_from_time(
@@ -391,7 +390,7 @@ async def async_start_timer(call: ServiceCall) -> None:
 async def async_add_feeding(call: ServiceCall) -> None:
     """Add a feeding entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
+    data = await __setup_service_data(call)
 
     try:
         data = await __set_common_fields(coordinator, call, data)
@@ -418,7 +417,7 @@ async def async_add_feeding(call: ServiceCall) -> None:
 async def async_add_pumping(call: ServiceCall) -> None:
     """Add a pumping entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
+    data = await __setup_service_data(call)
 
     try:
         data = await __set_common_fields(coordinator, call, data)
@@ -438,7 +437,7 @@ async def async_add_pumping(call: ServiceCall) -> None:
 async def async_add_sleep(call: ServiceCall) -> None:
     """Add a sleep entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
+    data = await __setup_service_data(call)
 
     try:
         data = await __set_common_fields(coordinator, call, data)
@@ -458,7 +457,7 @@ async def async_add_sleep(call: ServiceCall) -> None:
 async def async_add_tummy_time(call: ServiceCall) -> None:
     """Add a tummy time entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call, coordinator)
+    data = await __setup_service_data(call)
 
     try:
         data = await __set_common_fields(coordinator, call, data)
