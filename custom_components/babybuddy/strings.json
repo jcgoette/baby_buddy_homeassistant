@@ -39,5 +39,16 @@
         }
       }
     }
+  },
+  "exceptions": {
+    "entry_not_loaded": {
+      "message": "The Baby Buddy integration is not loaded."
+    },
+    "child_not_found": {
+      "message": "Could not find a Baby Buddy child for entity {entity_id}. The child field must be a Baby Buddy child sensor or timer switch entity."
+    },
+    "invalid_delete_target": {
+      "message": "Entity {entity_id} is not a Baby Buddy data sensor with an entry to delete."
+    }
   }
 }

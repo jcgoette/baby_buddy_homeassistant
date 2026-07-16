@@ -194,7 +194,7 @@ MOCK_SERVICE_ADD_TUMMY_TIME_TIMER = {
 }
 
 MOCK_BABY_NAME = f"{MOCK_SERVICE_ADD_CHILD_SCHEMA[ATTR_FIRST_NAME]}_{MOCK_SERVICE_ADD_CHILD_SCHEMA[ATTR_LAST_NAME]}"
-# The child sensor belongs to the child's device, so HA registers it with the
-# device name prefixed: sensor.<first_last>_baby_<first_last>.
-MOCK_BABY_SENSOR_ID = f"sensor.{MOCK_BABY_NAME}_baby_{MOCK_BABY_NAME}"
+# The child sensor belongs to the child's device, so its entity_id starts
+# with the device name: sensor.<first_last>_baby.
+MOCK_BABY_SENSOR_ID = f"sensor.{MOCK_BABY_NAME}_baby"
 MOCK_BABY_SWITCH_ID = f"switch.{MOCK_BABY_NAME}_timer"
