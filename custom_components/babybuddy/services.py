@@ -129,30 +129,24 @@ async def __setup_service_data(
     if (
         data.get(ATTR_CHILD)
         and isinstance(data[ATTR_CHILD], str)
-        and data[ATTR_CHILD].startswith("switch.")
+        and data[ATTR_CHILD].startswith(("sensor.", "switch."))
     ):
-        data[ATTR_CHILD] = [
-            child[ATTR_ID]
-            for child in coordinator.data[0]
-            if (
-                f"switch.{slugify(f'{child["first_name"]} {child["last_name"]} Timer')}"
-                == call.data[ATTR_CHILD]
+        # Resolve the child id from the entity registry rather than
+        # reconstructing the entity_id from the child's name. Entity ids are
+        # sticky in the registry, so a name-derived slug can drift from the
+        # real id (e.g. the child sensor is registered device-prefixed as
+        # sensor.austin_bond_baby_austin_bond, not sensor.baby_austin_bond).
+        # The child id is the segment after the api key in the unique_id
+        # ("{api_key}-{child_id}" for the child sensor,
+        # "{api_key}-{child_id}-timer" for the timer switch); the api key is
+        # a hyphen-free token, so index [1] holds the id in both cases.
+        entity_entry = er.async_get(call.hass).async_get(data[ATTR_CHILD])
+        if entity_entry is None:
+            raise ServiceValidationError(
+                translation_domain=DOMAIN,
+                translation_key="entry_not_loaded",
             )
-        ][0]
-
-    if (
-        data.get(ATTR_CHILD)
-        and isinstance(data[ATTR_CHILD], str)
-        and data[ATTR_CHILD].startswith("sensor.")
-    ):
-        data[ATTR_CHILD] = [
-            child[ATTR_ID]
-            for child in coordinator.data[0]
-            if (
-                f"sensor.{slugify(f'Baby {child["first_name"]} {child["last_name"]}')}"
-                == call.data[ATTR_CHILD]
-            )
-        ][0]
+        data[ATTR_CHILD] = int(entity_entry.unique_id.split("-")[1])
 
     if call.data.get(ATTR_ENTITY_ID):
         data[ATTR_CHILD] = [
