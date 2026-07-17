@@ -55,6 +55,21 @@ jobs:
           # Set API key in GitHub environment
           echo "api_key=$api_key" >> $GITHUB_ENV
 
+      - name: Seed a placeholder child
+        run: |
+          # A freshly started babybuddy container has no children, so the
+          # coordinator's first refresh fails with "No children found" and
+          # the config entry never reaches LOADED (tests/test_config_flow.py
+          # asserts this). The test suite creates its own "lorem"/"ipsum"
+          # child later via the add_child service; this one only exists to
+          # satisfy that first check.
+          curl -sf 'http://localhost:8000/api/children/' \
+            -H "Authorization: Token $api_key" \
+            -H 'Content-Type: application/json' \
+            -d "{\"first_name\":\"ci\",\"last_name\":\"placeholder\",\"birth_date\":\"$(date -I)\"}"
+        env:
+          api_key: ${{ env.api_key }}
+
       - name: Checkout the repository
         uses: actions/checkout@v4
 
