@@ -33,6 +33,7 @@ from homeassistant.components.sensor.const import (
 )
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
+    ATTR_ENTITY_ID,
     ATTR_ICON,
     ATTR_TEMPERATURE,
     ATTR_TIME,
@@ -74,6 +75,26 @@ async def test_service_add_bmi(
     assert state.attributes[ATTR_NOTES] == MOCK_SERVICE_ADD_BMI_SCHEMA[ATTR_NOTES]
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
     assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_BMI_SCHEMA[ATTR_TAGS]
+    assert state.state == str(MOCK_SERVICE_ADD_BMI_SCHEMA[ATTR_BMI])
+
+
+@pytest.mark.usefixtures("setup_baby_buddy_entry_live")
+async def test_service_add_bmi_entity_id_target(
+    hass: HomeAssistant,
+) -> None:
+    """Test targeting a service with entity_id, as pre-2.9.0 automations do."""
+
+    entity_id = f"sensor.{MOCK_BABY_NAME}_last_bmi"
+    await hass.services.async_call(
+        DOMAIN,
+        ATTR_ACTION_ADD_BMI,
+        MOCK_SERVICE_ADD_BMI_SCHEMA,
+        target={ATTR_ENTITY_ID: MOCK_BABY_SENSOR_ID},
+        blocking=True,
+    )
+    state = hass.states.get(entity_id)
+
+    assert state
     assert state.state == str(MOCK_SERVICE_ADD_BMI_SCHEMA[ATTR_BMI])
 
 
