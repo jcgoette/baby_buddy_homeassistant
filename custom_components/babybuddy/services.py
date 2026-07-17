@@ -82,13 +82,20 @@ SERVICE_ADD_CHILD_SCHEMA: vol.Schema = vol.Schema(
         vol.Required(ATTR_LAST_NAME): cv.string,
     }
 )
+# Until v2.9.0 these were entity services, so existing automations target
+# them with `target: entity_id` (which HA merges into the call data) rather
+# than the documented `child` field. Accept both.
+CHILD_TARGET_FIELDS: dict[vol.Optional, Any] = {
+    vol.Optional(ATTR_CHILD): cv.entity_id,
+    vol.Optional(ATTR_ENTITY_ID): cv.entity_ids,
+}
 COMMON_FIELDS: dict[vol.Required | vol.Optional, Any] = {
-    vol.Required(ATTR_CHILD): cv.entity_id,
+    **CHILD_TARGET_FIELDS,
     vol.Optional(ATTR_NOTES): cv.string,
     vol.Optional(ATTR_TAGS): vol.All(cv.ensure_list, [str]),
 }
 COMMON_FIELDS_TIMER: dict[vol.Required | vol.Optional | vol.Exclusive, Any] = {
-    vol.Required(ATTR_CHILD): cv.entity_id,
+    **CHILD_TARGET_FIELDS,
     vol.Exclusive(ATTR_TIMER, group_of_exclusion="timer_or_start"): cv.boolean,
     vol.Exclusive(ATTR_START, group_of_exclusion="timer_or_start"): vol.Any(
         cv.datetime, cv.time
@@ -146,18 +153,22 @@ async def __setup_service_data(call: ServiceCall) -> dict[str, Any]:
     """Extract data with child ID from a service call."""
     data = call.data.copy()
 
-    if (
-        data.get(ATTR_CHILD)
-        and isinstance(data[ATTR_CHILD], str)
-        and data[ATTR_CHILD].startswith(("sensor.", "switch."))
-    ):
-        # Resolve the child id from the entity registry rather than
-        # reconstructing the entity_id from the child's name. Entity ids are
-        # sticky in the registry, so a name-derived slug can drift from the
-        # real id (e.g. the child sensor used to register device-prefixed as
-        # sensor.<first>_<last>_baby_<first>_<last>, not
-        # sensor.baby_<first>_<last>).
-        data[ATTR_CHILD] = _resolve_child_id(call.hass, data[ATTR_CHILD])
+    # entity_id must not reach the babybuddy POST payload
+    entity_ids = data.pop(ATTR_ENTITY_ID, None)
+    target = data.get(ATTR_CHILD) or (entity_ids[0] if entity_ids else None)
+    if not isinstance(target, str) or not target.startswith(("sensor.", "switch.")):
+        raise ServiceValidationError(
+            translation_domain=DOMAIN,
+            translation_key="child_required",
+        )
+
+    # Resolve the child id from the entity registry rather than
+    # reconstructing the entity_id from the child's name. Entity ids are
+    # sticky in the registry, so a name-derived slug can drift from the
+    # real id (e.g. the child sensor used to register device-prefixed as
+    # sensor.<first>_<last>_baby_<first>_<last>, not
+    # sensor.baby_<first>_<last>).
+    data[ATTR_CHILD] = _resolve_child_id(call.hass, target)
 
     return data
 
@@ -538,7 +549,7 @@ def async_setup_services(hass: HomeAssistant) -> None:
         async_add_note,
         vol.Schema(
             {
-                vol.Required(ATTR_CHILD): cv.entity_id,
+                **CHILD_TARGET_FIELDS,
                 vol.Required(ATTR_NOTE): cv.string,
                 vol.Optional(ATTR_TIME): vol.Any(cv.datetime, cv.time),
                 vol.Optional(ATTR_TAGS): vol.All(cv.ensure_list, [str]),
@@ -585,7 +596,7 @@ def async_setup_services(hass: HomeAssistant) -> None:
         async_start_timer,
         vol.Schema(
             {
-                vol.Required(ATTR_CHILD): cv.entity_id,
+                **CHILD_TARGET_FIELDS,
                 vol.Optional(ATTR_START): vol.Any(cv.datetime, cv.time),
                 vol.Optional(ATTR_NAME): cv.string,
             }

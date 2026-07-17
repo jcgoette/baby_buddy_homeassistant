@@ -44,6 +44,9 @@
     "entry_not_loaded": {
       "message": "The Baby Buddy integration is not loaded."
     },
+    "child_required": {
+      "message": "The service call must include a child field or target a Baby Buddy entity."
+    },
     "child_not_found": {
       "message": "Could not find a Baby Buddy child for entity {entity_id}. The child field must be a Baby Buddy child sensor or timer switch entity."
     },
