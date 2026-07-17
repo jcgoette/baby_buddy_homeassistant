@@ -69,7 +69,13 @@ jobs:
 
       - name: Run tests
         env:
-          BABY_BUDDY_HOST: http://localhost
+          # aiohttp's AsyncResolver (aiodns/pycares) binds its resolver
+          # channel to the event loop active when it's first constructed;
+          # on Python 3.14 that loop doesn't match pytest-asyncio's
+          # per-test loop, so resolving "localhost" raises "Future
+          # attached to a different loop". A loopback IP skips DNS
+          # resolution entirely and avoids it.
+          BABY_BUDDY_HOST: http://127.0.0.1
           BABY_BUDDY_PORT: 8000
           API_KEY: ${{ env.api_key }}
         run: |
