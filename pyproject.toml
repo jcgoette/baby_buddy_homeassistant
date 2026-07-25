@@ -24,7 +24,6 @@ init-hook = """\
 load-plugins = [
     "pylint.extensions.code_style",
     "pylint.extensions.typing",
-    "pylint_per_file_ignores",
 ]
 persistent = false
 extension-pkg-allow-list = [
