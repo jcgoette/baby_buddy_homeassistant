@@ -85,25 +85,6 @@ class BabyBuddyClient:
         except (AsyncIOTimeoutError, ClientError) as error:
             LOGGER.error(error)
 
-    async def async_patch(
-        self, endpoint: str, entry: str, data: dict[str, str]
-    ) -> None:
-        """PATCH request to babybuddy API."""
-        try:
-            async with asyncio.timeout(10):
-                resp = await self.session.patch(
-                    f"{self.endpoints[endpoint]}{entry}/",
-                    headers=self.headers,
-                    data=data,
-                )
-
-            if resp.status != HTTPStatus.OK:
-                error = await resp.json()
-                LOGGER.error(f"Could not update {endpoint}/{entry}. error: {error}")
-
-        except (AsyncIOTimeoutError, ClientError) as error:
-            LOGGER.error(error)
-
     async def async_delete(self, endpoint: str, entry: str) -> None:
         """DELETE request to babybuddy API."""
         try:
