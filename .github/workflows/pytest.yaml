@@ -4,9 +4,19 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'custom_components/babybuddy/**'
+      - 'tests/**'
+      - 'requirements.txt'
+      - 'requirements-test.txt'
   push:
     branches:
       - main
+    paths:
+      - 'custom_components/babybuddy/**'
+      - 'tests/**'
+      - 'requirements.txt'
+      - 'requirements-test.txt'
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
