@@ -2,4 +2,5 @@
 
 colorlog
 pytest
+pytest-cov
 pytest-homeassistant-custom-component
