@@ -1,12 +1,14 @@
 add_bmi:
   name: Add BMI
   description: Adds a BMI entry
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      description: Baby Buddy child entity
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       example: "sensor.baby_lorem_ipsum"
-      required: true
       selector:
         entity:
           integration: babybuddy
@@ -73,10 +75,13 @@ add_child:
 add_diaper_change:
   name: Add diaper change
   description: Adds a diaper change entry
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      required: true
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -137,10 +142,13 @@ add_diaper_change:
 add_feeding:
   name: Add feeding
   description: Adds a feeding entry
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      required: true
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -217,10 +225,13 @@ add_feeding:
 add_head_circumference:
   name: Add Head Circumference
   description: Adds a head circumference entry
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      required: true
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -261,10 +272,13 @@ add_head_circumference:
 add_height:
   name: Add Height
   description: Adds a height entry
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      required: true
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -305,10 +319,13 @@ add_height:
 add_medication:
   name: Add medication
   description: Adds a medication entry
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      required: true
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -372,10 +389,13 @@ add_medication:
 add_note:
   name: Add note
   description: Adds a note entry
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      required: true
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -406,10 +426,13 @@ add_note:
 add_pumping:
   name: Add pumping
   description: Adds a pumping entry
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      required: true
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -461,10 +484,13 @@ add_pumping:
 add_sleep:
   name: Add sleep
   description: Adds sleep entry
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      required: true
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -511,10 +537,13 @@ add_sleep:
 add_temperature:
   name: Add temperature
   description: Adds a temperature entry
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      required: true
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -555,10 +584,13 @@ add_temperature:
 add_tummy_time:
   name: Add tummy time
   description: Adds tummy time entry
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      required: true
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -599,10 +631,13 @@ add_tummy_time:
 add_weight:
   name: Add weight
   description: Adds a weight entry
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      required: true
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -654,11 +689,13 @@ delete_last_entry:
 start_timer:
   name: Start timer
   description: Start a new timer
+  target:
+    entity:
+      integration: babybuddy
   fields:
     child:
       name: Child
-      description: Timer switch of the child to start a timer for
-      required: true
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
