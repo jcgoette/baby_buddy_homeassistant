@@ -9,6 +9,7 @@ import voluptuous as vol
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import (
     ATTR_DATE,
+    ATTR_DEVICE_ID,
     ATTR_ENTITY_ID,
     ATTR_ID,
     ATTR_NAME,
@@ -89,11 +90,14 @@ SERVICE_ADD_CHILD_SCHEMA: vol.Schema = vol.Schema(
     }
 )
 # Until v2.9.0 these were entity services, so existing automations target
-# them with `target: entity_id` (which HA merges into the call data) rather
-# than the documented `child` field. Accept both.
+# them with `target: entity_id` or `target: device_id` (which HA merges
+# into the call data verbatim, without resolving device_id to entity_id,
+# since that resolution is an entity-platform-only convenience) rather
+# than the documented `child` field. Accept all three.
 CHILD_TARGET_FIELDS: dict[vol.Optional, Any] = {
     vol.Optional(ATTR_CHILD): cv.entity_id,
     vol.Optional(ATTR_ENTITY_ID): cv.entity_ids,
+    vol.Optional(ATTR_DEVICE_ID): vol.All(cv.ensure_list, [cv.string]),
 }
 COMMON_FIELDS: dict[vol.Required | vol.Optional, Any] = {
     **CHILD_TARGET_FIELDS,
@@ -133,6 +137,14 @@ async def __async_extract_entry_coordinator(call: ServiceCall) -> BabyBuddyCoord
     return coordinator
 
 
+def _entity_id_for_device(hass: HomeAssistant, device_id: str) -> str | None:
+    """Return this integration's child entity registered to a device."""
+    for entry in er.async_entries_for_device(er.async_get(hass), device_id):
+        if entry.platform == DOMAIN:
+            return entry.entity_id
+    return None
+
+
 def _resolve_child_id(hass: HomeAssistant, entity_id: str) -> int:
     """Resolve a babybuddy child id from an entity's registry entry.
 
@@ -159,9 +171,14 @@ async def __setup_service_data(call: ServiceCall) -> dict[str, Any]:
     """Extract data with child ID from a service call."""
     data = call.data.copy()
 
-    # entity_id must not reach the babybuddy POST payload
+    # entity_id/device_id must not reach the babybuddy POST payload
     entity_ids = data.pop(ATTR_ENTITY_ID, None)
-    target = data.get(ATTR_CHILD) or (entity_ids[0] if entity_ids else None)
+    device_ids = data.pop(ATTR_DEVICE_ID, None)
+    target = (
+        data.get(ATTR_CHILD)
+        or (entity_ids[0] if entity_ids else None)
+        or (_entity_id_for_device(call.hass, device_ids[0]) if device_ids else None)
+    )
     if not isinstance(target, str) or not target.startswith(("sensor.", "switch.")):
         raise ServiceValidationError(
             translation_domain=DOMAIN,
