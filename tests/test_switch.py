@@ -27,6 +27,7 @@ from homeassistant.components.sensor import SensorStateClass
 from homeassistant.components.sensor.const import ATTR_STATE_CLASS
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.const import (
+    ATTR_DEVICE_ID,
     ATTR_ENTITY_ID,
     ATTR_ICON,
     SERVICE_TURN_ON,
@@ -34,6 +35,7 @@ from homeassistant.const import (
     STATE_ON,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.util import dt as dt_util
 
 from .const import (
@@ -103,6 +105,34 @@ async def test_service_add_feeding_start_stop(
     )
     assert state.attributes[ATTR_STATE_CLASS] == SensorStateClass.MEASUREMENT
     assert state.attributes[ATTR_TAGS] == MOCK_SERVICE_ADD_FEEDING_START_STOP[ATTR_TAGS]
+    assert state.state == str(MOCK_SERVICE_ADD_FEEDING_START_STOP[ATTR_AMOUNT])
+
+
+@pytest.mark.usefixtures("setup_baby_buddy_entry_live")
+async def test_service_add_feeding_device_id_target(
+    hass: HomeAssistant,
+) -> None:
+    """Test targeting a service with device_id, as pre-2.9.0 automations do.
+
+    Reproduces https://github.com/jcgoette/baby_buddy_homeassistant/issues/179:
+    an automation built before the `child` field existed targets the child's
+    device directly (`target: {device_id: ...}`), which HA merges into the
+    call data verbatim rather than resolving it to an entity_id.
+    """
+
+    entity_id = f"sensor.{MOCK_BABY_NAME}_last_feeding"
+    child_entry = er.async_get(hass).async_get(MOCK_BABY_SWITCH_ID)
+    assert child_entry and child_entry.device_id
+    await hass.services.async_call(
+        DOMAIN,
+        ATTR_ACTION_ADD_FEEDING,
+        MOCK_SERVICE_ADD_FEEDING_START_STOP,
+        target={ATTR_DEVICE_ID: child_entry.device_id},
+        blocking=True,
+    )
+    state = hass.states.get(entity_id)
+
+    assert state
     assert state.state == str(MOCK_SERVICE_ADD_FEEDING_START_STOP[ATTR_AMOUNT])
 
 

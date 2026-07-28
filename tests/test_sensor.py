@@ -40,6 +40,7 @@ from homeassistant.components.sensor.const import (
 )
 from homeassistant.const import (
     ATTR_DEVICE_CLASS,
+    ATTR_DEVICE_ID,
     ATTR_ENTITY_ID,
     ATTR_ICON,
     ATTR_NAME,
@@ -47,6 +48,7 @@ from homeassistant.const import (
     ATTR_TIME,
 )
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.util import dt as dt_util
 
 from .const import (
@@ -99,6 +101,28 @@ async def test_service_add_bmi_entity_id_target(
         ATTR_ACTION_ADD_BMI,
         MOCK_SERVICE_ADD_BMI_SCHEMA,
         target={ATTR_ENTITY_ID: MOCK_BABY_SENSOR_ID},
+        blocking=True,
+    )
+    state = hass.states.get(entity_id)
+
+    assert state
+    assert state.state == str(MOCK_SERVICE_ADD_BMI_SCHEMA[ATTR_BMI])
+
+
+@pytest.mark.usefixtures("setup_baby_buddy_entry_live")
+async def test_service_add_bmi_device_id_target(
+    hass: HomeAssistant,
+) -> None:
+    """Test targeting a service with device_id, as pre-2.9.0 automations do."""
+
+    entity_id = f"sensor.{MOCK_BABY_NAME}_last_bmi"
+    child_entry = er.async_get(hass).async_get(MOCK_BABY_SENSOR_ID)
+    assert child_entry and child_entry.device_id
+    await hass.services.async_call(
+        DOMAIN,
+        ATTR_ACTION_ADD_BMI,
+        MOCK_SERVICE_ADD_BMI_SCHEMA,
+        target={ATTR_DEVICE_ID: child_entry.device_id},
         blocking=True,
     )
     state = hass.states.get(entity_id)
