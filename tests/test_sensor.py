@@ -54,6 +54,7 @@ from homeassistant.util import dt as dt_util
 from .const import (
     MOCK_BABY_NAME,
     MOCK_BABY_SENSOR_ID,
+    MOCK_BABY_SWITCH_ID,
     MOCK_SERVICE_ADD_BMI_SCHEMA,
     MOCK_SERVICE_ADD_DIAPER_CHANGE,
     MOCK_SERVICE_ADD_HEAD_CIRCUMFERENCE,
@@ -101,6 +102,33 @@ async def test_service_add_bmi_entity_id_target(
         ATTR_ACTION_ADD_BMI,
         MOCK_SERVICE_ADD_BMI_SCHEMA,
         target={ATTR_ENTITY_ID: MOCK_BABY_SENSOR_ID},
+        blocking=True,
+    )
+    state = hass.states.get(entity_id)
+
+    assert state
+    assert state.state == str(MOCK_SERVICE_ADD_BMI_SCHEMA[ATTR_BMI])
+
+
+@pytest.mark.usefixtures("setup_baby_buddy_entry_live")
+async def test_service_add_bmi_entity_id_switch_target(
+    hass: HomeAssistant,
+) -> None:
+    """Test targeting a sensor-domain service via the timer switch entity_id.
+
+    `_resolve_child_id` only cares about the child id embedded in the
+    target's unique_id, not the entity's domain, so a legacy automation
+    that grabbed the timer switch (e.g. via an "Add target" device picker
+    that returned its entity_id) must resolve just as well as the child
+    sensor.
+    """
+
+    entity_id = f"sensor.{MOCK_BABY_NAME}_last_bmi"
+    await hass.services.async_call(
+        DOMAIN,
+        ATTR_ACTION_ADD_BMI,
+        MOCK_SERVICE_ADD_BMI_SCHEMA,
+        target={ATTR_ENTITY_ID: MOCK_BABY_SWITCH_ID},
         blocking=True,
     )
     state = hass.states.get(entity_id)
