@@ -9,7 +9,7 @@ add_bmi:
   fields:
     child:
       name: Child
-      description: Baby Buddy child entity. Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       example: "sensor.baby_lorem_ipsum"
       selector:
         entity:
@@ -85,7 +85,7 @@ add_diaper_change:
   fields:
     child:
       name: Child
-      description: Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -154,7 +154,7 @@ add_feeding:
   fields:
     child:
       name: Child
-      description: Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -239,7 +239,7 @@ add_head_circumference:
   fields:
     child:
       name: Child
-      description: Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -288,7 +288,7 @@ add_height:
   fields:
     child:
       name: Child
-      description: Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -337,7 +337,7 @@ add_medication:
   fields:
     child:
       name: Child
-      description: Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -409,7 +409,7 @@ add_note:
   fields:
     child:
       name: Child
-      description: Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -448,7 +448,7 @@ add_pumping:
   fields:
     child:
       name: Child
-      description: Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -508,7 +508,7 @@ add_sleep:
   fields:
     child:
       name: Child
-      description: Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -563,7 +563,7 @@ add_temperature:
   fields:
     child:
       name: Child
-      description: Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -612,7 +612,7 @@ add_tummy_time:
   fields:
     child:
       name: Child
-      description: Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -661,7 +661,7 @@ add_weight:
   fields:
     child:
       name: Child
-      description: Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
@@ -721,7 +721,7 @@ start_timer:
   fields:
     child:
       name: Child
-      description: Timer switch of the child to start a timer for. Not required if a Baby Buddy entity or device is targeted instead.
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
