@@ -7,19 +7,13 @@ add_bmi:
   fields:
     child:
       name: Child
-      description: Entity ID of the Baby Buddy child sensor. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       example: "sensor.baby_lorem_ipsum"
       selector:
         entity:
           integration: babybuddy
           domain: sensor
           device_class: babybuddy_child
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     bmi:
       name: BMI
       description: BMI value
@@ -87,18 +81,12 @@ add_diaper_change:
   fields:
     child:
       name: Child
-      description: Entity ID of the Baby Buddy child sensor. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
           domain: sensor
           device_class: babybuddy_child
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     time:
       name: Change time
       description: Change time
@@ -160,17 +148,11 @@ add_feeding:
   fields:
     child:
       name: Child
-      description: Entity ID of the child's Baby Buddy timer switch. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
           domain: switch
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
@@ -249,18 +231,12 @@ add_head_circumference:
   fields:
     child:
       name: Child
-      description: Entity ID of the Baby Buddy child sensor. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
           domain: sensor
           device_class: babybuddy_child
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     head_circumference:
       name: Head Circumference
       description: Head circumference value
@@ -302,18 +278,12 @@ add_height:
   fields:
     child:
       name: Child
-      description: Entity ID of the Baby Buddy child sensor. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
           domain: sensor
           device_class: babybuddy_child
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     height:
       name: Height
       description: Height value
@@ -355,18 +325,12 @@ add_medication:
   fields:
     child:
       name: Child
-      description: Entity ID of the Baby Buddy child sensor. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
           domain: sensor
           device_class: babybuddy_child
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     name:
       name: Medication name
       description: Name of the medication administered
@@ -431,18 +395,12 @@ add_note:
   fields:
     child:
       name: Child
-      description: Entity ID of the Baby Buddy child sensor. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
           domain: sensor
           device_class: babybuddy_child
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     note:
       name: Note
       description: Note text
@@ -474,17 +432,11 @@ add_pumping:
   fields:
     child:
       name: Child
-      description: Entity ID of the child's Baby Buddy timer switch. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
           domain: switch
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
@@ -538,17 +490,11 @@ add_sleep:
   fields:
     child:
       name: Child
-      description: Entity ID of the child's Baby Buddy timer switch. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
           domain: switch
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
@@ -597,18 +543,12 @@ add_temperature:
   fields:
     child:
       name: Child
-      description: Entity ID of the Baby Buddy child sensor. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
           domain: sensor
           device_class: babybuddy_child
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     temperature:
       name: Temperature
       description: Temperature
@@ -650,17 +590,11 @@ add_tummy_time:
   fields:
     child:
       name: Child
-      description: Entity ID of the child's Baby Buddy timer switch. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
           domain: switch
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     timer:
       name: Use timer
       description: Use active timer to assign child/start/end
@@ -703,18 +637,12 @@ add_weight:
   fields:
     child:
       name: Child
-      description: Entity ID of the Baby Buddy child sensor. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the Baby Buddy child sensor. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
           domain: sensor
           device_class: babybuddy_child
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     weight:
       name: Weight
       description: Weight value
@@ -767,17 +695,11 @@ start_timer:
   fields:
     child:
       name: Child
-      description: Entity ID of the child's Baby Buddy timer switch. Not required if the device_id field is filled in, or an entity is targeted, instead.
+      description: Entity ID of the child's Baby Buddy timer switch. Not required if a device or entity is targeted instead.
       selector:
         entity:
           integration: babybuddy
           domain: switch
-    device_id:
-      name: Device
-      description: Baby Buddy device to use. Not required if the child field is filled in, or an entity is targeted, instead.
-      selector:
-        device:
-          integration: babybuddy
     start:
       name: Timer start time
       description: Leave blank for a quick start
