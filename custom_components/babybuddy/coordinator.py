@@ -43,6 +43,11 @@ from .const import (
 )
 from .errors import AuthorizationError, ConnectError
 
+# Transient network blips (e.g. DNS timeouts) would otherwise mark every
+# entity unavailable for a full poll cycle; keep the previous data for up
+# to this many consecutive failed polls before declaring the update failed.
+MAX_TRANSIENT_FAILURES = 2
+
 SERVICE_ADD_CHILD_SCHEMA = vol.Schema(
     {
         vol.Required(ATTR_BIRTH_DATE, default=dt_util.now().date()): cv.date,
@@ -89,6 +94,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         )
         self.device_registry: dr.DeviceRegistry = dr.async_get(self.hass)
         self.child_ids: list[str] = []
+        self._transient_failures: int = 0
 
     async def async_set_children_from_db(self) -> None:
         """Set child_ids from HA database."""
@@ -135,8 +141,22 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         except ClientResponseError as error:
             if error.status == HTTPStatus.FORBIDDEN:
                 raise ConfigEntryAuthFailed from error
-        except (AsyncIOTimeoutError, ClientError) as error:
             raise UpdateFailed(error) from error
+        except (AsyncIOTimeoutError, ClientError) as error:
+            if (
+                self.data is not None
+                and self._transient_failures < MAX_TRANSIENT_FAILURES
+            ):
+                self._transient_failures += 1
+                LOGGER.debug(
+                    "Error fetching babybuddy data, keeping previous data (%d/%d): %s",
+                    self._transient_failures,
+                    MAX_TRANSIENT_FAILURES,
+                    error,
+                )
+                return self.data
+            raise UpdateFailed(error) from error
+        self._transient_failures = 0
 
         if children_list[ATTR_COUNT] < len(self.child_ids):
             self.child_ids = [child[ATTR_ID] for child in children_list[ATTR_RESULTS]]
@@ -166,6 +186,14 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
                     continue
                 except (AsyncIOTimeoutError, ClientError) as error:
                     LOGGER.error(error)
+                    # Carry the previous entry forward so the sensor keeps its
+                    # last value instead of raising KeyError on the missing key.
+                    if self.data and endpoint.key in self.data[1].get(
+                        child[ATTR_ID], {}
+                    ):
+                        child_data[child[ATTR_ID]][endpoint.key] = self.data[1][
+                            child[ATTR_ID]
+                        ][endpoint.key]
                     continue
                 data: list[dict[str, str]] = endpoint_data[ATTR_RESULTS]
                 child_data[child[ATTR_ID]][endpoint.key] = data[0] if data else {}
