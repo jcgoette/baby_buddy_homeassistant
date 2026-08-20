@@ -9,7 +9,7 @@ rules:
   config-flow-test-coverage: todo
   config-flow: todo
   dependency-transparency: todo
-  docs-actions: done # Documented in README.md under Services
+  docs-actions: done # Documented in README.md under Actions
   docs-conditions: todo
   docs-high-level-description: done # Documented in README.md
   docs-installation-instructions: done # Documented in README.md under Installation

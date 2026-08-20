@@ -58,25 +58,25 @@ This integration provides the following entities.
 
 #### Timer notes
 
-`Feeding`, `Sleep`, and `Tummy time` can be linked to a timer. If a timer is active you can add any of these entries and link it to the timer to automatically specify child, start time, and end time. It is important that the timer is active when the service is called.
+`Feeding`, `Sleep`, and `Tummy time` can be linked to a timer. If a timer is active you can add any of these entries and link it to the timer to automatically specify child, start time, and end time. It is important that the timer is active when the action is called.
 
-## Services
+## Actions
 
-### SERVICE ADD_CHILD
+### ACTION ADD_CHILD
 
-This service adds a new child. At least one child should be added to start seeing the different sensors and switches.
+This action adds a new child. At least one child should be added to start seeing the different sensors and switches.
 
-| Service data attribute | Optional | Description                             |
+| Action data attribute | Optional | Description                             |
 | ---------------------- | :------: | --------------------------------------- |
 | first_name             |    no    | Baby's first name                       |
 | last_name              |    no    | Baby's last name                        |
 | birth_date             |    no    | Child's birth date in YYYY-MM-DD format |
 
-### SERVICE ADD_BMI
+### ACTION ADD_BMI
 
-This service adds a BMI entry for your child.
+This action adds a BMI entry for your child.
 
-| Service data attribute | Optional | Description                                                               |
+| Action data attribute | Optional | Description                                                               |
 | ---------------------- | :------: | ------------------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the child sensor                                            |
 | BMI                    |    no    | Specify BMI value (float)                                                 |
@@ -84,11 +84,11 @@ This service adds a BMI entry for your child.
 | notes                  |   yes    | Add notes text to entry                                                   |
 | tags                   |   yes    | Add tag(s) to entry                                                       |
 
-### SERVICE ADD_DIAPER_CHANGE
+### ACTION ADD_DIAPER_CHANGE
 
-This service adds a diaper change entry for your child.
+This action adds a diaper change entry for your child.
 
-| Service data attribute | Optional | Description                                                                |
+| Action data attribute | Optional | Description                                                                |
 | ---------------------- | :------: | -------------------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the child sensor                                             |
 | type                   |   yes    | Specify type of diaper. This can be `Wet`, `Solid`, or `Wet and Solid`.    |
@@ -98,11 +98,11 @@ This service adds a diaper change entry for your child.
 | notes                  |   yes    | Add notes text to entry                                                    |
 | tags                   |   yes    | Add tag(s) to entry                                                        |
 
-### SERVICE ADD_FEEDING
+### ACTION ADD_FEEDING
 
-This service adds a feeding entry for your child. Feeding start/end/child fields can be linked to an active timer.
+This action adds a feeding entry for your child. Feeding start/end/child fields can be linked to an active timer.
 
-| Service data attribute | Optional | Description                                                                                                                    |
+| Action data attribute | Optional | Description                                                                                                                    |
 | ---------------------- | :------: | ------------------------------------------------------------------------------------------------------------------------------ |
 | entity_id              |    no    | entity_id for the timer switch linked to the child.                                                                            |
 | type                   |    no    | Specify type of feeding. Can be one of `Breast milk`, `Formula`, `Fortified breast milk`, or `Solid food`.                     |
@@ -114,11 +114,11 @@ This service adds a feeding entry for your child. Feeding start/end/child fields
 | notes                  |   yes    | Add notes text to entry                                                                                                        |
 | tags                   |   yes    | Add tag(s) to entry                                                                                                            |
 
-### SERVICE ADD_HEAD_CIRCUMFERENCE
+### ACTION ADD_HEAD_CIRCUMFERENCE
 
-This service adds a head circumference entry for your child.
+This action adds a head circumference entry for your child.
 
-| Service data attribute | Optional | Description                                                                              |
+| Action data attribute | Optional | Description                                                                              |
 | ---------------------- | :------: | ---------------------------------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the child sensor                                                           |
 | head_circumference     |    no    | Specify head circumference value (float)                                                 |
@@ -126,11 +126,11 @@ This service adds a head circumference entry for your child.
 | notes                  |   yes    | Add notes text to entry                                                                  |
 | tags                   |   yes    | Add tag(s) to entry                                                                      |
 
-### SERVICE ADD_HEIGHT
+### ACTION ADD_HEIGHT
 
-This service adds a height entry for your child.
+This action adds a height entry for your child.
 
-| Service data attribute | Optional | Description                                                                  |
+| Action data attribute | Optional | Description                                                                  |
 | ---------------------- | :------: | ---------------------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the child sensor                                               |
 | height                 |    no    | Specify height value (float)                                                 |
@@ -138,11 +138,11 @@ This service adds a height entry for your child.
 | notes                  |   yes    | Add notes text to entry                                                      |
 | tags                   |   yes    | Add tag(s) to entry                                                          |
 
-### SERVICE ADD_MEDICATION
+### ACTION ADD_MEDICATION
 
-This service adds a medication entry for your child. Requires Baby Buddy v2.9.0 or later.
+This action adds a medication entry for your child. Requires Baby Buddy v2.9.0 or later.
 
-| Service data attribute | Optional | Description                                                                      |
+| Action data attribute | Optional | Description                                                                      |
 | ---------------------- | :------: | --------------------------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the child sensor                                                   |
 | name                   |    no    | Name of the medication administered                                              |
@@ -153,22 +153,22 @@ This service adds a medication entry for your child. Requires Baby Buddy v2.9.0 
 | notes                  |   yes    | Add notes text to entry                                                          |
 | tags                   |   yes    | Add tag(s) to entry                                                              |
 
-### SERVICE ADD_NOTE
+### ACTION ADD_NOTE
 
-This service adds a note entry for your child.
+This action adds a note entry for your child.
 
-| Service data attribute | Optional | Description                                                                 |
+| Action data attribute | Optional | Description                                                                 |
 | ---------------------- | :------: | --------------------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the child sensor                                              |
 | notes                  |   yes    | Add notes text to entry                                                     |
 | time                   |   yes    | Specify notes recording time (must be in the past, else now() will be used) |
 | tags                   |   yes    | Add tag(s) to entry                                                         |
 
-### SERVICE ADD_PUMPING
+### ACTION ADD_PUMPING
 
-This service adds a pumping entry for your child.
+This action adds a pumping entry for your child.
 
-| Service data attribute | Optional | Description                                                                                              |
+| Action data attribute | Optional | Description                                                                                              |
 | ---------------------- | :------: | -------------------------------------------------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the child sensor                                                                           |
 | amount                 |    no    | Specify amount of pumping as an integer                                                                  |
@@ -178,11 +178,11 @@ This service adds a pumping entry for your child.
 | notes                  |   yes    | Add notes text to entry                                                                                  |
 | tags                   |   yes    | Add tag(s) to entry                                                                                      |
 
-### SERVICE ADD_SLEEP
+### ACTION ADD_SLEEP
 
-This service adds a sleep entry for your child. Sleep start/end/child fields can be linked to an active timer.
+This action adds a sleep entry for your child. Sleep start/end/child fields can be linked to an active timer.
 
-| Service data attribute | Optional | Description                                                                                              |
+| Action data attribute | Optional | Description                                                                                              |
 | ---------------------- | :------: | -------------------------------------------------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the timer switch linked to the child                                                       |
 | timer                  |   yes    | Set to True to use the currently active timer                                                            |
@@ -192,11 +192,11 @@ This service adds a sleep entry for your child. Sleep start/end/child fields can
 | notes                  |   yes    | Add notes text to entry                                                                                  |
 | tags                   |   yes    | Add tag(s) to entry                                                                                      |
 
-### SERVICE ADD_TEMPERATURE
+### ACTION ADD_TEMPERATURE
 
-This service adds a temperature entry for your child.
+This action adds a temperature entry for your child.
 
-| Service data attribute | Optional | Description                                                                       |
+| Action data attribute | Optional | Description                                                                       |
 | ---------------------- | :------: | --------------------------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the child sensor                                                    |
 | temperature            |    no    | Specify temperature value (float)                                                 |
@@ -204,11 +204,11 @@ This service adds a temperature entry for your child.
 | notes                  |   yes    | Add notes text to entry                                                           |
 | tags                   |   yes    | Add tag(s) to entry                                                               |
 
-### SERVICE ADD_TUMMY_TIME
+### ACTION ADD_TUMMY_TIME
 
-This service adds a tummy time entry for your child. Tummy time start/end/child fields can be linked to an active timer.
+This action adds a tummy time entry for your child. Tummy time start/end/child fields can be linked to an active timer.
 
-| Service data attribute | Optional | Description                                                                                              |
+| Action data attribute | Optional | Description                                                                                              |
 | ---------------------- | :------: | -------------------------------------------------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the timer switch linked to the child                                                       |
 | timer                  |   yes    | Set to True to use the currently active timer                                                            |
@@ -217,11 +217,11 @@ This service adds a tummy time entry for your child. Tummy time start/end/child 
 | milestone              |   yes    | Add milestone text to entry                                                                              |
 | tags                   |   yes    | Add tag(s) to entry                                                                                      |
 
-### SERVICE ADD_WEIGHT
+### ACTION ADD_WEIGHT
 
-This service adds a weight entry for your child.
+This action adds a weight entry for your child.
 
-| Service data attribute | Optional | Description                                                                  |
+| Action data attribute | Optional | Description                                                                  |
 | ---------------------- | :------: | ---------------------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the child sensor                                               |
 | weight                 |    no    | Specify weight value (float)                                                 |
@@ -229,22 +229,22 @@ This service adds a weight entry for your child.
 | notes                  |   yes    | Add notes text to entry                                                      |
 | tags                   |   yes    | Add tag(s) to entry                                                          |
 
-### SERVICE DELETE_LAST_ENTRY
+### ACTION DELETE_LAST_ENTRY
 
-This service will delete the last entry for the specified sensor (last weight, last feeding, etc.).
+This action will delete the last entry for the specified sensor (last weight, last feeding, etc.).
 
 > [!CAUTION]
-> Calling this service on a device, which represents a child, in Home Assistant will call the delete service once for *every* sensor on that child.
+> Calling this action on a device, which represents a child, in Home Assistant will call the delete action once for *every* sensor on that child.
 
-| Service data attribute | Optional | Description                                                    |
+| Action data attribute | Optional | Description                                                    |
 | ---------------------- | :------: | -------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the sensor that will have its last entry deleted |
 
-### SERVICE START_TIMER
+### ACTION START_TIMER
 
-This service starts a new timer for specified child with optional starting time.
+This action starts a new timer for specified child with optional starting time.
 
-| Service data attribute | Optional | Description                                                       |
+| Action data attribute | Optional | Description                                                       |
 | ---------------------- | :------: | ----------------------------------------------------------------- |
 | entity_id              |    no    | entity_id for the switch linked to the child                      |
 | start                  |   yes    | Specify start time (must be in the past, else now() will be used) |

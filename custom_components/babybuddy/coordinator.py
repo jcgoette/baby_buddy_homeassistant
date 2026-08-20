@@ -43,7 +43,7 @@ from .const import (
 )
 from .errors import AuthorizationError, ConnectError
 
-SERVICE_ADD_CHILD_SCHEMA = vol.Schema(
+ACTION_ADD_CHILD_SCHEMA = vol.Schema(
     {
         vol.Required(ATTR_BIRTH_DATE, default=dt_util.now().date()): cv.date,
         vol.Required(ATTR_FIRST_NAME): cv.string,

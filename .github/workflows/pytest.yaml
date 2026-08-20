@@ -72,7 +72,7 @@ jobs:
           # coordinator's first refresh fails with "No children found" and
           # the config entry never reaches LOADED (tests/test_config_flow.py
           # asserts this). The test suite creates its own "lorem"/"ipsum"
-          # child later via the add_child service; this one only exists to
+          # child later via the add_child action; this one only exists to
           # satisfy that first check.
           curl -sf 'http://localhost:8000/api/children/' \
             -H "Authorization: Token $api_key" \

@@ -1,4 +1,4 @@
-"""Services for the babybuddy integration."""
+"""Actions for the babybuddy integration."""
 
 from __future__ import annotations
 
@@ -82,14 +82,14 @@ from .const import (
 from .coordinator import BabyBuddyConfigEntry, BabyBuddyCoordinator
 from .errors import ValidationError
 
-SERVICE_ADD_CHILD_SCHEMA: vol.Schema = vol.Schema(
+ACTION_ADD_CHILD_SCHEMA: vol.Schema = vol.Schema(
     {
         vol.Required(ATTR_BIRTH_DATE, default=dt_util.now().date()): cv.date,
         vol.Required(ATTR_FIRST_NAME): cv.string,
         vol.Required(ATTR_LAST_NAME): cv.string,
     }
 )
-# Until v2.9.0 these were entity services, so existing automations target
+# Until v2.9.0 these were entity actions, so existing automations target
 # them with `target: entity_id` or `target: device_id` (which HA merges
 # into the call data verbatim, without resolving device_id to entity_id,
 # since that resolution is an entity-platform-only convenience) rather
@@ -116,7 +116,7 @@ COMMON_FIELDS_TIMER: dict[vol.Required | vol.Optional | vol.Exclusive, Any] = {
 
 
 async def __async_extract_entry_coordinator(call: ServiceCall) -> BabyBuddyCoordinator:
-    """Extract coordinator from a service call."""
+    """Extract coordinator from an action call."""
     hass: HomeAssistant = call.hass
     entry: BabyBuddyConfigEntry = hass.config_entries.async_loaded_entries(DOMAIN)[0]
     entry = er.async_get(hass).async_get(call.data.get(ATTR_CHILD))
@@ -167,8 +167,8 @@ def _resolve_child_id(hass: HomeAssistant, entity_id: str) -> int:
     )
 
 
-async def __setup_service_data(call: ServiceCall) -> dict[str, Any]:
-    """Extract data with child ID from a service call."""
+async def __setup_action_data(call: ServiceCall) -> dict[str, Any]:
+    """Extract data with child ID from an action call."""
     data = call.data.copy()
 
     # entity_id/device_id must not reach the babybuddy POST payload
@@ -238,7 +238,7 @@ async def async_add_child(call: ServiceCall) -> None:
 async def async_add_bmi(call: ServiceCall) -> None:
     """Add BMI entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     # date_now = dt_util.now().date()
     date_time_now = get_datetime_from_time(dt_util.now())
@@ -249,7 +249,7 @@ async def async_add_bmi(call: ServiceCall) -> None:
 async def async_add_diaper_change(call: ServiceCall) -> None:
     """Add diaper change entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     if call.data.get(ATTR_TIME):
         try:
@@ -284,7 +284,7 @@ async def async_add_diaper_change(call: ServiceCall) -> None:
 async def async_add_head_circumference(call: ServiceCall) -> None:
     """Add head circumference entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     if call.data.get(ATTR_DATE):
         data[ATTR_DATE] = call.data.get(ATTR_DATE)
@@ -304,7 +304,7 @@ async def async_add_head_circumference(call: ServiceCall) -> None:
 async def async_add_height(call: ServiceCall) -> None:
     """Add height entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     if call.data.get(ATTR_DATE):
         data[ATTR_DATE] = call.data.get(ATTR_DATE)
@@ -322,7 +322,7 @@ async def async_add_height(call: ServiceCall) -> None:
 async def async_add_medication(call: ServiceCall) -> None:
     """Add a medication entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     if call.data.get(ATTR_TIME):
         try:
@@ -346,7 +346,7 @@ async def async_add_medication(call: ServiceCall) -> None:
 async def async_add_note(call: ServiceCall) -> None:
     """Add note entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     if call.data.get(ATTR_TIME):
         try:
@@ -366,7 +366,7 @@ async def async_add_note(call: ServiceCall) -> None:
 async def async_add_temperature(call: ServiceCall) -> None:
     """Add a temperature entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     if call.data.get(ATTR_TIME):
         try:
@@ -388,7 +388,7 @@ async def async_add_temperature(call: ServiceCall) -> None:
 async def async_add_weight(call: ServiceCall) -> None:
     """Add weight entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     if call.data.get(ATTR_DATE):
         data[ATTR_DATE] = call.data.get(ATTR_DATE)
@@ -429,7 +429,7 @@ async def async_delete_last_entry(call: ServiceCall) -> None:
 async def async_start_timer(call: ServiceCall) -> None:
     """Start a new timer for child."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     try:
         data[ATTR_START] = get_datetime_from_time(
@@ -448,7 +448,7 @@ async def async_start_timer(call: ServiceCall) -> None:
 async def async_add_feeding(call: ServiceCall) -> None:
     """Add a feeding entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     try:
         data = await __set_common_fields(coordinator, call, data)
@@ -475,7 +475,7 @@ async def async_add_feeding(call: ServiceCall) -> None:
 async def async_add_pumping(call: ServiceCall) -> None:
     """Add a pumping entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     try:
         data = await __set_common_fields(coordinator, call, data)
@@ -495,7 +495,7 @@ async def async_add_pumping(call: ServiceCall) -> None:
 async def async_add_sleep(call: ServiceCall) -> None:
     """Add a sleep entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     try:
         data = await __set_common_fields(coordinator, call, data)
@@ -515,7 +515,7 @@ async def async_add_sleep(call: ServiceCall) -> None:
 async def async_add_tummy_time(call: ServiceCall) -> None:
     """Add a tummy time entry."""
     coordinator = await __async_extract_entry_coordinator(call)
-    data = await __setup_service_data(call)
+    data = await __setup_action_data(call)
 
     try:
         data = await __set_common_fields(coordinator, call, data)
@@ -531,14 +531,14 @@ async def async_add_tummy_time(call: ServiceCall) -> None:
 
 
 @callback
-def async_setup_services(hass: HomeAssistant) -> None:
-    """Set up the services for the babybuddy integration."""
+def async_setup_actions(hass: HomeAssistant) -> None:
+    """Set up the actions for the babybuddy integration."""
 
     hass.services.async_register(
         DOMAIN,
         ATTR_ACTION_ADD_CHILD,
         async_add_child,
-        schema=SERVICE_ADD_CHILD_SCHEMA,
+        schema=ACTION_ADD_CHILD_SCHEMA,
     )
     hass.services.async_register(
         DOMAIN,
