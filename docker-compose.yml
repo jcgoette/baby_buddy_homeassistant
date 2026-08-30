@@ -1,0 +1,37 @@
+iversion: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: buddy
+      DB_PASSWORD: secret
+      DB_NAME: buddydb
+    volumes:
+      - app_data:/app
+    networks:
+      - app_network
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    env_file:
+      - .env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app_network
+
+volumes:
+  app_data:
+  db_data:
+
+networks:
+  app_network:
+
