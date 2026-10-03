@@ -26,7 +26,7 @@ DEFAULT_PORT: Final[int] = 8000
 DEFAULT_PATH: Final[str] = ""
 DEFAULT_SCAN_INTERVAL: Final[int] = 60
 
-CONFIG_FLOW_VERSION: Final[int] = 2
+CONFIG_FLOW_VERSION: Final[int] = 3
 
 ATTR_AMOUNT: Final[str] = "amount"
 ATTR_BABYBUDDY_CHILD: Final[str] = "babybuddy_child"

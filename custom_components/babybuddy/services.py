@@ -81,6 +81,7 @@ from .const import (
 )
 from .coordinator import BabyBuddyConfigEntry, BabyBuddyCoordinator
 from .errors import ValidationError
+from .unique_id import parse_child_id_from_unique_id, parse_endpoint_from_unique_id
 
 SERVICE_ADD_CHILD_SCHEMA: vol.Schema = vol.Schema(
     {
@@ -133,8 +134,7 @@ async def __async_extract_entry_coordinator(call: ServiceCall) -> BabyBuddyCoord
             translation_domain=DOMAIN,
             translation_key="entry_not_loaded",
         )
-    coordinator = entry.runtime_data.coordinator
-    return coordinator
+    return entry.runtime_data.coordinator
 
 
 def _entity_id_for_device(hass: HomeAssistant, device_id: str) -> str | None:
@@ -148,16 +148,12 @@ def _entity_id_for_device(hass: HomeAssistant, device_id: str) -> str | None:
 def _resolve_child_id(hass: HomeAssistant, entity_id: str) -> int:
     """Resolve a babybuddy child id from an entity's registry entry.
 
-    The child id is the segment after the api key in the unique_id
-    ("{api_key}-{child_id}" for the child sensor,
-    "{api_key}-{child_id}-timer" for the timer switch,
-    "{api_key}-{child_id}-{endpoint}" for the data sensors); the api key
-    is a hyphen-free token, so index [1] holds the id in all cases.
+    Supports legacy API-key-prefixed unique IDs and current stable unique IDs.
     """
     entity_entry = er.async_get(hass).async_get(entity_id)
     if entity_entry is not None:
         try:
-            return int(entity_entry.unique_id.split("-")[1])
+            return parse_child_id_from_unique_id(entity_entry.unique_id)
         except (IndexError, ValueError):
             pass
     raise ServiceValidationError(
@@ -409,20 +405,17 @@ async def async_delete_last_entry(call: ServiceCall) -> None:
     entity_id = call.data[ATTR_ENTITY_ID]
     entity = call.hass.states.get(entity_id)
     entity_entry = er.async_get(call.hass).async_get(entity_id)
-    # The API endpoint is the last segment of the data sensor's unique_id
-    # ("{api_key}-{child_id}-{endpoint}"); the endpoint itself may contain
-    # hyphens (e.g. head-circumference), so split at most twice. Deriving it
-    # from the entity_id instead would break on multi-word endpoints and on
-    # renamed entities.
-    parts = entity_entry.unique_id.split("-", 2) if entity_entry else []
-    if entity is None or len(parts) < 3 or parts[2] == ATTR_TIMER:
+    # Derive the API endpoint from the registry unique_id rather than the
+    # entity_id so renamed entities keep working.
+    endpoint = parse_endpoint_from_unique_id(entity_entry.unique_id) if entity_entry else None
+    if entity is None or endpoint is None or endpoint == ATTR_TIMER:
         raise ServiceValidationError(
             translation_domain=DOMAIN,
             translation_key="invalid_delete_target",
             translation_placeholders={"entity_id": entity_id},
         )
 
-    await coordinator.client.async_delete(parts[2], entity.attributes.get(ATTR_ID))
+    await coordinator.client.async_delete(endpoint, entity.attributes.get(ATTR_ID))
     await coordinator.async_request_refresh()
 
 

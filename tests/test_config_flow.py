@@ -3,9 +3,10 @@
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.babybuddy.const import CONFIG_FLOW_VERSION, DEFAULT_NAME, DOMAIN
+from custom_components.babybuddy.unique_id import build_entry_unique_id
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntryState
-from homeassistant.const import CONF_API_KEY, CONF_HOST
+from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 
@@ -39,10 +40,7 @@ async def test_successful_config_flow(hass: HomeAssistant):
     assert result["handler"] == DOMAIN
     assert result["options"] == {}
     assert result["result"].state is ConfigEntryState.LOADED
-    assert (
-        result["result"].unique_id
-        == f"{MOCK_CONFIG[CONF_HOST]}-{MOCK_CONFIG[CONF_API_KEY]}"
-    )
+    assert result["result"].unique_id == build_entry_unique_id(MOCK_CONFIG)
     assert result["title"] == f"{DEFAULT_NAME} ({MOCK_CONFIG[CONF_HOST]})"
     assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result["version"] == CONFIG_FLOW_VERSION

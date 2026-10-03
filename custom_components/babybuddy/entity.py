@@ -8,14 +8,7 @@ from homeassistant.components.select import SelectEntity
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor.const import SensorDeviceClass
 from homeassistant.components.switch import SwitchEntity
-from homeassistant.const import (
-    ATTR_ID,
-    ATTR_TIME,
-    CONF_API_KEY,
-    CONF_HOST,
-    CONF_PATH,
-    CONF_PORT,
-)
+from homeassistant.const import ATTR_ID, ATTR_TIME, CONF_HOST, CONF_PATH, CONF_PORT
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -49,6 +42,7 @@ from .const import (
     BabyBuddySelectDescription,
 )
 from .coordinator import BabyBuddyCoordinator
+from .unique_id import build_entity_unique_id
 
 
 class BabyBuddySensor(CoordinatorEntity, SensorEntity):
@@ -78,9 +72,7 @@ class BabyBuddyChildSensor(BabyBuddySensor):
         # sensor.<first>_<last>_baby.
         self._attr_has_entity_name = True
         self._attr_name = "Baby"
-        self._attr_unique_id = (
-            f"{coordinator.entry.data[CONF_API_KEY]}-{child[ATTR_ID]}"
-        )
+        self._attr_unique_id = build_entity_unique_id(coordinator.entry.data, child[ATTR_ID])
         self._attr_native_value = child[ATTR_BIRTH_DATE]
         self._attr_icon = ATTR_ICON_CHILD_SENSOR
         self._attr_device_class = ATTR_BABYBUDDY_CHILD
@@ -112,7 +104,9 @@ class BabyBuddyChildDataSensor(BabyBuddySensor):
         super().__init__(coordinator, child)
 
         self.entity_description = description
-        self._attr_unique_id = f"{self.coordinator.entry.data[CONF_API_KEY]}-{child[ATTR_ID]}-{description.key}"
+        self._attr_unique_id = build_entity_unique_id(
+            self.coordinator.entry.data, child[ATTR_ID], description.key
+        )
 
     @property
     def name(self) -> str:
@@ -201,8 +195,8 @@ class BabyBuddyChildTimerSwitch(CoordinatorEntity, SwitchEntity):
         self._attr_name = (
             f"{self.child[ATTR_FIRST_NAME]} {self.child[ATTR_LAST_NAME]} {ATTR_TIMER}"
         )
-        self._attr_unique_id = (
-            f"{self.coordinator.entry.data[CONF_API_KEY]}-{child[ATTR_ID]}-{ATTR_TIMER}"
+        self._attr_unique_id = build_entity_unique_id(
+            self.coordinator.entry.data, child[ATTR_ID], ATTR_TIMER
         )
         self._attr_icon = ATTR_ICON_TIMER_SAND
         self._attr_device_info = {
@@ -259,8 +253,8 @@ class BabyBuddySelect(CoordinatorEntity, SelectEntity, RestoreEntity):
     ) -> None:
         """Initialize the Babybuddy select entity."""
         super().__init__(coordinator)
-        self._attr_unique_id = (
-            f"{self.coordinator.entry.data[CONF_API_KEY]}-{entity_description.key}"
+        self._attr_unique_id = build_entity_unique_id(
+            self.coordinator.entry.data, endpoint=entity_description.key
         )
         self._attr_options = entity_description.options
         self.entity_description = entity_description

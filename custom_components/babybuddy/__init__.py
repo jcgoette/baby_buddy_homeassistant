@@ -5,11 +5,13 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PATH
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.typing import ConfigType
 
 from .const import CONFIG_FLOW_VERSION, DEFAULT_PATH, LOGGER, PLATFORMS
 from .coordinator import BabyBuddyConfigEntry, BabyBuddyCoordinator, BabyBuddyData
 from .services import async_setup_services
+from .unique_id import build_entry_unique_id, migrate_legacy_entity_unique_id
 
 
 # async_setup is for the initial setup of the integration itself
@@ -51,12 +53,32 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     LOGGER.debug(f"Migrating from ConfigFlow version {entry.version}.")
 
+    migration_data = entry.data
     if entry.version == 1:
-        new = {**entry.data}
-        new[CONF_PATH] = DEFAULT_PATH
+        migration_data = {**entry.data}
+        migration_data[CONF_PATH] = DEFAULT_PATH
 
         hass.config_entries.async_update_entry(
-            entry, version=CONFIG_FLOW_VERSION, data=new
+            entry, version=2, data=migration_data
+        )
+
+    if entry.version < CONFIG_FLOW_VERSION:
+        entity_registry = er.async_get(hass)
+        for entity_entry in er.async_entries_for_config_entry(
+            entity_registry, entry.entry_id
+        ):
+            new_unique_id = migrate_legacy_entity_unique_id(
+                migration_data, entity_entry.unique_id
+            )
+            if new_unique_id is not None:
+                entity_registry.async_update_entity(
+                    entity_entry.entity_id, new_unique_id=new_unique_id
+                )
+
+        hass.config_entries.async_update_entry(
+            entry,
+            version=CONFIG_FLOW_VERSION,
+            unique_id=build_entry_unique_id(migration_data),
         )
 
     LOGGER.info(
