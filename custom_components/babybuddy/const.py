@@ -25,6 +25,13 @@ DEFAULT_NAME: Final[str] = "Baby Buddy"
 DEFAULT_PORT: Final[int] = 8000
 DEFAULT_PATH: Final[str] = ""
 DEFAULT_SCAN_INTERVAL: Final[int] = 60
+VERSION_SCAN_INTERVAL: Final[int] = 30 * 60
+
+BABY_BUDDY_RELEASE_TAG_URL: Final[str] = (
+    "https://github.com/babybuddy/babybuddy/releases/tag/v{version}"
+)
+# Values the server reports as latest_version when it has no version to offer.
+LATEST_VERSION_NOT_AVAILABLE: Final = ("unknown", "disabled")
 
 CONFIG_FLOW_VERSION: Final[int] = 2
 
@@ -48,6 +55,7 @@ ATTR_HEAD_CIRCUMFERENCE_DASH: Final[str] = "head-circumference"
 ATTR_HEAD_CIRCUMFERENCE_UNDERSCORE: Final[str] = "head_circumference"
 ATTR_HEIGHT: Final[str] = "height"
 ATTR_LAST_NAME: Final[str] = "last_name"
+ATTR_LATEST_VERSION: Final[str] = "latest_version"
 ATTR_MEDICATION: Final[str] = "medication"
 ATTR_METHOD: Final[str] = "method"
 ATTR_MILESTONE: Final[str] = "milestone"
@@ -59,6 +67,7 @@ ATTR_NOTE: Final[str] = "note"
 ATTR_NOTES: Final[str] = "notes"
 ATTR_PICTURE: Final[str] = "picture"
 ATTR_PUMPING: Final[str] = "pumping"
+ATTR_RELEASE_URL: Final[str] = "release_url"
 ATTR_RESULTS: Final[str] = "results"
 ATTR_SLEEP: Final[str] = "sleep"
 ATTR_SLUG: Final[str] = "slug"
@@ -69,6 +78,7 @@ ATTR_TIMER: Final[str] = "timer"
 ATTR_TIMERS: Final[str] = "timers"
 ATTR_TUMMY_TIMES: Final[str] = "tummy-times"
 ATTR_TYPE: Final[str] = "type"
+ATTR_VERSION: Final[str] = "version"
 ATTR_WEIGHT: Final[str] = "weight"
 ATTR_WET: Final[str] = "wet"
 
@@ -251,4 +261,4 @@ SELECTOR_TYPES: tuple[BabyBuddySelectDescription, ...] = (
     ),
 )
 
-PLATFORMS: Final = ["sensor", "select", "switch"]
+PLATFORMS: Final = ["sensor", "select", "switch", "update"]
