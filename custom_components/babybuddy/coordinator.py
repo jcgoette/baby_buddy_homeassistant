@@ -36,10 +36,12 @@ from .const import (
     ATTR_FIRST_NAME,
     ATTR_LAST_NAME,
     ATTR_RESULTS,
+    ATTR_VERSION,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     LOGGER,
     SENSOR_TYPES,
+    VERSION_SCAN_INTERVAL,
 )
 from .errors import AuthorizationError, ConnectError
 
@@ -52,6 +54,16 @@ SERVICE_ADD_CHILD_SCHEMA = vol.Schema(
 )
 
 type BabyBuddyConfigEntry = ConfigEntry[BabyBuddyData]
+
+
+def get_server_device_identifier(entry: ConfigEntry) -> tuple[str, str]:
+    """Return the device identifier of the Baby Buddy server itself."""
+    return (DOMAIN, f"{entry.entry_id}-server")
+
+
+def _is_server_device(device: dr.DeviceEntry, entry: ConfigEntry) -> bool:
+    """Return True for the server device, which is not a child."""
+    return get_server_device_identifier(entry) in device.identifiers
 
 
 @dataclass
@@ -97,6 +109,7 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
             for device in dr.async_entries_for_config_entry(
                 self.device_registry, self.entry.entry_id
             )
+            if not _is_server_device(device, self.entry)
         ]
 
     async def async_setup_coordinator(self) -> None:
@@ -120,6 +133,8 @@ class BabyBuddyCoordinator(DataUpdateCoordinator):
         for device in dr.async_entries_for_config_entry(
             self.device_registry, self.entry.entry_id
         ):
+            if _is_server_device(device, self.entry):
+                continue
             if next(iter(device.identifiers))[1] not in self.child_ids:
                 self.device_registry.async_remove_device(device.id)
 
@@ -180,3 +195,32 @@ async def options_updated_listener(
     coordinator = entry.runtime_data.coordinator
     coordinator.update_interval = timedelta(seconds=entry.options[CONF_SCAN_INTERVAL])
     await coordinator.async_request_refresh()
+
+
+class BabyBuddyVersionCoordinator(DataUpdateCoordinator[dict[str, Any]]):
+    """Poll the server's /api/version endpoint.
+
+    The server caches its own GitHub lookup, so this only reads two strings.
+    """
+
+    def __init__(
+        self, hass: HomeAssistant, entry: ConfigEntry, client: BabyBuddyClient
+    ) -> None:
+        """Initialize the version coordinator."""
+        super().__init__(
+            hass,
+            LOGGER,
+            config_entry=entry,
+            name=f"{DOMAIN}_version",
+            update_interval=timedelta(seconds=VERSION_SCAN_INTERVAL),
+        )
+        self.client = client
+
+    async def _async_update_data(self) -> dict[str, Any]:
+        """Fetch the installed and latest Baby Buddy versions."""
+        try:
+            return await self.client.async_get(ATTR_VERSION)
+        except (AsyncIOTimeoutError, ClientError) as error:
+            raise UpdateFailed(
+                f"Could not read the Baby Buddy version: {error}"
+            ) from error

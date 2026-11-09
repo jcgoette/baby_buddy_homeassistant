@@ -60,6 +60,16 @@ This integration provides the following entities.
 
 `Feeding`, `Sleep`, and `Tummy time` can be linked to a timer. If a timer is active you can add any of these entries and link it to the timer to automatically specify child, start time, and end time. It is important that the timer is active when the service is called.
 
+### Update
+
+`update.baby_buddy_server` (on a "Baby Buddy" device) shows the server's installed
+version and the latest Baby Buddy release, so a new release appears on Home
+Assistant's **Settings → Updates** page, like Frigate's server update entity.
+Both versions come from the server's `/api/version` endpoint (the server does
+the GitHub lookup; turn it off there with `VERSION_CHECK=False`). The entity is
+informational: Home Assistant cannot install Baby Buddy updates. Servers without
+`/api/version` get no update entity.
+
 ## Services
 
 ### SERVICE ADD_CHILD
